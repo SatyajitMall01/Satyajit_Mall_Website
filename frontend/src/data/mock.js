@@ -87,6 +87,14 @@ export const navLinks = [
 export const profileData = {
   name: 'Satyajit Mall',
   role: 'Technical Product Manager',
-  headline: 'Case File: Satyajit Mall. Status: Architect. Mission: Solving the $30M+ ARR Mystery.',
-  bio: 'A forensic product architect with a track record of building revenue engines, deflecting operational chaos, and recovering lost attribution. Every product is a case. Every metric is evidence.',
+  headline: 'Architecting the $30M+ ARR Gotham.',
+  highlightedPhrase: '$30M+ ARR',
+  subHeadline: 'I am Satyajit Mall. A Technical Product Architect. I don\u2019t just ship features; I engineer the underlying data structures, n8n pipelines, and RAG architectures that turn fragmented data into revenue.',
+  heroImage: 'https://customer-assets.emergentagent.com/job_the-evidence-room/artifacts/0ztjh3iy_Gemini_Generated_Image_rrfkwzrrfkwzrrfk.png',
 };
+
+export const jurisdictions = [
+  { id: 'miles', name: 'Miles Education' },
+  { id: 'almabetter', name: 'AlmaBetter' },
+  { id: 'upgrad', name: 'UpGrad' },
+];
