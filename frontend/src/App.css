@@ -62,6 +62,63 @@
   }
 }
 
+/* Infinite carousel scroll */
+@keyframes evidenceScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.evidence-carousel-track {
+  display: flex;
+  gap: 40px;
+  animation: evidenceScroll 35s linear infinite;
+  width: max-content;
+}
+
+.evidence-carousel-track:hover {
+  animation-play-state: paused;
+}
+
+/* Blueprint pattern backgrounds */
+.pattern-grid {
+  background-image:
+    linear-gradient(rgba(244, 236, 216, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 236, 216, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.pattern-diagonal {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 14px,
+      rgba(244, 236, 216, 0.03) 14px,
+      rgba(244, 236, 216, 0.03) 15px
+    );
+}
+
+.pattern-blueprint {
+  background-image:
+    linear-gradient(rgba(244, 236, 216, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 236, 216, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(244, 236, 216, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 236, 216, 0.015) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px, 12px 12px, 12px 12px;
+}
+
+.pattern-circuit {
+  background-image:
+    linear-gradient(90deg, rgba(244, 236, 216, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(244, 236, 216, 0.03) 1px, transparent 1px),
+    radial-gradient(circle 2px at 24px 24px, rgba(244, 236, 216, 0.04) 1px, transparent 2px);
+  background-size: 48px 48px, 48px 48px, 48px 48px;
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.8s ease forwards;
 }
