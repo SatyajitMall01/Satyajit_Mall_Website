@@ -89,7 +89,7 @@ export const profileData = {
   role: 'Technical Product Manager',
   headline: 'Architecting the $30M+ ARR Gotham.',
   highlightedPhrase: '$30M+ ARR',
-  subHeadline: 'I am Satyajit Mall. A Technical Product Architect. I don\u2019t just ship features; I engineer the underlying data structures, n8n pipelines, and RAG architectures that turn fragmented data into revenue.',
+  subHeadline: 'I am Satyajit Mall. A Product Manager expertising in product architecture. I don\u2019t just ship features; I engineer the underlying data structures, n8n pipelines, and RAG architectures that turn fragmented data into revenue.',
   heroImage: 'https://customer-assets.emergentagent.com/job_the-evidence-room/artifacts/0ztjh3iy_Gemini_Generated_Image_rrfkwzrrfkwzrrfk.png',
 };
 

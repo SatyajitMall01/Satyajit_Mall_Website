@@ -19,7 +19,7 @@ const HomePage = () => {
       <LedgerEdge />
 
       {/* Main content area */}
-      <main className="lg:ml-[15vw] min-h-screen bg-[#0F1419] relative">
+      <main className="pl-16 min-h-screen bg-[#0F1419] relative">
         {/* Hero - The Cold Open */}
         <ColdOpen />
 

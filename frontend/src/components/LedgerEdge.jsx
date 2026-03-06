@@ -1,60 +1,67 @@
 import React, { useState } from 'react';
-import { navLinks } from '../data/mock';
-import { FileText, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 import { Separator } from './ui/separator';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from './ui/tooltip';
+
+const navItems = [
+  { id: 'evidence',   label: 'The Evidence',   route: '/cases' },
+  { id: 'laboratory', label: 'The Laboratory',  route: '/lab' },
+  { id: 'dossier',    label: 'The Dossier',     route: '/dossier' },
+  { id: 'informants', label: 'The Informants',  route: '/informants' },
+];
 
 const LedgerEdge = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState(null);
-
-  const handleLinkClick = (e, link) => {
-    setActiveLink(link.id);
-    setMobileOpen(false);
-    const target = document.querySelector(link.href);
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const [isFolderOpen, setIsFolderOpen] = useState(false);
 
   return (
     <>
-      {/* Mobile toggle */}
-      <button
-        className="fixed top-5 left-5 z-[60] lg:hidden"
-        onClick={() => setMobileOpen(!mobileOpen)}
-        aria-label="Toggle navigation"
-      >
-        {mobileOpen ? (
-          <X size={22} strokeWidth={1.5} className="text-[#F4ECD8]" />
-        ) : (
-          <Menu size={22} strokeWidth={1.5} className="text-[#F4ECD8]" />
-        )}
-      </button>
+      {/* ── Fixed Spine — always visible ── */}
+      <div className="fixed left-0 top-0 h-screen w-16 z-50 bg-[#0F1419] border-r border-[#333] flex flex-col items-center justify-between py-6">
+        {/* Toggle button */}
+        <button
+          onClick={() => setIsFolderOpen(!isFolderOpen)}
+          className="flex flex-col items-center gap-3 group"
+          aria-label="Toggle navigation"
+        >
+          <FileText
+            size={15}
+            strokeWidth={1.5}
+            className={`transition-colors duration-300 ${isFolderOpen ? 'text-[#B22222]' : 'text-[#B22222]/60 group-hover:text-[#B22222]'}`}
+          />
+          <span
+            className="text-[8px] text-[#F4ECD8]/30 tracking-[0.3em] uppercase group-hover:text-[#F4ECD8]/60 transition-colors duration-300 select-none"
+            style={{
+              fontFamily: "'Special Elite', cursive",
+              writingMode: 'vertical-rl',
+              transform: 'rotate(180deg)',
+            }}
+          >
+            Case File
+          </span>
+        </button>
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-[45] lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+        {/* Confidential label — bottom of spine */}
+        <span
+          className="text-[7px] text-[#B22222]/40 tracking-[0.2em] uppercase select-none"
+          style={{
+            fontFamily: "'Special Elite', cursive",
+            writingMode: 'vertical-rl',
+            transform: 'rotate(180deg)',
+          }}
+        >
+          Confidential
+        </span>
+      </div>
 
-      {/* Sidebar navigation */}
+      {/* ── Slide-out Drawer ── */}
       <nav
-        className={`fixed left-0 top-0 h-screen w-[260px] lg:w-[15vw] lg:min-w-[220px] bg-[#0D1117] z-[50] flex flex-col justify-between py-10 px-6 transition-transform duration-300 ease-in-out ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0`}
-        style={{ borderRight: '2px solid #2A2A2A' }}
+        className={`fixed left-16 top-0 h-screen w-64 bg-[#0F1419] z-40 flex flex-col justify-between py-10 px-6 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          isFolderOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{ borderRight: '2px solid #1A1A1A' }}
       >
         {/* Top section */}
         <div>
-          {/* Logo / File label */}
           <div className="flex items-center gap-2.5 mb-3">
             <FileText size={16} strokeWidth={1.5} className="text-[#B22222]" />
             <span
@@ -69,40 +76,26 @@ const LedgerEdge = () => {
 
           {/* Navigation links */}
           <div className="flex flex-col gap-1">
-            {navLinks.map((link, index) => (
-              <Tooltip key={link.id} delayDuration={400}>
-                <TooltipTrigger asChild>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleLinkClick(e, link)}
-                    className={`group flex items-start gap-3.5 py-3 px-2 rounded-sm transition-colors duration-300 ${
-                      activeLink === link.id
-                        ? 'bg-[#F4ECD8]/5 text-[#F4ECD8]'
-                        : 'text-[#F4ECD8]/40 hover:text-[#F4ECD8]/80 hover:bg-[#F4ECD8]/[0.02]'
-                    }`}
-                  >
-                    <span
-                      className="text-[10px] text-[#F4ECD8]/20 mt-[3px] tabular-nums"
-                      style={{ fontFamily: "'Special Elite', cursive" }}
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span
-                      className="text-[12px] tracking-[0.15em] uppercase leading-snug"
-                      style={{ fontFamily: "'Special Elite', cursive" }}
-                    >
-                      {link.label}
-                    </span>
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="right"
-                  className="bg-[#1A1A1A] text-[#F4ECD8] border-[#333] text-xs"
+            {navItems.map((item, index) => (
+              <Link
+                key={item.id}
+                to={item.route}
+                className="group flex items-start gap-3.5 py-3 px-2 text-[#F4ECD8]/40 hover:text-white hover:pl-4 transition-all duration-300"
+                onClick={() => setIsFolderOpen(false)}
+              >
+                <span
+                  className="text-[10px] text-[#F4ECD8]/20 mt-[3px] tabular-nums flex-shrink-0"
                   style={{ fontFamily: "'Special Elite', cursive" }}
                 >
-                  Navigate to {link.label}
-                </TooltipContent>
-              </Tooltip>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span
+                  className="text-[12px] tracking-[0.15em] uppercase leading-snug"
+                  style={{ fontFamily: "'Special Elite', cursive" }}
+                >
+                  {item.label}
+                </span>
+              </Link>
             ))}
           </div>
         </div>
@@ -130,6 +123,14 @@ const LedgerEdge = () => {
           </p>
         </div>
       </nav>
+
+      {/* ── Backdrop — closes drawer on outside click ── */}
+      {isFolderOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40"
+          onClick={() => setIsFolderOpen(false)}
+        />
+      )}
     </>
   );
 };

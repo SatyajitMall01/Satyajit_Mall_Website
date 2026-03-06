@@ -12,7 +12,7 @@ const patternClassMap = {
 };
 
 /* ── Single Evidence Carousel Card ── */
-const EvidenceCard = ({ card }) => {
+const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -28,8 +28,8 @@ const EvidenceCard = ({ card }) => {
           ? '10px 10px 0px #080808'
           : '8px 8px 0px #111',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => { setIsHovered(true); onHoverStart?.(); }}
+      onMouseLeave={() => { setIsHovered(false); onHoverEnd?.(); }}
     >
       {/* Card body */}
       <div
@@ -171,6 +171,12 @@ const EvidenceCard = ({ card }) => {
 /* ── Main Section ── */
 const HallOfTrophies = () => {
   const sectionRef = useRef(null);
+  const scrollRef = useRef(null);
+  const rafRef = useRef(null);
+  const isHovering = useRef(false);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -184,7 +190,51 @@ const HallOfTrophies = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Duplicate cards for seamless infinite loop
+  // RAF auto-scroll engine — starts once section is visible
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !isVisible) return;
+
+    const tick = () => {
+      if (!isHovering.current && !isDragging.current) {
+        el.scrollLeft += 1;
+        // Seamless infinite loop: reset to 0 when past the first duplicated set
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [isVisible]);
+
+  // Drag handlers
+  const handleMouseDown = (e) => {
+    isDragging.current = true;
+    startX.current = e.pageX - scrollRef.current.offsetLeft;
+    scrollLeftStart.current = scrollRef.current.scrollLeft;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+    isHovering.current = false;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeftStart.current - walk;
+  };
+
+  // Duplicated for infinite illusion
   const duplicatedCards = [...evidenceCards, ...evidenceCards];
 
   return (
@@ -213,17 +263,28 @@ const HallOfTrophies = () => {
         <div className="w-12 h-[1px] bg-[#B22222] mt-4" />
       </div>
 
-      {/* Full-width carousel — bleeds off edges */}
+      {/* Draggable auto-scroll carousel */}
       <div
-        className="w-full overflow-hidden"
         style={{
           opacity: isVisible ? 1 : 0,
           transition: 'opacity 0.8s ease 0.3s',
         }}
       >
-        <div className="evidence-carousel-track py-8 px-4">
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto scrollbar-hide gap-10 py-8 px-4 cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onMouseMove={handleMouseMove}
+        >
           {duplicatedCards.map((card, index) => (
-            <EvidenceCard key={`${card.id}-${index}`} card={card} />
+            <EvidenceCard
+              key={`${card.id}-${index}`}
+              card={card}
+              onHoverStart={() => { isHovering.current = true; }}
+              onHoverEnd={() => { isHovering.current = false; }}
+            />
           ))}
         </div>
       </div>

@@ -62,25 +62,13 @@
   }
 }
 
-/* Infinite carousel scroll */
-@keyframes evidenceScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+/* Hide scrollbar utility for draggable carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-
-.evidence-carousel-track {
-  display: flex;
-  gap: 40px;
-  animation: evidenceScroll 35s linear infinite;
-  width: max-content;
-}
-
-.evidence-carousel-track:hover {
-  animation-play-state: paused;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Blueprint pattern backgrounds */
