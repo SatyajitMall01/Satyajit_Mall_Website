@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Separator } from './ui/separator';
 
-const EXPO_OUT = [0.16, 1, 0.3, 1];
-const SWISS    = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const TELE     = "'Courier New', Courier, monospace";
+const EXPO_OUT    = [0.16, 1, 0.3, 1];
+const SWISS       = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const TELE        = "'Courier New', Courier, monospace";
+const WINDOW_SIZE = 5;
 
+/* ── Full informant database (10 records) ── */
 const INFORMANTS = [
   {
     id: 'inf-01', serial: 'S/N 001', ref: 'REF-0091A',
@@ -36,6 +38,36 @@ const INFORMANTS = [
     label: 'THE STRATEGIST', role: 'Product Strategy · Field Command',
     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80',
     transcript: "He ships three quarters of the roadmap and then hands you the fourth. Every sprint felt like intelligence already acted upon.",
+  },
+  {
+    id: 'inf-06', serial: 'S/N 006', ref: 'REF-0523F',
+    label: 'THE LIAISON', role: 'Business Development · Field Agent',
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80',
+    transcript: "He translated a \u20B92 Cr. pipeline problem into a three-line SQL fix. I\u2019ve never seen a PM read a schema like that.",
+  },
+  {
+    id: 'inf-07', serial: 'S/N 007', ref: 'REF-0611G',
+    label: 'THE OPERATIVE', role: 'Growth Marketing · Field Division',
+    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80',
+    transcript: "The funnel wasn\u2019t broken \u2014 it was haunted. He exorcised four ghost events in one audit. ROAS recovered by Monday.",
+  },
+  {
+    id: 'inf-08', serial: 'S/N 008', ref: 'REF-0734H',
+    label: 'THE ARCHIVIST', role: 'Data Engineering · Cold Case Division',
+    image: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=800&q=80',
+    transcript: "He left the data warehouse cleaner than he found it. I\u2019m still running queries he wrote in the first week.",
+  },
+  {
+    id: 'inf-09', serial: 'S/N 009', ref: 'REF-0891I',
+    label: 'THE HANDLER', role: 'Customer Success · Field Intelligence',
+    image: 'https://images.unsplash.com/photo-1548449112-96a38a643324?w=800&q=80',
+    transcript: "He predicted churn three sprints before the model did. The AI caught up to his intuition eventually.",
+  },
+  {
+    id: 'inf-10', serial: 'S/N 010', ref: 'REF-0968J',
+    label: 'THE UNDERCOVER', role: 'UX Research · Deep Cover',
+    image: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80',
+    transcript: "He sat in on 40 support calls before writing a single line of the spec. The product shipped with zero design debt.",
   },
 ];
 
@@ -78,12 +110,31 @@ const XHair = ({ size = 16, color = 'currentColor' }) => (
 
 /* ── Main Section ── */
 const Informants = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const [hoveredId, setHoveredId]   = useState(null);
+
+  /* Derive exactly 5 cards from the infinite ring */
+  const visibleCards = Array.from({ length: WINDOW_SIZE }, (_, i) =>
+    INFORMANTS[(startIndex + i) % INFORMANTS.length]
+  );
+  const centerCard = visibleCards[2]; /* default active: middle slot */
+
+  const advance = (delta) =>
+    setStartIndex(s => (s + delta + INFORMANTS.length) % INFORMANTS.length);
+
+  /* Auto-scroll conveyor — freezes completely while a card is hovered */
+  useEffect(() => {
+    if (hoveredId !== null) return;
+    const id = setInterval(() => {
+      setStartIndex(s => (s + 1) % INFORMANTS.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [hoveredId]);
 
   return (
     <section className="py-24 px-8 md:px-12 bg-[#0F1419]" id="informants">
 
-      {/* Section header */}
+      {/* ── Section header ── */}
       <motion.div
         className="mb-12"
         initial={{ opacity: 0, y: 20 }}
@@ -125,247 +176,290 @@ const Informants = () => {
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#C4622D' }} />
       </motion.div>
 
-      {/* Accordion entrance wrapper */}
+      {/* ── Accordion: entrance wrapper ── */}
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.9, ease: EXPO_OUT, delay: 0.2 }}
       >
-        {/* 5-card hover accordion */}
-        <div className="flex w-full h-[520px] gap-[2px] overflow-hidden">
-          {INFORMANTS.map((inf, i) => {
-            const isActive = i === activeIdx;
+        {/* Drag-to-swipe shell — elastic snap with 50 px threshold */}
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.08}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50) advance(1);
+            else if (info.offset.x > 50) advance(-1);
+          }}
+          style={{ cursor: 'grab' }}
+          whileTap={{ cursor: 'grabbing' }}
+        >
+          {/* 5-card flex accordion */}
+          <div
+            className="flex w-full h-[520px] gap-[2px] overflow-hidden"
+            style={{ userSelect: 'none' }}
+          >
+            <AnimatePresence mode="popLayout">
+              {visibleCards.map((card) => {
+                const isActive =
+                  hoveredId === card.id ||
+                  (hoveredId === null && card.id === centerCard.id);
 
-            return (
-              <motion.div
-                key={inf.id}
-                className="relative flex-shrink-0 overflow-hidden"
-                style={{ backgroundColor: '#0C1018' }}
-                initial={false}
-                animate={{ width: isActive ? '60%' : '10%' }}
-                transition={{ duration: 0.72, ease: EXPO_OUT }}
-                onMouseEnter={() => setActiveIdx(i)}
-              >
-                {/* Portrait — high-contrast surveillance photo */}
-                <img
-                  src={inf.image}
-                  alt={inf.label}
-                  className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none"
-                  style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
-                  draggable={false}
-                />
-
-                {/* Scanline overlay */}
-                <div
-                  className="absolute inset-0 pointer-events-none z-[1]"
-                  style={{
-                    backgroundImage:
-                      'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px)',
-                  }}
-                />
-
-                {/* Bottom vignette */}
-                <div
-                  className="absolute inset-0 z-[1] pointer-events-none"
-                  style={{
-                    background:
-                      'linear-gradient(to top,rgba(12,16,24,0.97) 0%,rgba(12,16,24,0.22) 42%,transparent 68%)',
-                  }}
-                />
-
-                {/* ── INACTIVE: dossier spine tab ──
-                    Always mounted; fades out when active */}
-                <motion.div
-                  className="absolute inset-0 z-[4]"
-                  animate={{ opacity: isActive ? 0 : 1 }}
-                  transition={{ duration: 0.25, ease: 'linear' }}
-                  style={{
-                    pointerEvents: isActive ? 'none' : 'auto',
-                    backgroundColor: 'rgba(10,13,20,0.50)',
-                  }}
-                >
-                  {/* Serial — top, vertical */}
-                  <div className="absolute top-5 inset-x-0 flex justify-center">
-                    <span
-                      style={{
-                        fontFamily: TELE, fontSize: 6.5,
-                        color: 'rgba(196,98,45,0.5)',
-                        letterSpacing: '0.18em',
-                        writingMode: 'vertical-rl',
-                        transform: 'rotate(180deg)',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {inf.serial}
-                    </span>
-                  </div>
-
-                  {/* Center crosshair */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <XHair size={18} color="rgba(214,205,184,0.1)" />
-                  </div>
-
-                  {/* Name — bottom, vertical, always fully visible */}
-                  <div className="absolute bottom-8 inset-x-0 flex justify-center">
-                    <span
-                      style={{
-                        fontFamily: SWISS, fontSize: 8.5, fontWeight: 500,
-                        color: 'rgba(214,205,184,0.45)',
-                        letterSpacing: '0.32em',
-                        writingMode: 'vertical-rl',
-                        transform: 'rotate(180deg)',
-                        textTransform: 'uppercase',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {inf.label}
-                    </span>
-                  </div>
-
-                  {/* Corner registration marks */}
-                  <div className="absolute top-3 left-3 w-3 h-3 border-t border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                  <div className="absolute top-3 right-3 w-3 h-3 border-t border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                  <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                  <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                </motion.div>
-
-                {/* ── ACTIVE: classified acetate decryption ──
-                    Dark blue-charcoal tint over photo */}
-                <motion.div
-                  className="absolute inset-0 z-[5]"
-                  animate={{ opacity: isActive ? 1 : 0 }}
-                  transition={{ duration: 0.4, ease: 'linear' }}
-                  style={{
-                    pointerEvents: isActive ? 'auto' : 'none',
-                    backgroundColor: 'rgba(11,18,34,0.80)',
-                  }}
-                >
-                  {/* Viewfinder brackets */}
-                  <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                  <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                  <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                  <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-
-                  {/* Identity block — top left */}
+                return (
                   <motion.div
-                    className="absolute top-7 left-7 right-7"
-                    animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
-                    transition={{ duration: 0.38, delay: isActive ? 0.1 : 0, ease: EXPO_OUT }}
+                    key={card.id}
+                    /* layout="position": FLIP-slides remaining cards;
+                       animate handles width — no conflict */
+                    layout="position"
+                    className="relative flex-shrink-0 overflow-hidden"
+                    style={{ backgroundColor: '#0C1018' }}
+                    initial={{ opacity: 0, x: 80 }}
+                    animate={{ opacity: 1, x: 0, width: isActive ? '60%' : '10%' }}
+                    exit={{ opacity: 0, x: -80 }}
+                    transition={{ duration: 0.7, ease: EXPO_OUT }}
+                    onMouseEnter={() => setHoveredId(card.id)}
+                    onMouseLeave={() => setHoveredId(null)}
                   >
-                    <div className="flex items-center gap-2 mb-3">
-                      <XHair size={10} color="rgba(196,98,45,0.7)" />
-                      <span
-                        style={{
-                          fontFamily: TELE, fontSize: 7.5,
-                          color: 'rgba(196,98,45,0.8)',
-                          letterSpacing: '0.28em',
-                          textTransform: 'uppercase',
-                        }}
-                      >
-                        {inf.serial} &nbsp;&middot;&nbsp; {inf.ref}
-                      </span>
-                    </div>
-                    <p
-                      style={{
-                        fontFamily: SWISS, fontSize: 14, fontWeight: 600,
-                        color: 'rgba(214,205,184,0.92)',
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {inf.label}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: TELE, fontSize: 9,
-                        color: 'rgba(214,205,184,0.35)',
-                        letterSpacing: '0.2em',
-                        textTransform: 'uppercase',
-                        marginTop: 5,
-                      }}
-                    >
-                      {inf.role}
-                    </p>
-                  </motion.div>
+                    {/* Portrait — high-contrast surveillance photo */}
+                    <img
+                      src={card.image}
+                      alt={card.label}
+                      className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none"
+                      style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
+                      draggable={false}
+                    />
 
-                  {/* Testimony block — bottom */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 p-7"
-                    animate={isActive ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ duration: 0.3, delay: isActive ? 0.15 : 0 }}
-                  >
-                    <div style={{ width: 28, height: 1, backgroundColor: '#C4622D', marginBottom: 18 }} />
-
-                    <p style={{ fontSize: 12.5, color: 'rgba(214,205,184,0.82)', lineHeight: 1.9, letterSpacing: '0.015em' }}>
-                      &ldquo;<TypewriterText text={inf.transcript} active={isActive} />&rdquo;
-                    </p>
-
+                    {/* Scanline overlay */}
                     <div
+                      className="absolute inset-0 pointer-events-none z-[1]"
                       style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        marginTop: 18, paddingTop: 14,
-                        borderTop: '1px solid rgba(255,255,255,0.06)',
+                        backgroundImage:
+                          'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px)',
+                      }}
+                    />
+
+                    {/* Bottom vignette */}
+                    <div
+                      className="absolute inset-0 z-[1] pointer-events-none"
+                      style={{
+                        background:
+                          'linear-gradient(to top,rgba(12,16,24,0.97) 0%,rgba(12,16,24,0.22) 42%,transparent 68%)',
+                      }}
+                    />
+
+                    {/* ── INACTIVE: dossier spine tab ──
+                        Always mounted; crossfades out when active */}
+                    <motion.div
+                      className="absolute inset-0 z-[4]"
+                      animate={{ opacity: isActive ? 0 : 1 }}
+                      transition={{ duration: 0.25, ease: 'linear' }}
+                      style={{
+                        pointerEvents: isActive ? 'none' : 'auto',
+                        backgroundColor: 'rgba(10,13,20,0.50)',
                       }}
                     >
-                      <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.18)', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
-                        {inf.ref}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: TELE, fontSize: 7,
-                          color: '#3D7A58',
-                          letterSpacing: '0.25em', textTransform: 'uppercase',
-                          border: '1px solid rgba(61,122,88,0.35)',
-                          padding: '2px 8px',
-                        }}
-                      >
-                        VERIFIED
-                      </span>
-                    </div>
-                  </motion.div>
-                </motion.div>
+                      {/* Serial — top, vertical */}
+                      <div className="absolute top-5 inset-x-0 flex justify-center">
+                        <span
+                          style={{
+                            fontFamily: TELE, fontSize: 6.5,
+                            color: 'rgba(196,98,45,0.5)',
+                            letterSpacing: '0.18em',
+                            writingMode: 'vertical-rl',
+                            transform: 'rotate(180deg)',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {card.serial}
+                        </span>
+                      </div>
 
-                {/* Active bottom rule */}
-                <motion.div
-                  className="absolute bottom-0 left-0 right-0 z-[6]"
-                  animate={{ opacity: isActive ? 1 : 0, scaleX: isActive ? 1 : 0 }}
-                  transition={{ duration: 0.5, ease: EXPO_OUT }}
-                  style={{ height: 1, backgroundColor: '#C4622D', transformOrigin: 'left' }}
-                />
-              </motion.div>
-            );
-          })}
-        </div>
+                      {/* Center crosshair */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <XHair size={18} color="rgba(214,205,184,0.1)" />
+                      </div>
+
+                      {/* Name — bottom, vertical */}
+                      <div className="absolute bottom-8 inset-x-0 flex justify-center">
+                        <span
+                          style={{
+                            fontFamily: SWISS, fontSize: 8.5, fontWeight: 500,
+                            color: 'rgba(214,205,184,0.45)',
+                            letterSpacing: '0.32em',
+                            writingMode: 'vertical-rl',
+                            transform: 'rotate(180deg)',
+                            textTransform: 'uppercase',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {card.label}
+                        </span>
+                      </div>
+
+                      {/* Corner registration marks */}
+                      <div className="absolute top-3 left-3 w-3 h-3 border-t border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
+                      <div className="absolute top-3 right-3 w-3 h-3 border-t border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
+                      <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
+                      <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
+                    </motion.div>
+
+                    {/* ── ACTIVE: classified acetate decryption ──
+                        Dark blue-charcoal tint; crossfades in when active */}
+                    <motion.div
+                      className="absolute inset-0 z-[5]"
+                      animate={{ opacity: isActive ? 1 : 0 }}
+                      transition={{ duration: 0.4, ease: 'linear' }}
+                      style={{
+                        pointerEvents: isActive ? 'auto' : 'none',
+                        backgroundColor: 'rgba(11,18,34,0.80)',
+                      }}
+                    >
+                      {/* Viewfinder brackets */}
+                      <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
+                      <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
+                      <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
+                      <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
+
+                      {/* Identity block — slides down on activation */}
+                      <motion.div
+                        className="absolute top-7 left-7 right-7"
+                        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                        transition={{ duration: 0.38, delay: isActive ? 0.1 : 0, ease: EXPO_OUT }}
+                      >
+                        <div className="flex items-center gap-2 mb-3">
+                          <XHair size={10} color="rgba(196,98,45,0.7)" />
+                          <span
+                            style={{
+                              fontFamily: TELE, fontSize: 7.5,
+                              color: 'rgba(196,98,45,0.8)',
+                              letterSpacing: '0.28em',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {card.serial} &nbsp;&middot;&nbsp; {card.ref}
+                          </span>
+                        </div>
+                        <p
+                          style={{
+                            fontFamily: SWISS, fontSize: 14, fontWeight: 600,
+                            color: 'rgba(214,205,184,0.92)',
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {card.label}
+                        </p>
+                        <p
+                          style={{
+                            fontFamily: TELE, fontSize: 9,
+                            color: 'rgba(214,205,184,0.35)',
+                            letterSpacing: '0.2em',
+                            textTransform: 'uppercase',
+                            marginTop: 5,
+                          }}
+                        >
+                          {card.role}
+                        </p>
+                      </motion.div>
+
+                      {/* Testimony block — typewriter reveal */}
+                      <motion.div
+                        className="absolute bottom-0 left-0 right-0 p-7"
+                        animate={isActive ? { opacity: 1 } : { opacity: 0 }}
+                        transition={{ duration: 0.3, delay: isActive ? 0.15 : 0 }}
+                      >
+                        <div style={{ width: 28, height: 1, backgroundColor: '#C4622D', marginBottom: 18 }} />
+
+                        <p style={{ fontSize: 12.5, color: 'rgba(214,205,184,0.82)', lineHeight: 1.9, letterSpacing: '0.015em' }}>
+                          &ldquo;<TypewriterText text={card.transcript} active={isActive} />&rdquo;
+                        </p>
+
+                        <div
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            marginTop: 18, paddingTop: 14,
+                            borderTop: '1px solid rgba(255,255,255,0.06)',
+                          }}
+                        >
+                          <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.18)', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
+                            {card.ref}
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: TELE, fontSize: 7,
+                              color: '#3D7A58',
+                              letterSpacing: '0.25em', textTransform: 'uppercase',
+                              border: '1px solid rgba(61,122,88,0.35)',
+                              padding: '2px 8px',
+                            }}
+                          >
+                            VERIFIED
+                          </span>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+
+                    {/* Active bottom rule: scaleX 0 → 1 */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 z-[6]"
+                      animate={{ opacity: isActive ? 1 : 0, scaleX: isActive ? 1 : 0 }}
+                      transition={{ duration: 0.5, ease: EXPO_OUT }}
+                      style={{ height: 1, backgroundColor: '#C4622D', transformOrigin: 'left' }}
+                    />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* Tab progress indicators */}
-      <div className="flex items-center gap-3 mt-5">
+      {/* ── Progress rail ──
+          All 10 records shown as dots; window slot highlighted; active slot burnt orange */}
+      <div className="flex items-center gap-2.5 mt-5">
         {INFORMANTS.map((inf, i) => {
-          const isActive = i === activeIdx;
+          const inWindow    = visibleCards.some(c => c.id === inf.id);
+          const isHovered   = hoveredId === inf.id;
+          const isCenter    = inf.id === centerCard.id && hoveredId === null;
+          const isHighlight = isHovered || isCenter;
+
           return (
             <button
               key={inf.id}
-              onMouseEnter={() => setActiveIdx(i)}
+              onClick={() => setStartIndex(i)}
               className="relative h-px overflow-hidden"
               style={{
-                width: isActive ? '44px' : '18px',
-                backgroundColor: '#1E2330',
-                transition: 'width 0.4s cubic-bezier(0.16,1,0.3,1)',
-                border: 'none', padding: 0,
+                width: isHighlight ? '44px' : inWindow ? '20px' : '10px',
+                backgroundColor: inWindow ? '#1E2330' : '#0E1420',
+                transition: 'width 0.4s cubic-bezier(0.16,1,0.3,1), background-color 0.3s ease',
+                border: 'none', padding: 0, cursor: 'pointer', flexShrink: 0,
               }}
             >
-              {isActive && <div className="absolute inset-0" style={{ backgroundColor: '#C4622D' }} />}
+              {isHighlight && (
+                <div className="absolute inset-0" style={{ backgroundColor: '#C4622D' }} />
+              )}
+              {inWindow && !isHighlight && (
+                <div className="absolute inset-0" style={{ backgroundColor: 'rgba(214,205,184,0.15)' }} />
+              )}
             </button>
           );
         })}
-        <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.15)', letterSpacing: '0.4em', textTransform: 'uppercase', marginLeft: 8 }}>
-          {String(activeIdx + 1).padStart(2, '0')} / {String(INFORMANTS.length).padStart(2, '0')}
+
+        <span
+          style={{
+            fontFamily: TELE, fontSize: 7,
+            color: 'rgba(214,205,184,0.15)',
+            letterSpacing: '0.4em', textTransform: 'uppercase',
+            marginLeft: 10,
+          }}
+        >
+          {String(startIndex + 1).padStart(2, '0')} / {String(INFORMANTS.length).padStart(2, '0')}
         </span>
       </div>
 
-      {/* Section footer */}
+      {/* ── Section footer ── */}
       <div className="mt-16 max-w-5xl">
         <Separator className="bg-[#1E2330]" />
         <p
