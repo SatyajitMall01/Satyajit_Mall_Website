@@ -1,21 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { profileData, jurisdictions } from '../data/mock';
 import { ChevronRight, FileSearch } from 'lucide-react';
 
-/* ── Headline with highlighted phrase ── */
+/* ── Unified cinematic easing — heavy ease-out, no spring ── */
+const CINEMATIC_EASE = [0.25, 1, 0.5, 1];
+
+/* ── Headline with highlighted phrase — Mask Reveal ── */
 const StyledHeadline = () => {
   const { headline, highlightedPhrase } = profileData;
   const parts = headline.split(highlightedPhrase);
 
   return (
-    <h1
-      className="text-[36px] md:text-[44px] lg:text-[54px] leading-[1.15] tracking-[0.01em]"
-      style={{ fontFamily: "'Julius Sans One', sans-serif" }}
-    >
-      <span className="text-white">{parts[0]}</span>
-      <span className="text-[#F4ECD8]">{highlightedPhrase}</span>
-      <span className="text-white">{parts[1]}</span>
-    </h1>
+    <div className="overflow-hidden">
+      <motion.h1
+        className="text-[36px] md:text-[44px] lg:text-[54px] leading-[1.15] tracking-[0.01em]"
+        style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+        initial={{ y: '100%' }}
+        whileInView={{ y: '0%' }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 1.0, ease: CINEMATIC_EASE, delay: 0.2 }}
+      >
+        <span className="text-white">{parts[0]}</span>
+        <span className="text-[#F4ECD8]">{highlightedPhrase}</span>
+        <span className="text-white">{parts[1]}</span>
+      </motion.h1>
+    </div>
   );
 };
 
@@ -45,7 +55,6 @@ const JurisdictionsBar = () => {
       }}
     >
       <div className="flex flex-col md:flex-row items-center gap-5 md:gap-10 px-8 md:px-12">
-        {/* Label */}
         <span
           className="text-[9px] text-[#F4ECD8]/25 tracking-[0.4em] uppercase flex-shrink-0"
           style={{ fontFamily: "'Special Elite', cursive" }}
@@ -53,10 +62,8 @@ const JurisdictionsBar = () => {
           Jurisdictions Patrolled:
         </span>
 
-        {/* Separator */}
         <div className="hidden md:block w-px h-5 bg-[#2A2A2A]" />
 
-        {/* Logo strip */}
         <div className="flex items-center gap-8 md:gap-12">
           {jurisdictions.map((j) => (
             <span
@@ -81,25 +88,36 @@ const JurisdictionsBar = () => {
 /* ── Main Hero Section ── */
 const ColdOpen = () => {
   const sectionRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 200);
-    return () => clearTimeout(timer);
-  }, []);
+  // Scroll tracking — 0 = hero at top, 1 = hero fully scrolled past
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+
+  // "Into the Shadows" — chiaroscuro dark overlay closes in on scroll
+  // Linear mapping — no spring, no bounce, like a spotlight being shut off
+  const shadowOpacity = useTransform(scrollYProgress, [0, 0.72], [0, 0.92]);
+
+  // Image slow mechanical parallax sink (heavy camera pan)
+  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
+
+  // Text sinks like a physical file being pushed down into the dark
+  const textSinkY = useTransform(scrollYProgress, [0, 0.65], ['0px', '52px']);
 
   return (
     <section id="cold-open" ref={sectionRef}>
       {/* ── Cinematic Full-Bleed Hero ── */}
       <div className="relative w-full min-h-[85vh] flex items-center bg-[#0F1419] overflow-hidden">
 
-        {/* Layer 0: Hero image — pinned top-right, head-safe */}
-        <img
+        {/* Layer 0: Hero image — parallax sink on scroll */}
+        <motion.img
           src={profileData.heroImage}
           alt="Satyajit Mall — Product Manager"
           className="absolute right-0 top-0 h-full w-[80%] md:w-[60%] object-cover object-[center_top] z-0"
           style={{
             filter: 'grayscale(100%) contrast(115%) brightness(0.85)',
+            y: imageY,
           }}
         />
 
@@ -109,28 +127,26 @@ const ColdOpen = () => {
         {/* Layer 1b: Bottom fade — blends into next section */}
         <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#0F1419] to-transparent" />
 
-        {/* Layer 2: Subtle film grain */}
-        <div
-          className="absolute inset-0 z-[2] pointer-events-none opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            backgroundRepeat: 'repeat',
-            backgroundSize: '200px 200px',
-          }}
+        {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" scroll effect
+            Covers everything (image + text) as user scrolls down. Linear, no spring. */}
+        <motion.div
+          className="absolute inset-0 z-[15] pointer-events-none"
+          style={{ backgroundColor: '#0F1419', opacity: shadowOpacity }}
         />
 
-        {/* Layer 3: Foreground content */}
-        <div
+        {/* Layer 3: Foreground content — elements reveal via Framer Motion, sink on scroll */}
+        <motion.div
           className="relative z-10 w-full md:w-[60%] pl-8 md:pl-16 py-16"
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-            transition: 'opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s',
-          }}
+          style={{ y: textSinkY }}
         >
-          {/* Case file tag */}
-          <div className="flex items-center gap-2.5 mb-8">
+          {/* Case file tag — linear fade-in */}
+          <motion.div
+            className="flex items-center gap-2.5 mb-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8, ease: 'linear', delay: 0.1 }}
+          >
             <FileSearch size={13} strokeWidth={1.5} className="text-[#B22222]" />
             <span
               className="text-[9px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase"
@@ -138,32 +154,37 @@ const ColdOpen = () => {
             >
               Case File #001 &mdash; Active
             </span>
-          </div>
+          </motion.div>
 
-          {/* Headline */}
+          {/* Headline — mask reveal: text rises out of a cut in the paper */}
           <StyledHeadline />
 
-          {/* Sub-headline */}
-          <p
+          {/* Sub-headline — slow linear blur fade: text develops like a photograph */}
+          <motion.p
             className="mt-7 text-[13px] leading-[2.1] tracking-[0.02em] max-w-lg"
-            style={{
-              fontFamily: "'Special Elite', cursive",
-              color: '#A0A0A0',
-            }}
+            style={{ fontFamily: "'Special Elite', cursive", color: '#A0A0A0' }}
+            initial={{ opacity: 0, filter: 'blur(4px)' }}
+            whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 1.2, ease: 'linear', delay: 0.4 }}
           >
             {profileData.subHeadline}
-          </p>
+          </motion.p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-start gap-4 mt-10">
+          {/* CTA Buttons — heavy ease slide-up */}
+          <motion.div
+            className="flex flex-col sm:flex-row items-start gap-4 mt-10"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8, ease: CINEMATIC_EASE, delay: 0.6 }}
+          >
             {/* Button 1: Initiate Investigation */}
             <a
               href="#evidence"
               onClick={(e) => {
                 e.preventDefault();
-                document
-                  .querySelector('#evidence')
-                  ?.scrollIntoView({ behavior: 'smooth' });
+                document.querySelector('#evidence')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#B22222] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
               style={{
@@ -190,9 +211,7 @@ const ColdOpen = () => {
               href="#informants"
               onClick={(e) => {
                 e.preventDefault();
-                document
-                  .querySelector('#informants')
-                  ?.scrollIntoView({ behavior: 'smooth' });
+                document.querySelector('#informants')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 text-white text-[11px] tracking-[0.25em] uppercase select-none"
               style={{
@@ -213,8 +232,8 @@ const ColdOpen = () => {
             >
               Review Evidence
             </a>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* ── Jurisdictions Bar ── */}
