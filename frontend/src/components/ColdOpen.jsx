@@ -1,10 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { profileData, jurisdictions } from '../data/mock';
 import { ChevronRight, FileSearch } from 'lucide-react';
 
-/* ── Unified cinematic easing — heavy ease-out, no spring ── */
+/* ── Unified cinematic easing ── */
 const CINEMATIC_EASE = [0.25, 1, 0.5, 1];
+
+/* ── Jurisdictions Bar — variant definitions ── */
+
+// Parent: stagger the children like ships emerging from fog one by one
+const logoContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.25, delayChildren: 0.2 },
+  },
+};
+
+// Label: fog reveal — no base filter needed
+const labelVariants = {
+  hidden: { opacity: 0, filter: 'blur(10px)', y: 10 },
+  visible: {
+    opacity: 1,
+    filter: 'blur(0px)',
+    y: 0,
+    transition: { duration: 1.2, ease: CINEMATIC_EASE },
+  },
+};
+
+// Each logo: fog reveal — grayscale + contrast baked into filter chain so
+// Framer Motion owns the full filter and there's no CSS conflict
+const logoVariants = {
+  hidden: { opacity: 0, filter: 'grayscale(100%) contrast(150%) blur(10px)', y: 10 },
+  visible: {
+    opacity: 1,
+    filter: 'grayscale(100%) contrast(150%) blur(0px)',
+    y: 0,
+    transition: { duration: 1.2, ease: CINEMATIC_EASE },
+  },
+};
 
 /* ── Headline with highlighted phrase — Mask Reveal ── */
 const StyledHeadline = () => {
@@ -29,88 +63,67 @@ const StyledHeadline = () => {
   );
 };
 
-/* ── Jurisdictions / Logo Strip ── */
-const JurisdictionsBar = () => {
-  const barRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+/* ── Jurisdictions / Logo Strip — Fog Reveal ── */
+const JurisdictionsBar = () => (
+  <motion.div
+    className="w-full border-t border-b border-[#1E1E1E] py-6 md:py-7 mt-0"
+    variants={logoContainerVariants}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: '-100px' }}
+  >
+    <div className="flex flex-col md:flex-row items-center gap-5 md:gap-10 px-8 md:px-12">
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true);
-      },
-      { threshold: 0.3 }
-    );
-    if (barRef.current) observer.observe(barRef.current);
-    return () => observer.disconnect();
-  }, []);
+      {/* Label — first ship out of the fog */}
+      <motion.span
+        className="text-[9px] text-[#F4ECD8]/25 tracking-[0.4em] uppercase flex-shrink-0"
+        style={{ fontFamily: "'Special Elite', cursive" }}
+        variants={labelVariants}
+      >
+        Jurisdictions Patrolled:
+      </motion.span>
 
-  return (
-    <div
-      ref={barRef}
-      className="w-full border-t border-b border-[#1E1E1E] py-6 md:py-7 mt-0"
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity 0.8s ease 0.2s',
-      }}
-    >
-      <div className="flex flex-col md:flex-row items-center gap-5 md:gap-10 px-8 md:px-12">
-        <span
-          className="text-[9px] text-[#F4ECD8]/25 tracking-[0.4em] uppercase flex-shrink-0"
-          style={{ fontFamily: "'Special Elite', cursive" }}
-        >
-          Jurisdictions Patrolled:
-        </span>
+      <div className="hidden md:block w-px h-5 bg-[#2A2A2A]" />
 
-        <div className="hidden md:block w-px h-5 bg-[#2A2A2A]" />
-
-        <div className="flex items-center gap-8 md:gap-12">
-          {jurisdictions.map((j) => (
-            <span
-              key={j.id}
-              className="text-[13px] md:text-[14px] tracking-[0.25em] uppercase select-none"
-              style={{
-                fontFamily: "'Special Elite', cursive",
-                color: 'rgba(244, 236, 216, 0.2)',
-                filter: 'grayscale(100%) contrast(150%)',
-                textShadow: '0 0 1px rgba(244, 236, 216, 0.05)',
-              }}
-            >
-              {j.name}
-            </span>
-          ))}
-        </div>
+      {/* Logos — each drifts in through the fog after the label */}
+      <div className="flex items-center gap-8 md:gap-12">
+        {jurisdictions.map((j) => (
+          <motion.span
+            key={j.id}
+            className="text-[13px] md:text-[14px] tracking-[0.25em] uppercase select-none"
+            style={{
+              fontFamily: "'Special Elite', cursive",
+              color: 'rgba(244, 236, 216, 0.2)',
+              textShadow: '0 0 1px rgba(244, 236, 216, 0.05)',
+            }}
+            variants={logoVariants}
+          >
+            {j.name}
+          </motion.span>
+        ))}
       </div>
     </div>
-  );
-};
+  </motion.div>
+);
 
 /* ── Main Hero Section ── */
 const ColdOpen = () => {
   const sectionRef = useRef(null);
 
-  // Scroll tracking — 0 = hero at top, 1 = hero fully scrolled past
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   });
 
-  // "Into the Shadows" — chiaroscuro dark overlay closes in on scroll
-  // Linear mapping — no spring, no bounce, like a spotlight being shut off
   const shadowOpacity = useTransform(scrollYProgress, [0, 0.72], [0, 0.92]);
-
-  // Image slow mechanical parallax sink (heavy camera pan)
-  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
-
-  // Text sinks like a physical file being pushed down into the dark
-  const textSinkY = useTransform(scrollYProgress, [0, 0.65], ['0px', '52px']);
+  const imageY        = useTransform(scrollYProgress, [0, 1],    ['0%', '22%']);
+  const textSinkY     = useTransform(scrollYProgress, [0, 0.65], ['0px', '52px']);
 
   return (
     <section id="cold-open" ref={sectionRef}>
-      {/* ── Cinematic Full-Bleed Hero ── */}
       <div className="relative w-full min-h-[85vh] flex items-center bg-[#0F1419] overflow-hidden">
 
-        {/* Layer 0: Hero image — parallax sink on scroll */}
+        {/* Layer 0: Hero image — parallax sink */}
         <motion.img
           src={profileData.heroImage}
           alt="Satyajit Mall — Product Manager"
@@ -121,25 +134,24 @@ const ColdOpen = () => {
           }}
         />
 
-        {/* Layer 1a: Left-to-right fade — text area blends into image */}
+        {/* Layer 1a: Left-to-right fade */}
         <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#0F1419] via-[#0F1419]/90 to-transparent" />
 
-        {/* Layer 1b: Bottom fade — blends into next section */}
+        {/* Layer 1b: Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#0F1419] to-transparent" />
 
-        {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" scroll effect
-            Covers everything (image + text) as user scrolls down. Linear, no spring. */}
+        {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" */}
         <motion.div
           className="absolute inset-0 z-[15] pointer-events-none"
           style={{ backgroundColor: '#0F1419', opacity: shadowOpacity }}
         />
 
-        {/* Layer 3: Foreground content — elements reveal via Framer Motion, sink on scroll */}
+        {/* Layer 3: Foreground content — sinks on scroll */}
         <motion.div
           className="relative z-10 w-full md:w-[60%] pl-8 md:pl-16 py-16"
           style={{ y: textSinkY }}
         >
-          {/* Case file tag — linear fade-in */}
+          {/* Case file tag */}
           <motion.div
             className="flex items-center gap-2.5 mb-8"
             initial={{ opacity: 0 }}
@@ -156,10 +168,10 @@ const ColdOpen = () => {
             </span>
           </motion.div>
 
-          {/* Headline — mask reveal: text rises out of a cut in the paper */}
+          {/* Headline — mask reveal */}
           <StyledHeadline />
 
-          {/* Sub-headline — slow linear blur fade: text develops like a photograph */}
+          {/* Sub-headline — blur fade */}
           <motion.p
             className="mt-7 text-[13px] leading-[2.1] tracking-[0.02em] max-w-lg"
             style={{ fontFamily: "'Special Elite', cursive", color: '#A0A0A0' }}
@@ -171,7 +183,7 @@ const ColdOpen = () => {
             {profileData.subHeadline}
           </motion.p>
 
-          {/* CTA Buttons — heavy ease slide-up */}
+          {/* CTA Buttons */}
           <motion.div
             className="flex flex-col sm:flex-row items-start gap-4 mt-10"
             initial={{ opacity: 0, y: 16 }}
@@ -179,7 +191,6 @@ const ColdOpen = () => {
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, ease: CINEMATIC_EASE, delay: 0.6 }}
           >
-            {/* Button 1: Initiate Investigation */}
             <a
               href="#evidence"
               onClick={(e) => {
@@ -206,7 +217,6 @@ const ColdOpen = () => {
               <ChevronRight size={14} strokeWidth={2} className="group-hover:translate-x-0.5" style={{ transition: 'transform 0.2s ease' }} />
             </a>
 
-            {/* Button 2: Review Evidence */}
             <a
               href="#informants"
               onClick={(e) => {
@@ -236,7 +246,7 @@ const ColdOpen = () => {
         </motion.div>
       </div>
 
-      {/* ── Jurisdictions Bar ── */}
+      {/* ── Jurisdictions Bar — fog reveal ── */}
       <JurisdictionsBar />
     </section>
   );
