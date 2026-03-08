@@ -3,59 +3,46 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { profileData } from '../data/mock';
 
 const TELE  = "'Courier New', Courier, monospace";
+const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const JULIUS = "'Julius Sans One', sans-serif";
 
-/* ── Shared node header ── */
-const NodeLabel = ({ children }) => (
+/* ── Bold editorial section title ── */
+const NodeTitle = ({ children, color = '#FFFFFF' }) => (
   <p
     style={{
-      fontFamily: TELE, fontSize: 7.5,
-      color: '#B22222',
-      letterSpacing: '0.42em', textTransform: 'uppercase',
-      marginBottom: 10, marginTop: 0,
+      fontFamily: SWISS,
+      fontSize: 10,
+      fontWeight: 700,
+      color,
+      letterSpacing: '0.38em',
+      textTransform: 'uppercase',
+      marginBottom: 14,
+      marginTop: 0,
     }}
   >
     {children}
   </p>
 );
 
-/* ── Bullet row ── */
+/* ── Teletype bullet ── */
 const Bullet = ({ children }) => (
-  <div style={{ display: 'flex', gap: 8, marginBottom: 9, alignItems: 'flex-start' }}>
-    <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(178,34,34,0.6)', flexShrink: 0, marginTop: 3 }}>›</span>
-    <span style={{ fontFamily: TELE, fontSize: 10.5, color: 'rgba(214,205,184,0.68)', lineHeight: 1.85, letterSpacing: '0.015em' }}>
+  <div style={{ display: 'flex', gap: 9, marginBottom: 10, alignItems: 'flex-start' }}>
+    <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(178,34,34,0.65)', flexShrink: 0, marginTop: 2 }}>›</span>
+    <span style={{ fontFamily: TELE, fontSize: 10.5, color: 'rgba(214,205,184,0.7)', lineHeight: 1.88, letterSpacing: '0.015em' }}>
       {children}
     </span>
   </div>
 );
 
-/* ── Terminal data row ── */
+/* ── Terminal data pair ── */
 const DataRow = ({ label, value }) => (
-  <div style={{ marginBottom: 8 }}>
-    <span style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(178,34,34,0.55)', letterSpacing: '0.3em', textTransform: 'uppercase' }}>
-      {label}&nbsp;
+  <div style={{ marginBottom: 9 }}>
+    <span style={{ fontFamily: SWISS, fontSize: 8, fontWeight: 700, color: 'rgba(178,34,34,0.7)', letterSpacing: '0.28em', textTransform: 'uppercase' }}>
+      {label}{' '}
     </span>
-    <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(214,205,184,0.62)', letterSpacing: '0.04em' }}>
+    <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(214,205,184,0.6)', letterSpacing: '0.04em' }}>
       {value}
     </span>
-  </div>
-);
-
-/* ── HUD node shell — glassmorphism, 1960s colour palette ── */
-const Node = ({ children, style }) => (
-  <div
-    style={{
-      backgroundColor: 'rgba(15,20,25,0.52)',
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
-      border: '1px solid rgba(255,255,255,0.09)',
-      borderTop: '1px solid rgba(178,34,34,0.35)',
-      padding: '20px 24px',
-      maxWidth: 360,
-      ...style,
-    }}
-  >
-    {children}
   </div>
 );
 
@@ -70,34 +57,29 @@ const Dossier = () => {
     offset: ['start start', 'end end'],
   });
 
-  /* ── Grand background title: drifts left on scroll ── */
+  /* Grand title drifts left */
   const titleX = useTransform(scrollYProgress, [0, 1], ['0%', '-30%']);
 
-  /* ── Portrait subtle parallax ── */
-  const portraitY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+  /* Portrait parallax */
+  const portraitY = useTransform(scrollYProgress, [0, 1], ['0%', '9%']);
 
-  /* ── Node 1 — VITALS (Top Left) ──
-     Slides down from top */
+  /* Node 1 — top-left: slides down from above */
   const n1y = useTransform(scrollYProgress, [0, 0.30], [-100, 0]);
-  const n1o = useTransform(scrollYProgress, [0, 0.20],  [0, 1]);
+  const n1o = useTransform(scrollYProgress, [0, 0.20], [0, 1]);
 
-  /* ── Node 2 — OPERATIONAL LOG (Bottom Left) ──
-     Slides up from bottom */
+  /* Node 2 — mid-left: slides up from below */
   const n2y = useTransform(scrollYProgress, [0.10, 0.50], [200, 0]);
   const n2o = useTransform(scrollYProgress, [0.10, 0.30], [0, 1]);
 
-  /* ── Node 3 — PAST JURISDICTIONS (Top Right) ──
-     Slides in from right */
+  /* Node 3 — top-right: slides in from right */
   const n3x = useTransform(scrollYProgress, [0.30, 0.70], [200, 0]);
   const n3o = useTransform(scrollYProgress, [0.30, 0.50], [0, 1]);
 
-  /* ── Node 4 — CLEARANCE & SKILLS (Bottom Right) ──
-     Slides in diagonally from bottom-right */
+  /* Node 4 — lower-right: diagonal from below */
   const n4y = useTransform(scrollYProgress, [0.50, 0.90], [150, 0]);
   const n4o = useTransform(scrollYProgress, [0.50, 0.70], [0, 1]);
 
   return (
-    /* 250vh scroll canvas */
     <div ref={containerRef} className="relative bg-[#0F1419]" style={{ height: '250vh' }}>
 
       {/* ── Sticky viewport ── */}
@@ -116,21 +98,19 @@ const Dossier = () => {
           }}
         />
 
-        {/* ── Grand title — drifts left behind portrait ── */}
+        {/* ── Grand background title — drifts left ── */}
         <div
           className="absolute inset-x-0 overflow-hidden pointer-events-none"
-          style={{ top: '22%', zIndex: 1 }}
+          style={{ top: '20%', zIndex: 1 }}
         >
-          <motion.div
-            style={{ x: titleX, display: 'flex', justifyContent: 'center' }}
-          >
+          <motion.div style={{ x: titleX, display: 'flex', justifyContent: 'center' }}>
             <span
               style={{
-                fontFamily: JULIUS,
-                fontSize: 'clamp(72px, 10vw, 140px)',
-                fontWeight: 700,
-                color: '#151C24',
-                letterSpacing: '-0.04em',
+                fontFamily: SWISS,
+                fontSize: 'clamp(68px, 9.5vw, 136px)',
+                fontWeight: 900,
+                color: '#141B24',
+                letterSpacing: '-0.03em',
                 whiteSpace: 'nowrap',
                 userSelect: 'none',
                 lineHeight: 1,
@@ -141,44 +121,94 @@ const Dossier = () => {
           </motion.div>
         </div>
 
-        {/* ── Central portrait — darkroom print ── */}
-        <motion.img
-          src={profileData.heroImage}
-          alt="Satyajit Mall"
+        {/* ── Portrait wrapper — gradient mask melts edges into bg ── */}
+        <motion.div
           className="absolute bottom-0 pointer-events-none select-none"
-          draggable={false}
           style={{
-            right: 'clamp(0px, 8vw, 128px)',
+            right: 'clamp(-40px, 4vw, 80px)',
             height: '95vh',
             width: 'auto',
-            objectFit: 'contain',
-            objectPosition: 'bottom',
-            filter: 'grayscale(100%) contrast(130%) brightness(0.58)',
-            opacity: 0.62,
-            mixBlendMode: 'luminosity',
-            y: portraitY,
             zIndex: 2,
+            y: portraitY,
           }}
-        />
+        >
+          <img
+            src={profileData.heroImage}
+            alt="Satyajit Mall"
+            draggable={false}
+            style={{
+              height: '100%',
+              width: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'bottom',
+              filter: 'grayscale(100%) contrast(128%) brightness(0.6)',
+              opacity: 0.72,
+              mixBlendMode: 'luminosity',
+              display: 'block',
+            }}
+          />
 
-        {/* Ambient vignettes — frame the composition */}
+          {/* Melt: left edge */}
+          <div
+            className="absolute inset-y-0 left-0 pointer-events-none"
+            style={{
+              width: '45%',
+              background: 'linear-gradient(to right, #0F1419 0%, rgba(15,20,25,0.7) 50%, transparent 100%)',
+            }}
+          />
+          {/* Melt: right edge */}
+          <div
+            className="absolute inset-y-0 right-0 pointer-events-none"
+            style={{
+              width: '30%',
+              background: 'linear-gradient(to left, #0F1419 0%, transparent 100%)',
+            }}
+          />
+          {/* Melt: top edge */}
+          <div
+            className="absolute inset-x-0 top-0 pointer-events-none"
+            style={{
+              height: '35%',
+              background: 'linear-gradient(to bottom, #0F1419 0%, rgba(15,20,25,0.5) 55%, transparent 100%)',
+            }}
+          />
+          {/* Melt: bottom edge */}
+          <div
+            className="absolute inset-x-0 bottom-0 pointer-events-none"
+            style={{
+              height: '18%',
+              background: 'linear-gradient(to top, #0F1419 0%, transparent 100%)',
+            }}
+          />
+        </motion.div>
+
+        {/* Ambient compositional vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(15,20,25,0.7) 100%)',
+            background: 'linear-gradient(to right, #0F1419 12%, transparent 42%, transparent 72%, rgba(15,20,25,0.5) 100%)',
             zIndex: 3,
           }}
         />
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-x-0 top-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, rgba(15,20,25,0.6) 0%, transparent 18%, transparent 78%, rgba(15,20,25,0.85) 100%)',
+            height: '22%',
+            background: 'linear-gradient(to bottom, #0F1419, transparent)',
+            zIndex: 3,
+          }}
+        />
+        <div
+          className="absolute inset-x-0 bottom-0 pointer-events-none"
+          style={{
+            height: '14%',
+            background: 'linear-gradient(to top, #0F1419, transparent)',
             zIndex: 3,
           }}
         />
 
-        {/* ── Page header — top-left identifier ── */}
-        <div className="absolute top-7 left-12 z-[20]">
+        {/* ── Page header ── */}
+        <div className="absolute top-7 left-[10%] z-[20]">
           <span
             style={{
               fontFamily: TELE, fontSize: 7.5,
@@ -218,128 +248,187 @@ const Dossier = () => {
           <div style={{ width: 1, height: 20, background: 'linear-gradient(to bottom, rgba(178,34,34,0.45), transparent)' }} />
         </motion.div>
 
-        {/* ════════════════════════════════
-            HUD Data Nodes — z-[10] each
-        ════════════════════════════════ */}
-
-        {/* NODE 1 — VITALS (Top Left) */}
+        {/* ════════════════════════════════════════════════
+            NODE 1 — VITALS
+            No background, no border. Raw floating text.
+            Position: top-[15%] left-[10%]
+        ════════════════════════════════════════════════ */}
         <motion.div
           className="absolute"
           style={{
-            top: 80, left: 48,
+            top: '15%',
+            left: '10%',
+            maxWidth: 320,
             opacity: n1o, y: n1y,
             zIndex: 10,
           }}
         >
-          <Node>
-            <NodeLabel>Node 01 &middot; Vitals</NodeLabel>
-            <div style={{ marginBottom: 12 }}>
-              <DataRow label="Subject:" value="Satyajit Mall" />
-              <DataRow label="Designation:" value="Product Architect" />
-            </div>
-            <div
-              style={{
-                paddingTop: 12,
-                borderTop: '1px solid rgba(255,255,255,0.06)',
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: TELE, fontSize: 10.5,
-                  color: 'rgba(214,205,184,0.62)',
-                  lineHeight: 1.9, letterSpacing: '0.015em',
-                  margin: 0,
-                }}
-              >
-                Core Expertise: MarTech transformation, 0-1 SaaS launches, solving
-                fragmented data silos via enterprise automation layers.
-              </p>
-            </div>
-          </Node>
+          <NodeTitle color="#B22222">Vitals</NodeTitle>
+
+          {/* Subject + Designation — large Swiss serif */}
+          <p
+            style={{
+              fontFamily: SWISS,
+              fontSize: 22,
+              fontWeight: 800,
+              color: 'rgba(244,236,216,0.90)',
+              letterSpacing: '-0.01em',
+              lineHeight: 1.15,
+              margin: '0 0 4px',
+            }}
+          >
+            Satyajit Mall
+          </p>
+          <p
+            style={{
+              fontFamily: SWISS,
+              fontSize: 11,
+              fontWeight: 600,
+              color: 'rgba(214,205,184,0.35)',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              margin: '0 0 14px',
+            }}
+          >
+            Product Architect
+          </p>
+
+          {/* Rule */}
+          <div style={{ width: 28, height: 1, backgroundColor: 'rgba(178,34,34,0.5)', marginBottom: 14 }} />
+
+          <p
+            style={{
+              fontFamily: TELE, fontSize: 10.5,
+              color: 'rgba(214,205,184,0.55)',
+              lineHeight: 1.9, letterSpacing: '0.015em',
+              margin: 0,
+            }}
+          >
+            MarTech transformation, 0-1 SaaS launches,
+            solving fragmented data silos via enterprise
+            automation layers.
+          </p>
         </motion.div>
 
-        {/* NODE 2 — OPERATIONAL LOG (Bottom Left) */}
+        {/* ════════════════════════════════════════════════
+            NODE 2 — OPERATIONAL LOG
+            Solid dark bg, no border, generous padding.
+            Position: top-[55%] left-[8%]
+        ════════════════════════════════════════════════ */}
         <motion.div
           className="absolute"
           style={{
-            bottom: 48, left: 48,
+            top: '55%',
+            left: '8%',
+            maxWidth: 340,
             opacity: n2o, y: n2y,
             zIndex: 10,
           }}
         >
-          <Node>
-            <NodeLabel>Node 02 &middot; Operational Log</NodeLabel>
+          <div
+            style={{
+              backgroundColor: '#131920',
+              padding: '20px 24px',
+            }}
+          >
+            <NodeTitle color="#FFFFFF">Operational Log</NodeTitle>
             <p
               style={{
-                fontFamily: TELE, fontSize: 8.5,
-                color: 'rgba(178,34,34,0.6)',
-                letterSpacing: '0.2em', textTransform: 'uppercase',
-                marginBottom: 12, marginTop: 0,
+                fontFamily: SWISS,
+                fontSize: 8,
+                fontWeight: 700,
+                color: 'rgba(178,34,34,0.65)',
+                letterSpacing: '0.32em',
+                textTransform: 'uppercase',
+                marginBottom: 14,
+                marginTop: 0,
               }}
             >
-              Miles Education &mdash; Dec 2023 &ndash; Present
+              Miles Education &mdash; Dec 2023 – Present
             </p>
-            <Bullet>Launched Miles One mobile app — 40K learners, &#8377;20 Cr revenue.</Bullet>
-            <Bullet>Architected Miles One Agentic Assistant (n8n Orchestration Layer).</Bullet>
-            <Bullet>Built Miles Masterclass — 30,000+ users, 2,000+ paid subscriptions.</Bullet>
-          </Node>
+            <Bullet>Launched Miles One — 40K learners, &#8377;20 Cr revenue.</Bullet>
+            <Bullet>Architected Agentic Assistant via n8n Orchestration Layer.</Bullet>
+            <Bullet>Built Miles Masterclass — 30,000+ users, 2,000+ paid subs.</Bullet>
+          </div>
         </motion.div>
 
-        {/* NODE 3 — PAST JURISDICTIONS (Top Right) */}
+        {/* ════════════════════════════════════════════════
+            NODE 3 — PAST JURISDICTIONS
+            No background. Thick left red border.
+            Position: top-[25%] right-[15%]
+        ════════════════════════════════════════════════ */}
         <motion.div
           className="absolute"
           style={{
-            top: 128, right: 48,
+            top: '25%',
+            right: '15%',
+            maxWidth: 300,
             opacity: n3o, x: n3x,
             zIndex: 10,
           }}
         >
-          <Node>
-            <NodeLabel>Node 03 &middot; Past Jurisdictions</NodeLabel>
+          <div
+            style={{
+              borderLeft: '3px solid #B22222',
+              paddingLeft: 20,
+            }}
+          >
+            <NodeTitle color="#FFFFFF">Past Jurisdictions</NodeTitle>
             <p
               style={{
-                fontFamily: TELE, fontSize: 8.5,
-                color: 'rgba(178,34,34,0.6)',
-                letterSpacing: '0.2em', textTransform: 'uppercase',
-                marginBottom: 12, marginTop: 0,
+                fontFamily: SWISS,
+                fontSize: 8,
+                fontWeight: 700,
+                color: 'rgba(178,34,34,0.65)',
+                letterSpacing: '0.32em',
+                textTransform: 'uppercase',
+                marginBottom: 14,
+                marginTop: 0,
               }}
             >
-              AlmaBetter &amp; UpGrad &mdash; 2021 &ndash; 2023
+              AlmaBetter &amp; UpGrad &mdash; 2021–2023
             </p>
             <Bullet>
-              Redesigned dev workflows resolving sprint velocity misalignments,
-              reducing errors by 80%.
+              Redesigned dev workflows, resolving sprint velocity
+              misalignments — errors down 80%.
             </Bullet>
             <Bullet>
-              Architected MarTech stack &amp; Communication Framework via
-              n8n/Zapier ELT layer.
+              Architected MarTech stack &amp; Communication Framework
+              via n8n/Zapier ELT layer.
             </Bullet>
-          </Node>
+          </div>
         </motion.div>
 
-        {/* NODE 4 — CLEARANCE & SKILLS (Bottom Right) */}
+        {/* ════════════════════════════════════════════════
+            NODE 4 — CLEARANCE & SKILLS
+            Subtle bordered box, distinct from others.
+            Position: top-[65%] right-[10%]
+        ════════════════════════════════════════════════ */}
         <motion.div
           className="absolute"
           style={{
-            bottom: 96, right: 48,
+            top: '65%',
+            right: '10%',
+            maxWidth: 280,
             opacity: n4o, y: n4y,
             zIndex: 10,
           }}
         >
-          <Node>
-            <NodeLabel>Node 04 &middot; Clearance &amp; Arsenal</NodeLabel>
-            <DataRow label="Data &amp; BI:" value="BigQuery, Metabase, GA4" />
-            <DataRow label="Languages:"   value="SQL (PostgreSQL)" />
-            <DataRow label="Automation:"  value="n8n, Zapier, Make" />
-            <div
-              style={{
-                marginTop: 10, paddingTop: 10,
-                borderTop: '1px solid rgba(255,255,255,0.06)',
-              }}
-            >
-              <DataRow label="Certs:" value="CSPO · Six Sigma Green Belt" />
+          <div
+            style={{
+              border: '1px solid #222',
+              backgroundColor: 'rgba(15,20,25,0.5)',
+              padding: '18px 22px',
+            }}
+          >
+            <NodeTitle color="#B22222">Clearance &amp; Arsenal</NodeTitle>
+            <DataRow label="Data &amp; BI" value="BigQuery, Metabase, GA4" />
+            <DataRow label="Languages"   value="SQL (PostgreSQL)" />
+            <DataRow label="Automation"  value="n8n, Zapier, Make" />
+            <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <DataRow label="Certs" value="CSPO · Six Sigma Green Belt" />
             </div>
-          </Node>
+          </div>
         </motion.div>
 
         {/* Vertical scroll rail */}
@@ -356,8 +445,8 @@ const Dossier = () => {
           />
         </div>
 
-      </div>{/* end sticky */}
-    </div>/* end canvas */
+      </div>
+    </div>
   );
 };
 
