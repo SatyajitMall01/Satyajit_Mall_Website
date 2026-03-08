@@ -6,6 +6,7 @@ import LedgerEdge from "@/components/LedgerEdge";
 import ColdOpen from "@/components/ColdOpen";
 import HallOfTrophies from "@/components/HallOfTrophies";
 import Informants from "@/components/Informants";
+import Dossier from "@/components/Dossier";
 import ActionAgent from "@/components/ActionAgent";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
@@ -90,12 +91,23 @@ const HomePage = () => {
   );
 };
 
+const DossierPage = () => (
+  <div className="forensic-ledger">
+    <div className="noise-overlay" />
+    <LedgerEdge />
+    <main className="pl-16 min-h-screen bg-[#0F1419] relative">
+      <Dossier />
+    </main>
+  </div>
+);
+
 function App() {
   return (
     <TooltipProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/dossier" element={<DossierPage />} />
         </Routes>
         {/* Omnipresent chatbot — rendered outside Routes so it persists on all pages */}
         <ActionAgent />
