@@ -196,6 +196,7 @@ const ColdOpen = () => {
               onClick={(e) => {
                 e.preventDefault();
                 document.querySelector('#evidence')?.scrollIntoView({ behavior: 'smooth' });
+                window.dispatchEvent(new CustomEvent('open-action-agent'));
               }}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#B22222] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
               style={{

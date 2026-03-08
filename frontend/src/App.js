@@ -6,6 +6,7 @@ import LedgerEdge from "@/components/LedgerEdge";
 import ColdOpen from "@/components/ColdOpen";
 import HallOfTrophies from "@/components/HallOfTrophies";
 import Informants from "@/components/Informants";
+import ActionAgent from "@/components/ActionAgent";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
 
@@ -96,6 +97,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
         </Routes>
+        {/* Omnipresent chatbot — rendered outside Routes so it persists on all pages */}
+        <ActionAgent />
       </BrowserRouter>
     </TooltipProvider>
   );
