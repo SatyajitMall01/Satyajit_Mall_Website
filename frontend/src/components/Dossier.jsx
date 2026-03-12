@@ -328,30 +328,49 @@ const Fold2 = () => (
 
     <motion.div className="relative min-h-screen w-full" variants={S12} initial="hidden" whileInView="visible" viewport={VP}>
 
-      {/* ── Artifact 1: Mainframe Terminal (Top Left) ── */}
+      {/* ── Artifact 1: Tech Stack Matrix (Top Left) ── */}
       <motion.div
         variants={slideLeft}
         className="absolute z-10 hidden md:block"
         style={{ top: '15%', left: '8%', maxWidth: 400 }}
       >
         <div style={{
-          backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(107,114,128,0.3)',
-          padding: '18px 20px', position: 'relative', overflow: 'hidden',
-          backdropFilter: 'blur(6px)',
+          backgroundColor: 'rgba(10,10,10,0.8)',
+          border: '1px solid rgba(55,65,81,1)',
+          padding: '24px',
+          borderRadius: 8,
+          backdropFilter: 'blur(12px)',
         }}>
-          {/* Scanlines */}
-          <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)',
-          }} />
-          {['> CORE: BigQuery | PostgreSQL | GA4 | Looker | Amplitude | Mixpanel',
-            '> AUTO: n8n | Zapier | Netcore | Clevertap | Wati | Braze',
-            '> METH: MVP Planning | Agile Scrum | OKRs | Stakeholder Mgmt',
-          ].map((l, i) => (
-            <p key={i} style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(61,155,100,0.85)', lineHeight: 2, margin: 0, position: 'relative', zIndex: 1 }}>{l}</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.2em',
+            textTransform: 'uppercase', marginBottom: 16, margin: '0 0 16px',
+          }}>Technical Stack</p>
+
+          {[
+            { label: 'Data Platforms', tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker'] },
+            { label: 'Automation & CDP', tools: ['n8n', 'Zapier', 'Netcore', 'Clevertap'] },
+            { label: 'Product Delivery', tools: ['Agile Scrum', 'MVP Architecting', 'CSPO'] },
+          ].map(group => (
+            <div key={group.label} style={{ marginBottom: 14 }}>
+              <p style={{
+                fontFamily: SWISS, fontSize: 9, fontWeight: 600,
+                color: 'rgba(107,114,128,0.8)', letterSpacing: '0.15em',
+                textTransform: 'uppercase', margin: '0 0 6px',
+              }}>{group.label}</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {group.tools.map(tool => (
+                  <span key={tool} style={{
+                    fontFamily: SWISS, fontSize: 11, fontWeight: 500,
+                    color: 'rgba(229,231,235,0.85)',
+                    backgroundColor: 'rgba(31,41,55,0.8)',
+                    border: '1px solid rgba(55,65,81,0.8)',
+                    padding: '3px 8px', borderRadius: 4,
+                  }}>{tool}</span>
+                ))}
+              </div>
+            </div>
           ))}
-          <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(34,197,94,0.9)', lineHeight: 2, margin: 0, position: 'relative', zIndex: 1 }}>
-            {'> STATUS: AUTHORIZED'} <span style={{ display: 'inline-block', width: 8, height: 14, backgroundColor: 'rgba(34,197,94,0.9)', animation: 'blink 1s step-end infinite', verticalAlign: 'middle' }} />
-          </p>
         </div>
       </motion.div>
 
