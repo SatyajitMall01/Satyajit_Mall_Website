@@ -3,7 +3,6 @@ import { motion, useInView } from 'framer-motion';
 import { profileData } from '../data/mock';
 import {
   RadialBarChart, RadialBar,
-  AreaChart, Area,
   ResponsiveContainer,
 } from 'recharts';
 
@@ -313,8 +312,6 @@ const Fold1 = () => (
    FOLD 2 — ARSENAL & INFRASTRUCTURE (Absolute Spatial Canvas)
    5 artifacts scattered around the portrait
 ════════════════════════════════════════════════════ */
-const sparkPipeline = [{v:20},{v:35},{v:28},{v:45},{v:52},{v:48},{v:65},{v:72},{v:68},{v:80}];
-const sparkAuto     = [{v:10},{v:15},{v:22},{v:30},{v:38},{v:42},{v:55},{v:60},{v:58},{v:70}];
 
 const Fold2 = () => (
   <section className="min-h-screen relative z-[2] w-full overflow-hidden">
@@ -374,24 +371,48 @@ const Fold2 = () => (
         </div>
       </motion.div>
 
-      {/* ── Artifact 2: Telemetry Sparklines (Top Right) ── */}
+      {/* ── Artifact 2: Core Competencies (Top Right) ── */}
       <motion.div
         variants={slideRight}
-        className="absolute z-10 hidden md:flex flex-col gap-6"
-        style={{ top: '18%', right: '8%', width: 300 }}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', maxWidth: 420 }}
       >
-        {[{ data: sparkPipeline, label: 'PIPELINE THROUGHPUT' }, { data: sparkAuto, label: 'AUTOMATION COVERAGE' }].map(s => (
-          <div key={s.label} style={{ borderTop: '2px solid #B22222', backgroundColor: 'rgba(7,10,13,0.6)', backdropFilter: 'blur(4px)', padding: '12px 14px' }}>
-            <div style={{ width: '100%', height: 40 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={s.data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
-                  <Area type="monotone" dataKey="v" stroke="#B22222" strokeWidth={1.5} fill="rgba(178,34,34,0.1)" dot={false} />
-                </AreaChart>
-              </ResponsiveContainer>
+        <p style={{
+          fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+          color: '#dc2626', letterSpacing: '0.2em',
+          textTransform: 'uppercase', margin: '0 0 16px',
+        }}>Core Competencies</p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {[
+            {
+              title: 'Unifying Fragmented Data',
+              body: 'Architecting deterministic data pipelines that bridge apps, CRM, and analytics.',
+            },
+            {
+              title: 'Automating Operations',
+              body: 'Deploying enterprise workflows that eliminate manual operational silos and slash support costs.',
+            },
+            {
+              title: 'Driving Product-Led Growth',
+              body: 'Building self-serve, AI-driven product loops that directly multiply top-line revenue.',
+            },
+          ].map(item => (
+            <div key={item.title} style={{
+              borderLeft: '2px solid #dc2626',
+              paddingLeft: 12,
+            }}>
+              <p style={{
+                fontFamily: SWISS, fontSize: 12, fontWeight: 600,
+                color: 'rgba(229,231,235,0.95)', margin: '0 0 4px',
+              }}>{item.title}</p>
+              <p style={{
+                fontFamily: SWISS, fontSize: 12, fontWeight: 400,
+                color: 'rgba(156,163,175,0.85)', lineHeight: 1.6, margin: 0,
+              }}>{item.body}</p>
             </div>
-            <span style={{ fontFamily: TELE, fontSize: 9, letterSpacing: '0.2em', color: 'rgba(229,231,235,0.35)', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>{s.label}</span>
-          </div>
-        ))}
+          ))}
+        </div>
       </motion.div>
 
       {/* ── Artifact 3: Vertical Tech Spine (Far Right Edge) ── */}
