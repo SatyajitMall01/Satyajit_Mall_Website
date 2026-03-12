@@ -415,47 +415,37 @@ const Fold2 = () => (
         </div>
       </motion.div>
 
-      {/* ── Artifact 3: Vertical Tech Spine (Far Right Edge) ── */}
-      <motion.div
-        variants={slideRight}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '40%', right: '2%' }}
-      >
-        <span style={{
-          writingMode: 'vertical-rl', transform: 'rotate(180deg)',
-          fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.5)',
-          letterSpacing: '0.3em', textTransform: 'uppercase',
-          whiteSpace: 'nowrap', userSelect: 'none',
-        }}>
-          BigQuery ML · GA4 · n8n · Clevertap CDP · Looker · Amplitude
-        </span>
-      </motion.div>
-
       {/* ── Artifact 4: Intel Badge −40% (Bottom Left) ── */}
       <motion.div
         variants={slideLeft}
         className="absolute z-10 hidden md:block"
-        style={{ bottom: '10%', left: '8%', maxWidth: 350 }}
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
       >
         <div style={{
           display: 'flex', flexDirection: 'column',
-          borderLeft: '4px solid #B22222',
+          borderLeft: '4px solid #dc2626',
           paddingLeft: 20,
         }}>
           <Declassify>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(56px, 7vw, 96px)',
+              fontSize: 'clamp(56px, 7vw, 88px)',
               color: '#F3F4F6', lineHeight: 0.8,
               display: 'block', letterSpacing: '-0.03em',
             }}>−40%</span>
           </Declassify>
-          <div className="flex items-center gap-2" style={{ marginTop: 6 }}>
-            <span style={{ fontFamily: SWISS, fontWeight: 800, fontSize: 12, color: '#B22222' }}>//</span>
-            <span style={{ fontFamily: TELE, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.8)', letterSpacing: '0.25em', textTransform: 'uppercase' }}>TIME-TO-MARKET</span>
-          </div>
-          <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(107,114,128,0.7)', lineHeight: 1.7, margin: '14px 0 0', maxWidth: 320 }}>
-            Governed CDP implementation and event taxonomy across the full product ecosystem for real-time personalization.
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>Time-to-Market Reduction</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 12, fontWeight: 400,
+            color: 'rgba(156,163,175,0.75)', lineHeight: 1.65,
+            margin: 0, maxWidth: 320,
+          }}>
+            Governed CDP implementation and event taxonomy across the full product ecosystem,
+            eliminating engineering bottlenecks for real-time personalization.
           </p>
         </div>
       </motion.div>
@@ -464,27 +454,33 @@ const Fold2 = () => (
       <motion.div
         variants={slideRight}
         className="absolute z-10 hidden md:block"
-        style={{ bottom: '10%', right: '8%', maxWidth: 350 }}
+        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
       >
         <div style={{
           display: 'flex', flexDirection: 'column',
-          borderLeft: '4px solid #B22222',
+          borderLeft: '4px solid #dc2626',
           paddingLeft: 20,
         }}>
           <Declassify delay={0.15}>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(56px, 7vw, 96px)',
+              fontSize: 'clamp(56px, 7vw, 88px)',
               color: '#F3F4F6', lineHeight: 0.8,
               display: 'block', letterSpacing: '-0.03em',
             }}>+20%</span>
           </Declassify>
-          <div className="flex items-center gap-2" style={{ marginTop: 6 }}>
-            <span style={{ fontFamily: SWISS, fontWeight: 800, fontSize: 12, color: '#B22222' }}>//</span>
-            <span style={{ fontFamily: TELE, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.8)', letterSpacing: '0.25em', textTransform: 'uppercase' }}>OVERALL ROAS LIFT</span>
-          </div>
-          <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(107,114,128,0.7)', lineHeight: 1.7, margin: '14px 0 0', maxWidth: 320 }}>
-            Solved for ROAS accuracy via a proprietary end-to-end attribution platform powered by compounded automation models.
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>Overall ROAS Lift</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 12, fontWeight: 400,
+            color: 'rgba(156,163,175,0.75)', lineHeight: 1.65,
+            margin: 0, maxWidth: 320,
+          }}>
+            Architected a proprietary end-to-end attribution platform powered by compounded
+            automation models to recover leads and scale revenue.
           </p>
         </div>
       </motion.div>
