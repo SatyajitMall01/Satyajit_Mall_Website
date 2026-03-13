@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE = 'https://satyajits-digital-twin-694737663583.asia-south1.run.app';
 const EXPO_OUT = [0.16, 1, 0.3, 1];
-const TELE     = "'Courier New', Courier, monospace";
+const SWISS    = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 /* ── Blinking block cursor ── */
 const BlinkingCursor = () => {
@@ -25,7 +25,7 @@ const HeaderBtn = ({ onClick, title, children, red }) => (
       background: 'transparent',
       border: `1px solid ${red ? 'rgba(178,34,34,0.45)' : 'rgba(255,255,255,0.09)'}`,
       color: red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.35)',
-      fontFamily: TELE, fontSize: 12,
+      fontFamily: SWISS, fontSize: 12,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       cursor: 'pointer', lineHeight: 1, flexShrink: 0,
       transition: 'border-color 0.15s, color 0.15s',
@@ -227,7 +227,7 @@ const ActionAgent = () => {
                 />
                 <span
                   style={{
-                    fontFamily: TELE, fontSize: 8.5,
+                    fontFamily: SWISS, fontSize: 8.5,
                     color: 'rgba(214,205,184,0.4)',
                     letterSpacing: '0.32em', textTransform: 'uppercase',
                   }}
@@ -236,7 +236,7 @@ const ActionAgent = () => {
                 </span>
                 <span
                   style={{
-                    fontFamily: TELE, fontSize: 7.5,
+                    fontFamily: SWISS, fontSize: 7.5,
                     color: 'rgba(178,34,34,0.4)',
                     letterSpacing: '0.2em',
                     marginLeft: 4,
@@ -277,7 +277,7 @@ const ActionAgent = () => {
             >
               {/* Boot sequence — shown until first message */}
               {messages.length === 0 && (
-                <div style={{ fontFamily: TELE, fontSize: 10, lineHeight: 2.1, color: 'rgba(61,122,88,0.65)', letterSpacing: '0.03em' }}>
+                <div style={{ fontFamily: SWISS, fontSize: 10, lineHeight: 2.1, color: 'rgba(61,122,88,0.65)', letterSpacing: '0.03em' }}>
                   <span style={{ color: 'rgba(178,34,34,0.55)' }}>SYS &gt;</span>
                   {' '}CONN ESTABLISHED &mdash; SESSION {sessionId?.slice(0, 8).toUpperCase() ?? '--------'}
                   <br />
@@ -307,7 +307,7 @@ const ActionAgent = () => {
                     <div style={{ maxWidth: '94%' }}>
                       <p
                         style={{
-                          fontFamily: TELE, fontSize: 11,
+                          fontFamily: SWISS, fontSize: 11,
                           color: msg.error ? 'rgba(178,34,34,0.7)' : 'rgba(61,122,88,0.92)',
                           lineHeight: 1.9, letterSpacing: '0.015em', margin: 0,
                         }}
@@ -328,7 +328,7 @@ const ActionAgent = () => {
                           {msg.chunks > 0 && (
                             <p
                               style={{
-                                fontFamily: TELE, fontSize: 7.5, margin: '0 0 4px',
+                                fontFamily: SWISS, fontSize: 7.5, margin: '0 0 4px',
                                 color: 'rgba(214,205,184,0.14)', letterSpacing: '0.28em', textTransform: 'uppercase',
                               }}
                             >
@@ -339,7 +339,7 @@ const ActionAgent = () => {
                             <p
                               key={si}
                               style={{
-                                fontFamily: TELE, fontSize: 7.5, margin: '2px 0 0',
+                                fontFamily: SWISS, fontSize: 7.5, margin: '2px 0 0',
                                 color: 'rgba(178,34,34,0.28)', letterSpacing: '0.12em',
                               }}
                             >
@@ -353,7 +353,7 @@ const ActionAgent = () => {
                     /* User message */
                     <p
                       style={{
-                        fontFamily: TELE, fontSize: 11,
+                        fontFamily: SWISS, fontSize: 11,
                         color: 'rgba(214,205,184,0.5)',
                         lineHeight: 1.75, letterSpacing: '0.02em',
                         margin: 0, textAlign: 'right', maxWidth: '90%',
@@ -370,7 +370,7 @@ const ActionAgent = () => {
               {isTransmitting && (
                 <div
                   style={{
-                    fontFamily: TELE, fontSize: 11,
+                    fontFamily: SWISS, fontSize: 11,
                     color: 'rgba(61,122,88,0.55)',
                     letterSpacing: '0.04em', lineHeight: 1.8,
                   }}
@@ -398,7 +398,7 @@ const ActionAgent = () => {
             >
               <span
                 style={{
-                  fontFamily: TELE, fontSize: 11,
+                  fontFamily: SWISS, fontSize: 11,
                   color: 'rgba(178,34,34,0.55)', flexShrink: 0,
                 }}
               >
@@ -415,7 +415,7 @@ const ActionAgent = () => {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  fontFamily: TELE,
+                  fontFamily: SWISS,
                   fontSize: 10.5,
                   color: 'rgba(214,205,184,0.82)',
                   letterSpacing: '0.04em',
@@ -427,7 +427,7 @@ const ActionAgent = () => {
                 disabled={isTransmitting || !input.trim() || !sessionId}
                 style={{
                   flexShrink: 0,
-                  fontFamily: TELE,
+                  fontFamily: SWISS,
                   fontSize: 7.5,
                   letterSpacing: '0.22em',
                   textTransform: 'uppercase',
@@ -459,7 +459,7 @@ const ActionAgent = () => {
             >
               <span
                 style={{
-                  fontFamily: TELE, fontSize: 6.5,
+                  fontFamily: SWISS, fontSize: 6.5,
                   color: 'rgba(214,205,184,0.07)',
                   letterSpacing: '0.28em', textTransform: 'uppercase',
                 }}
