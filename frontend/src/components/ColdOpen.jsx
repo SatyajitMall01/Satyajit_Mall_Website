@@ -6,6 +6,8 @@ import { ChevronRight, FileSearch } from 'lucide-react';
 /* ── Unified cinematic easing ── */
 const CINEMATIC_EASE = [0.25, 1, 0.5, 1];
 
+const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
 /* ── Jurisdictions Bar — variant definitions ── */
 
 // Parent: stagger the children like ships emerging from fog one by one
@@ -49,7 +51,7 @@ const StyledHeadline = () => {
     <div className="overflow-hidden">
       <motion.h1
         className="text-[36px] md:text-[44px] lg:text-[54px] leading-[1.15] tracking-[0.01em]"
-        style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+        style={{ fontFamily: SWISS }}
         initial={{ y: '100%' }}
         whileInView={{ y: '0%' }}
         viewport={{ once: true, margin: '-100px' }}
@@ -77,7 +79,7 @@ const JurisdictionsBar = () => (
       {/* Label — first ship out of the fog */}
       <motion.span
         className="text-[9px] text-[#F4ECD8]/25 tracking-[0.4em] uppercase flex-shrink-0"
-        style={{ fontFamily: "'Special Elite', cursive" }}
+        style={{ fontFamily: SWISS }}
         variants={labelVariants}
       >
         Jurisdictions Patrolled:
@@ -92,7 +94,7 @@ const JurisdictionsBar = () => (
             key={j.id}
             className="text-[13px] md:text-[14px] tracking-[0.25em] uppercase select-none"
             style={{
-              fontFamily: "'Special Elite', cursive",
+              fontFamily: SWISS,
               color: 'rgba(244, 236, 216, 0.2)',
               textShadow: '0 0 1px rgba(244, 236, 216, 0.05)',
             }}
@@ -162,7 +164,7 @@ const ColdOpen = () => {
             <FileSearch size={13} strokeWidth={1.5} className="text-[#B22222]" />
             <span
               className="text-[9px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase"
-              style={{ fontFamily: "'Special Elite', cursive" }}
+              style={{ fontFamily: SWISS }}
             >
               Case File #001 &mdash; Active
             </span>
@@ -174,7 +176,7 @@ const ColdOpen = () => {
           {/* Sub-headline — blur fade */}
           <motion.p
             className="mt-7 text-[13px] leading-[2.1] tracking-[0.02em] max-w-lg"
-            style={{ fontFamily: "'Special Elite', cursive", color: '#A0A0A0' }}
+            style={{ fontFamily: SWISS, color: '#A0A0A0' }}
             initial={{ opacity: 0, filter: 'blur(4px)' }}
             whileInView={{ opacity: 1, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-100px' }}
@@ -200,7 +202,7 @@ const ColdOpen = () => {
               }}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#B22222] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
               style={{
-                fontFamily: "'Special Elite', cursive",
+                fontFamily: SWISS,
                 border: 'none',
                 borderRadius: '0',
                 transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
@@ -226,7 +228,7 @@ const ColdOpen = () => {
               }}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 text-white text-[11px] tracking-[0.25em] uppercase select-none"
               style={{
-                fontFamily: "'Special Elite', cursive",
+                fontFamily: SWISS,
                 background: 'transparent',
                 border: '2px solid #FFFFFF',
                 borderRadius: '0',
