@@ -7,6 +7,8 @@ import { Search } from 'lucide-react';
 /* ── Unified cinematic easing ── */
 const CINEMATIC_EASE = [0.25, 1, 0.5, 1];
 
+const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
 /* ── Pattern class map ── */
 const patternClassMap = {
   grid: 'pattern-grid',
@@ -85,13 +87,13 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
               <div className="flex items-center justify-between mb-5">
                 <span
                   className="text-[9px] text-[#F4ECD8]/25 tracking-[0.35em] uppercase"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
+                  style={{ fontFamily: SWISS }}
                 >
                   {card.caseNumber}
                 </span>
                 <span
                   className="text-[8px] text-[#B22222]/50 tracking-[0.2em] uppercase"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
+                  style={{ fontFamily: SWISS }}
                 >
                   Closed &mdash; Solved
                 </span>
@@ -99,14 +101,14 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
 
               <h3
                 className="text-[15px] text-[#F4ECD8]/40 tracking-[0.15em] uppercase mb-2"
-                style={{ fontFamily: "'Special Elite', cursive" }}
+                style={{ fontFamily: SWISS }}
               >
                 {card.displayTitle}
               </h3>
 
               <h2
                 className="text-[22px] md:text-[24px] text-[#F4ECD8] tracking-[0.02em] leading-snug"
-                style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+                style={{ fontFamily: SWISS }}
               >
                 {card.baseTitle}
               </h2>
@@ -118,7 +120,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                   <span
                     key={tag}
                     className="text-[8px] text-[#F4ECD8]/20 border border-[#333] px-2.5 py-1 tracking-[0.2em] uppercase"
-                    style={{ fontFamily: "'Special Elite', cursive" }}
+                    style={{ fontFamily: SWISS }}
                   >
                     {tag}
                   </span>
@@ -128,7 +130,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                 <Search size={11} strokeWidth={1.5} className="text-[#F4ECD8]/15" />
                 <span
                   className="text-[8px] text-[#F4ECD8]/15 tracking-[0.3em] uppercase"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
+                  style={{ fontFamily: SWISS }}
                 >
                   Hover to Examine
                 </span>
@@ -150,7 +152,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                 <div className="w-2 h-2 bg-[#B22222]" />
                 <span
                   className="text-[9px] text-[#B22222] tracking-[0.35em] uppercase"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
+                  style={{ fontFamily: SWISS }}
                 >
                   Forensic Insight
                 </span>
@@ -160,14 +162,14 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
 
             <h3
               className="text-[18px] text-[#F4ECD8] tracking-[0.02em] leading-snug mb-4"
-              style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+              style={{ fontFamily: SWISS }}
             >
               {card.baseTitle}
             </h3>
 
             <p
               className="text-[12px] text-[#F4ECD8]/60 leading-[2] tracking-[0.02em]"
-              style={{ fontFamily: "'Special Elite', cursive" }}
+              style={{ fontFamily: SWISS }}
             >
               &ldquo;{card.forensicInsight}&rdquo;
             </p>
@@ -177,7 +179,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                 <span
                   key={tag}
                   className="text-[8px] text-[#B22222]/60 border border-[#B22222]/30 px-2.5 py-1 tracking-[0.2em] uppercase"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
+                  style={{ fontFamily: SWISS }}
                 >
                   {tag}
                 </span>
@@ -264,7 +266,7 @@ const HallOfTrophies = () => {
         <div className="px-8 md:px-12 mb-14">
           <motion.span
             className="text-[9px] text-[#F4ECD8]/25 tracking-[0.5em] uppercase block mb-3"
-            style={{ fontFamily: "'Special Elite', cursive" }}
+            style={{ fontFamily: SWISS }}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: '-80px' }}
@@ -276,7 +278,7 @@ const HallOfTrophies = () => {
           <div className="overflow-hidden">
             <motion.h2
               className="text-[24px] md:text-[30px] text-[#F4ECD8] tracking-[0.03em]"
-              style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+              style={{ fontFamily: SWISS }}
               initial={{ y: '100%' }}
               whileInView={{ y: '0%' }}
               viewport={{ once: true, margin: '-80px' }}
@@ -322,7 +324,7 @@ const HallOfTrophies = () => {
           <Separator className="bg-[#2A2A2A]" />
           <p
             className="text-[8px] text-[#F4ECD8]/10 tracking-[0.4em] uppercase mt-4"
-            style={{ fontFamily: "'Special Elite', cursive" }}
+            style={{ fontFamily: SWISS }}
           >
             Evidence carousel &mdash; All cases documented &amp; sealed
           </p>
