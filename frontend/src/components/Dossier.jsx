@@ -461,63 +461,160 @@ const Fold2 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 3 — MICROFICHE (Miles Education — Left Flank)
-   Film perforations, corner brackets, light cone
+   FOLD 3 — MILES EDUCATION (Absolute Spatial Canvas)
+   4 product wins scattered across four corners
 ════════════════════════════════════════════════════ */
+const f3Left    = { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } } };
+const f3Right   = { hidden: { opacity: 0, x:  40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } } };
+const f3Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
+
 const Fold3 = () => (
-  <section className="min-h-screen relative z-[2] flex items-center">
-    {/* Light cone */}
-    <div className="absolute inset-0 pointer-events-none" style={{
-      background: 'radial-gradient(ellipse 35% 45% at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 100%)',
-    }} />
-    {/* Film rails */}
-    <div className="absolute top-0 left-0 right-0 pointer-events-none" style={{ height: 3, backgroundColor: 'rgba(107,114,128,0.15)' }} />
-    <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: 3, backgroundColor: 'rgba(107,114,128,0.15)' }} />
+  <section className="min-h-screen relative z-[2] w-full overflow-hidden">
+    {/* Edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="w-full px-6 md:px-10 lg:px-16 py-16" variants={S10} initial="hidden" whileInView="visible" viewport={VP}>
-      <LeftFlank>
-        <FoldNum n="03" label="Miles Education · Dec 2023 – Present" />
+    <motion.div className="relative min-h-screen w-full" variants={f3Stagger} initial="hidden" whileInView="visible" viewport={VP}>
 
-        {/* 40K metric — corner brackets */}
-        <motion.div variants={fadeUp} style={{ position: 'relative', padding: '16px 20px', marginBottom: 20 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: 14, height: 14, borderTop: '2px solid rgba(229,231,235,0.25)', borderLeft: '2px solid rgba(229,231,235,0.25)' }} />
-          <div style={{ position: 'absolute', bottom: 0, right: 0, width: 14, height: 14, borderBottom: '2px solid rgba(229,231,235,0.25)', borderRight: '2px solid rgba(229,231,235,0.25)' }} />
+      {/* ── Artifact 1: Core App Launch (Top Left) ── */}
+      <motion.div
+        variants={f3Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '12%', left: '8%', maxWidth: 400 }}
+      >
+        <div style={{ borderTop: '2px solid rgba(220,38,38,0.5)', paddingTop: 16 }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 16px',
+          }}>Miles Education // Dec 2023 – Present</p>
           <Declassify>
-            <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(40px, 6vw, 64px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>40,000+</span>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(60px, 5.5vw, 88px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              display: 'block', letterSpacing: '-0.03em',
+            }}>40,000+</span>
           </Declassify>
-          <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>Learners Onboarded</span>
-          <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '8px 0 0' }}>
-            <Redacted>Spearheaded the 0-1 launch of the Miles One mobile app.</Redacted>{' '}
-            Architected a dual-purpose MVP for lead generation that generated ₹20 Cr in revenue.
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '10px 0',
+          }}>Learners Onboarded</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            <Redacted>Spearheaded the 0-1 launch of the Miles One app.</Redacted>{' '}
+            Architected a dual-purpose MVP for lead generation and nurturing that generated {'>'}{'\u20B9'}20 Cr in revenue.
           </p>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* OTT metric — corner brackets */}
-        <motion.div variants={fadeUp} style={{ position: 'relative', padding: '16px 20px', marginBottom: 20 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: 14, height: 14, borderTop: '2px solid rgba(229,231,235,0.25)', borderLeft: '2px solid rgba(229,231,235,0.25)' }} />
-          <div style={{ position: 'absolute', bottom: 0, right: 0, width: 14, height: 14, borderBottom: '2px solid rgba(229,231,235,0.25)', borderRight: '2px solid rgba(229,231,235,0.25)' }} />
-          <Declassify delay={0.1}>
-            <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 52px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>30,000+</span>
+      {/* ── Artifact 2: ML Pipeline Card (Top Right) ── */}
+      <motion.div
+        variants={f3Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', width: 350 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.8)',
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '24px', borderRadius: 8,
+          backdropFilter: 'blur(12px)',
+        }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 8px',
+          }}>Predictive ML Pipeline</p>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(36px, 4vw, 56px)',
+              color: '#F3F4F6', lineHeight: 0.85,
+              display: 'block', letterSpacing: '-0.02em',
+            }}>+15%</span>
           </Declassify>
-          <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>OTT Subscribers</span>
-          <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '8px 0 0' }}>
-            <Redacted>Led the 0-1 development of Miles Masterclass, a subscription-based OTT product.</Redacted>{' '}
-            B2B GTM secured 2,000+ paid subscriptions.
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: '#dc2626', letterSpacing: '0.15em',
+            textTransform: 'uppercase', margin: '8px 0 14px',
+          }}>Day 7 Activation Lift</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
+          }}>
+            Unified GA4 and Firebase data into BigQuery. Deployed predictive churn models to drive hyper-targeted LTV optimization.
           </p>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* Smaller metrics row */}
-        <motion.div variants={fadeUp} className="flex gap-8 mt-2">
-          {[{ v: '−10%', l: 'Early Churn' }, { v: '+15%', l: 'Lead Conversion' }, { v: '+15%', l: 'Day 7 Activation' }].map((m, i) => (
+      {/* ── Artifact 3: OTT Ecosystem (Bottom Left) ── */}
+      <motion.div
+        variants={f3Left}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(60px, 5.5vw, 88px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              display: 'block', letterSpacing: '-0.03em',
+            }}>30,000+</span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>OTT Subscribers</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
+          }}>
+            Led the 0-1 development of Masterclass, a bite-sized, subscription-based OTT product securing 2,000+ B2B paid subscriptions.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 4: Efficiency Matrix (Bottom Right) ── */}
+      <motion.div
+        variants={f3Right}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', right: '8%', maxWidth: 350 }}
+      >
+        <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
+          {[
+            { v: '−10%', l: 'Early Churn' },
+            { v: '+15%', l: 'Lead Conversion' },
+          ].map((m, i) => (
             <div key={m.l}>
               <Declassify delay={i * 0.1}>
-                <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(24px, 3vw, 36px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
+                <span style={{
+                  fontFamily: SWISS, fontWeight: 900,
+                  fontSize: 'clamp(36px, 4vw, 52px)',
+                  color: '#F3F4F6', lineHeight: 0.85,
+                  display: 'block', letterSpacing: '-0.02em',
+                }}>{m.v}</span>
               </Declassify>
-              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
+              <span style={{
+                fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                textTransform: 'uppercase', marginTop: 6, display: 'block',
+              }}>{m.l}</span>
             </div>
           ))}
-        </motion.div>
-      </LeftFlank>
+        </div>
+        <p style={{
+          fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+          color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
+        }}>
+          Translated 100+ qualitative interviews into actionable, segment-based onboarding flows and high-converting B2B GTM strategies.
+        </p>
+      </motion.div>
+
     </motion.div>
   </section>
 );
