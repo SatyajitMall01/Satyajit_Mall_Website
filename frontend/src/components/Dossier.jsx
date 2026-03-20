@@ -95,12 +95,6 @@ const Declassify = ({ children, delay = 0 }) => {
 /* ════════════════════════════════════
    SHARED MICRO-COMPONENTS
 ════════════════════════════════════ */
-const StatusLED = ({ label }) => (
-  <span className="inline-flex items-center gap-2">
-    <span style={{ width: 7, height: 7, borderRadius: '50%', display: 'inline-block', backgroundColor: '#22c55e', boxShadow: '0 0 6px #22c55e', animation: 'blink 1.8s step-end infinite' }} />
-    <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(34,197,94,0.85)', letterSpacing: '0.25em', textTransform: 'uppercase' }}>{label}</span>
-  </span>
-);
 
 const BlinkCursor = () => (
   <span style={{ animation: 'blink 1.06s step-end infinite', fontFamily: TELE, color: 'rgba(61,155,100,0.75)' }}>█</span>
@@ -309,60 +303,58 @@ const Fold1 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 2 — ARSENAL & INFRASTRUCTURE (Absolute Spatial Canvas)
-   5 artifacts scattered around the portrait
+   FOLD 2 — ARSENAL & INFRASTRUCTURE (Clean Spatial Canvas)
+   Premium dark-mode SaaS / Technical Architect aesthetic
 ════════════════════════════════════════════════════ */
+const f2Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } } };
+const f2Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } } };
+const f2Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
 
 const Fold2 = () => (
   <section className="min-h-screen relative z-[2] w-full overflow-hidden">
-    {/* Blueprint grid */}
-    <div className="absolute inset-0 pointer-events-none" style={{
-      backgroundImage: 'repeating-linear-gradient(0deg, rgba(107,114,128,0.03) 0px, transparent 1px, transparent 24px), repeating-linear-gradient(90deg, rgba(107,114,128,0.03) 0px, transparent 1px, transparent 24px)',
-    }} />
-    {/* Edge gradients for readability */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.85) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.85) 0%, transparent 100%)' }} />
+    {/* Edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="relative min-h-screen w-full" variants={S12} initial="hidden" whileInView="visible" viewport={VP}>
+    <motion.div className="relative min-h-screen w-full" variants={f2Stagger} initial="hidden" whileInView="visible" viewport={VP}>
 
-      {/* ── Artifact 1: Tech Stack Matrix (Top Left) ── */}
+      {/* ── Artifact 1: Technical Stack Matrix (Top Left) ── */}
       <motion.div
-        variants={slideLeft}
+        variants={f2Left}
         className="absolute z-10 hidden md:block"
         style={{ top: '15%', left: '8%', maxWidth: 400 }}
       >
         <div style={{
           backgroundColor: 'rgba(10,10,10,0.8)',
-          border: '1px solid rgba(55,65,81,1)',
-          padding: '24px',
-          borderRadius: 8,
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '24px', borderRadius: 8,
           backdropFilter: 'blur(12px)',
         }}>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.2em',
-            textTransform: 'uppercase', marginBottom: 16, margin: '0 0 16px',
+            color: '#dc2626', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 18px',
           }}>Technical Stack</p>
 
           {[
-            { label: 'Data Platforms', tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker'] },
+            { label: 'Data Platforms',   tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker'] },
             { label: 'Automation & CDP', tools: ['n8n', 'Zapier', 'Netcore', 'Clevertap'] },
             { label: 'Product Delivery', tools: ['Agile Scrum', 'MVP Architecting', 'CSPO'] },
-          ].map(group => (
-            <div key={group.label} style={{ marginBottom: 14 }}>
+          ].map((group, gi) => (
+            <div key={group.label} style={{ marginBottom: gi < 2 ? 16 : 0 }}>
               <p style={{
                 fontFamily: SWISS, fontSize: 9, fontWeight: 600,
-                color: 'rgba(107,114,128,0.8)', letterSpacing: '0.15em',
-                textTransform: 'uppercase', margin: '0 0 6px',
+                color: 'rgba(107,114,128,0.7)', letterSpacing: '0.18em',
+                textTransform: 'uppercase', margin: '0 0 7px',
               }}>{group.label}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {group.tools.map(tool => (
                   <span key={tool} style={{
                     fontFamily: SWISS, fontSize: 11, fontWeight: 500,
-                    color: 'rgba(229,231,235,0.85)',
-                    backgroundColor: 'rgba(31,41,55,0.8)',
-                    border: '1px solid rgba(55,65,81,0.8)',
-                    padding: '3px 8px', borderRadius: 4,
+                    color: 'rgba(229,231,235,0.88)',
+                    backgroundColor: 'rgba(31,41,55,0.75)',
+                    border: '1px solid rgba(55,65,81,0.7)',
+                    padding: '3px 10px', borderRadius: 4,
                   }}>{tool}</span>
                 ))}
               </div>
@@ -373,63 +365,47 @@ const Fold2 = () => (
 
       {/* ── Artifact 2: Core Competencies (Top Right) ── */}
       <motion.div
-        variants={slideRight}
+        variants={f2Right}
         className="absolute z-10 hidden md:block"
         style={{ top: '15%', right: '8%', maxWidth: 420 }}
       >
         <p style={{
           fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-          color: '#dc2626', letterSpacing: '0.2em',
-          textTransform: 'uppercase', margin: '0 0 16px',
+          color: '#dc2626', letterSpacing: '0.25em',
+          textTransform: 'uppercase', margin: '0 0 18px',
         }}>Core Competencies</p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {[
-            {
-              title: 'Unifying Fragmented Data',
-              body: 'Architecting deterministic data pipelines that bridge apps, CRM, and analytics.',
-            },
-            {
-              title: 'Automating Operations',
-              body: 'Deploying enterprise workflows that eliminate manual operational silos and slash support costs.',
-            },
-            {
-              title: 'Driving Product-Led Growth',
-              body: 'Building self-serve, AI-driven product loops that directly multiply top-line revenue.',
-            },
+            { title: 'Unifying Fragmented Data',   body: 'Architecting deterministic data pipelines that bridge apps, CRM, and analytics.' },
+            { title: 'Automating Operations',       body: 'Deploying enterprise workflows that eliminate manual operational silos and slash support costs.' },
+            { title: 'Driving Product-Led Growth', body: 'Building self-serve, AI-driven product loops that directly multiply top-line revenue.' },
           ].map(item => (
-            <div key={item.title} style={{
-              borderLeft: '2px solid #dc2626',
-              paddingLeft: 12,
-            }}>
+            <div key={item.title} style={{ borderLeft: '2px solid #dc2626', paddingLeft: 14 }}>
               <p style={{
-                fontFamily: SWISS, fontSize: 12, fontWeight: 600,
-                color: 'rgba(229,231,235,0.95)', margin: '0 0 4px',
+                fontFamily: SWISS, fontSize: 13, fontWeight: 600,
+                color: 'rgba(229,231,235,0.95)', margin: '0 0 5px', lineHeight: 1.3,
               }}>{item.title}</p>
               <p style={{
                 fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-                color: 'rgba(156,163,175,0.85)', lineHeight: 1.6, margin: 0,
+                color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
               }}>{item.body}</p>
             </div>
           ))}
         </div>
       </motion.div>
 
-      {/* ── Artifact 4: Intel Badge −40% (Bottom Left) ── */}
+      {/* ── Artifact 3: Impact Metric −40% (Bottom Left) ── */}
       <motion.div
-        variants={slideLeft}
+        variants={f2Left}
         className="absolute z-10 hidden md:block"
         style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
       >
-        <div style={{
-          display: 'flex', flexDirection: 'column',
-          borderLeft: '4px solid #dc2626',
-          paddingLeft: 20,
-        }}>
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
           <Declassify>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(56px, 7vw, 88px)',
+              fontSize: 'clamp(60px, 5.5vw, 88px)',
               color: '#F3F4F6', lineHeight: 0.8,
               display: 'block', letterSpacing: '-0.03em',
             }}>−40%</span>
@@ -440,9 +416,8 @@ const Fold2 = () => (
             textTransform: 'uppercase', margin: '12px 0',
           }}>Time-to-Market Reduction</p>
           <p style={{
-            fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-            color: 'rgba(156,163,175,0.75)', lineHeight: 1.65,
-            margin: 0, maxWidth: 320,
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
           }}>
             Governed CDP implementation and event taxonomy across the full product ecosystem,
             eliminating engineering bottlenecks for real-time personalization.
@@ -450,21 +425,17 @@ const Fold2 = () => (
         </div>
       </motion.div>
 
-      {/* ── Artifact 5: Intel Badge +20% (Bottom Right) ── */}
+      {/* ── Artifact 4: Impact Metric +20% (Bottom Right) ── */}
       <motion.div
-        variants={slideRight}
+        variants={f2Right}
         className="absolute z-10 hidden md:block"
         style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
       >
-        <div style={{
-          display: 'flex', flexDirection: 'column',
-          borderLeft: '4px solid #dc2626',
-          paddingLeft: 20,
-        }}>
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
           <Declassify delay={0.15}>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(56px, 7vw, 88px)',
+              fontSize: 'clamp(60px, 5.5vw, 88px)',
               color: '#F3F4F6', lineHeight: 0.8,
               display: 'block', letterSpacing: '-0.03em',
             }}>+20%</span>
@@ -475,9 +446,8 @@ const Fold2 = () => (
             textTransform: 'uppercase', margin: '12px 0',
           }}>Overall ROAS Lift</p>
           <p style={{
-            fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-            color: 'rgba(156,163,175,0.75)', lineHeight: 1.65,
-            margin: 0, maxWidth: 320,
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
           }}>
             Architected a proprietary end-to-end attribution platform powered by compounded
             automation models to recover leads and scale revenue.
