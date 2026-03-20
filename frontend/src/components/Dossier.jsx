@@ -119,9 +119,9 @@ const Redacted = ({ children }) => {
 
 const FoldNum = ({ n, label }) => (
   <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-    <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 13, color: '#B22222' }}>{n}</span>
-    <div style={{ width: 28, height: 1, backgroundColor: '#B22222' }} />
-    <span style={{ fontFamily: TELE, fontSize: 10, letterSpacing: '0.35em', color: 'rgba(178,34,34,0.55)', textTransform: 'uppercase' }}>{label}</span>
+    <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 13, color: '#dc2626' }}>{n}</span>
+    <div style={{ width: 28, height: 1, backgroundColor: '#dc2626' }} />
+    <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, letterSpacing: '0.3em', color: '#dc2626', textTransform: 'uppercase' }}>{label}</span>
   </motion.div>
 );
 
@@ -187,10 +187,10 @@ const Fold1 = () => (
         style={{ top: '50%', transform: 'translateY(-50%)' }}
       >
         <span style={{
-          fontFamily: TELE,
-          fontSize: 14,
+          fontFamily: SWISS,
+          fontSize: 13,
           fontWeight: 600,
-          color: 'rgba(127,29,29,0.85)',
+          color: 'rgba(127,29,29,0.9)',
           letterSpacing: '0.3em',
           textTransform: 'uppercase',
           userSelect: 'none',
@@ -218,14 +218,14 @@ const Fold1 = () => (
           <div style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderTop: '2px solid rgba(229,231,235,0.3)', borderRight: '2px solid rgba(229,231,235,0.3)' }} />
           <div style={{ position: 'absolute', bottom: 0, left: 0, width: 16, height: 16, borderBottom: '2px solid rgba(229,231,235,0.3)', borderLeft: '2px solid rgba(229,231,235,0.3)' }} />
 
-          <p style={{ fontFamily: TELE, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
-            {'>'} Location: Bengaluru, IND
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+            Location: Bengaluru, IND
           </p>
-          <p style={{ fontFamily: TELE, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
-            {'>'} Domain: B2C, Internal SaaS, OTT
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+            Domain: B2C · Internal SaaS · OTT
           </p>
-          <p style={{ fontFamily: TELE, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
-            {'>'} Status: Active{' '}
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+            Status: Active{' '}
             <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: '#22c55e', animation: 'pulse6 2s infinite', verticalAlign: 'middle' }} />
           </p>
         </div>
@@ -251,7 +251,7 @@ const Fold1 = () => (
           <div style={{ position: 'absolute', bottom: 0, right: 0, width: 14, height: 14, borderBottom: '2px solid rgba(229,231,235,0.2)', borderRight: '2px solid rgba(229,231,235,0.2)' }} />
 
           <p style={{
-            fontFamily: TELE, fontSize: 13, color: '#D1D5DB',
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(209,213,219,0.9)',
             lineHeight: 1.75, margin: 0,
           }}>
             Product Manager with 5+ years of experience driving product-led growth through
@@ -287,8 +287,8 @@ const Fold1 = () => (
               }}>{badge.metric}</span>
             </Declassify>
             <span style={{
-              fontFamily: TELE, fontSize: 10, fontWeight: 600,
-              color: '#6B7280', letterSpacing: '0.2em',
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
               textTransform: 'uppercase',
               marginTop: 6, display: 'block',
             }}>{badge.label}</span>
@@ -485,8 +485,8 @@ const Fold3 = () => (
           <Declassify>
             <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(40px, 6vw, 64px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>40,000+</span>
           </Declassify>
-          <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.35)', letterSpacing: '0.3em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>Learners Onboarded</span>
-          <p style={{ fontFamily: TELE, fontSize: 12, color: 'rgba(229,231,235,0.5)', lineHeight: 1.8, margin: '8px 0 0' }}>
+          <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>Learners Onboarded</span>
+          <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '8px 0 0' }}>
             <Redacted>Spearheaded the 0-1 launch of the Miles One mobile app.</Redacted>{' '}
             Architected a dual-purpose MVP for lead generation that generated ₹20 Cr in revenue.
           </p>
@@ -499,8 +499,8 @@ const Fold3 = () => (
           <Declassify delay={0.1}>
             <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 52px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>30,000+</span>
           </Declassify>
-          <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.35)', letterSpacing: '0.3em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>OTT Subscribers</span>
-          <p style={{ fontFamily: TELE, fontSize: 12, color: 'rgba(229,231,235,0.5)', lineHeight: 1.8, margin: '8px 0 0' }}>
+          <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 6, display: 'block' }}>OTT Subscribers</span>
+          <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '8px 0 0' }}>
             <Redacted>Led the 0-1 development of Miles Masterclass, a subscription-based OTT product.</Redacted>{' '}
             B2B GTM secured 2,000+ paid subscriptions.
           </p>
@@ -513,7 +513,7 @@ const Fold3 = () => (
               <Declassify delay={i * 0.1}>
                 <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(24px, 3vw, 36px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
               </Declassify>
-              <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(229,231,235,0.3)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
+              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
             </div>
           ))}
         </motion.div>
@@ -581,8 +581,8 @@ const Fold4 = () => (
             <Declassify>
               <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 56px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>+25%</span>
             </Declassify>
-            <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.35)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>Automated Self-Service</span>
-            <p style={{ fontFamily: TELE, fontSize: 12, color: 'rgba(229,231,235,0.5)', lineHeight: 1.7, margin: '6px 0 0', maxWidth: 300 }}>
+            <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>Automated Self-Service</span>
+            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '6px 0 0', maxWidth: 300 }}>
               Architected the Miles One Agentic Assistant — Goal-Oriented Agent Framework on n8n.
             </p>
           </div>
@@ -598,8 +598,8 @@ const Fold4 = () => (
               <Declassify delay={i * 0.12}>
                 <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(28px, 3.5vw, 42px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
               </Declassify>
-              <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(229,231,235,0.3)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
-              <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(229,231,235,0.45)', lineHeight: 1.7, margin: '4px 0 0', maxWidth: 200 }}>{m.d}</p>
+              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
+              <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: '4px 0 0', maxWidth: 200 }}>{m.d}</p>
             </div>
           ))}
         </motion.div>
@@ -657,7 +657,7 @@ const Fold5 = () => (
               </div>
               <div>
                 <p style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 700, color: 'rgba(244,236,216,0.65)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 2px' }}>{e.title}</p>
-                <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(229,231,235,0.5)', lineHeight: 1.7, margin: 0 }}>{e.text}</p>
+                <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0 }}>{e.text}</p>
               </div>
             </div>
           ))}
@@ -670,7 +670,7 @@ const Fold5 = () => (
               <Declassify delay={i * 0.12}>
                 <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 56px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
               </Declassify>
-              <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.35)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
+              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
             </div>
           ))}
         </motion.div>
@@ -717,7 +717,7 @@ const Fold6 = () => (
               }}>
                 <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%)', width: 9, height: 9, borderRadius: '50%', backgroundColor: PINS[i], boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
                 {card.clip && <div style={{ position: 'absolute', top: 8, right: 8, width: 18, height: 5, borderRadius: 3, backgroundColor: 'rgba(107,114,128,0.25)', transform: 'rotate(22deg)' }} />}
-                <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(180,160,120,0.45)', letterSpacing: '0.15em', display: 'block', marginBottom: 6 }}>{card.co}</span>
+                <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: '#dc2626', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>{card.co}</span>
 
                 {card.terminal ? (
                   <div style={{ backgroundColor: '#070A0D', padding: '8px 10px', border: '1px solid rgba(107,114,128,0.12)' }}>
@@ -733,7 +733,7 @@ const Fold6 = () => (
                       <span style={{ fontFamily: SWISS, fontWeight: 800, fontSize: 9, color: '#B22222' }}>//</span>
                       <span style={{ fontFamily: SWISS, fontSize: 8, fontWeight: 600, color: 'rgba(180,160,120,0.4)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{card.label}</span>
                     </div>
-                    <p style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(214,205,184,0.5)', lineHeight: 1.7, margin: 0 }}>{card.sub}</p>
+                    <p style={{ fontFamily: SWISS, fontSize: 11, fontWeight: 400, color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: 0 }}>{card.sub}</p>
                   </Declassify>
                 )}
               </div>
@@ -773,11 +773,11 @@ const Fold7 = () => (
         ].map(row => (
           <motion.div key={row.r} variants={fadeUp} className="mb-5">
             <div className="flex items-end gap-3" style={{ borderBottom: '1px dotted rgba(107,114,128,0.3)', paddingBottom: 5 }}>
-              <span style={{ fontFamily: TELE, fontSize: 13, color: 'rgba(244,236,216,0.82)', whiteSpace: 'nowrap' }}>{row.l}</span>
+              <span style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: 'rgba(229,231,235,0.9)', whiteSpace: 'nowrap' }}>{row.l}</span>
               <span className="flex-1" />
-              <span style={{ fontFamily: TELE, fontSize: 12, color: 'rgba(214,205,184,0.4)' }}>{row.r}</span>
+              <span style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.6)' }}>{row.r}</span>
             </div>
-            <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(214,205,184,0.25)', letterSpacing: '0.08em', margin: '4px 0 0' }}>{row.s}</p>
+            <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.55)', lineHeight: 1.6, margin: '4px 0 0' }}>{row.s}</p>
           </motion.div>
         ))}
 
@@ -785,8 +785,8 @@ const Fold7 = () => (
         <motion.div variants={fadeUp} className="flex flex-col gap-3 mt-4 mb-6">
           {['Certified Scrum Product Owner (CSPO)', 'Six Sigma Green Belt', 'Google Analytics · Advanced Excel · SEO'].map((c, i) => (
             <Declassify key={c} delay={i * 0.1}>
-              <span style={{ display: 'inline-block', fontFamily: TELE, fontSize: 11, color: 'rgba(178,34,34,0.75)', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(178,34,34,0.3)', padding: '5px 12px' }}>
-                [ {c} ]
+              <span style={{ display: 'inline-block', fontFamily: SWISS, fontSize: 11, fontWeight: 600, color: 'rgba(178,34,34,0.85)', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(178,34,34,0.35)', padding: '5px 14px' }}>
+                {c}
               </span>
             </Declassify>
           ))}
