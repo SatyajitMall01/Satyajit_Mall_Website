@@ -1,10 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { profileData } from '../data/mock';
-import {
-  RadialBarChart, RadialBar,
-  ResponsiveContainer,
-} from 'recharts';
 
 /* ── Design Tokens ── */
 const TELE  = "'Courier New', Courier, monospace";
@@ -29,7 +25,6 @@ const slideRight = {
 const S15 = { hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } } };
 const S12 = { hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } };
 const S10 = { hidden: {}, visible: { transition: { staggerChildren: 0.10, delayChildren: 0.1 } } };
-const S08 = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.08 } } };
 
 /* ── Injected keyframes ── */
 const DossierStyles = () => (
@@ -621,157 +616,301 @@ const Fold3 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 4 — RADAR (AI & Agentic — Right Flank)
-   Radar sweep, radial chart, LED grid, data waterfall
+   FOLD 4 — AGENTIC AI & RAG SYSTEMS (Absolute Spatial Canvas)
+   4 architecture nodes framing the portrait
 ════════════════════════════════════════════════════ */
-const LED_PATTERN = [1,0,1,0, 1,1,0,1, 0,0,1,0];
-const WATERFALL_WORDS = ['RAG_QUERY','API_INVOKE','FUNCTION_CALL','LLM_RESPONSE','MEMORY_RETRIEVE','VECTOR_SEARCH','EMBED_CHUNK','AGENT_DISPATCH','TOOL_EXEC','CONTEXT_MERGE'];
+const f4Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f4Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f4Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
 
 const Fold4 = () => (
-  <section className="min-h-screen relative z-[2] flex items-center">
-    <motion.div className="w-full px-6 md:px-10 lg:px-16 py-16" variants={S12} initial="hidden" whileInView="visible" viewport={VP}>
-      <RightFlank>
-        <FoldNum n="04" label="AI & Agentic Systems" />
+  <section className="min-h-screen relative z-[2] w-full overflow-hidden">
+    {/* Edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-        {/* Radar + LEDs + waterfall row */}
-        <motion.div variants={fadeUp} className="flex items-start gap-5 mb-6 flex-wrap">
-          {/* Radar */}
-          <div style={{
-            width: 120, height: 120, borderRadius: '50%',
-            border: '1px solid rgba(107,114,128,0.15)',
-            position: 'relative', overflow: 'hidden', flexShrink: 0,
+    <motion.div className="relative min-h-screen w-full" variants={f4Stagger} initial="hidden" whileInView="visible" viewport={VP}>
+
+      {/* ── Artifact 1: AI Architecture Node (Top Left) ── */}
+      <motion.div
+        variants={f4Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', left: '8%', maxWidth: 420 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.9)',
+          borderTop: '2px solid #dc2626',
+          border: '1px solid rgba(55,65,81,0.9)',
+          borderTopWidth: 2, borderTopColor: '#dc2626',
+          padding: '24px', borderRadius: 8,
+          backdropFilter: 'blur(12px)',
+        }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 14px',
+          }}>Agentic Framework // Function Calling</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.7, margin: '0 0 18px',
           }}>
-            {[90, 60, 30].map((s, i) => (
-              <div key={s} style={{ position: 'absolute', top: '50%', left: '50%', width: s, height: s, transform: 'translate(-50%, -50%)', borderRadius: '50%', border: `1px solid rgba(107,114,128,${0.08 - i * 0.02})` }} />
+            Architected the Miles One Agentic Assistant. Established a Goal-Oriented Framework managed via an n8n Orchestration Layer. Utilized dynamic Function-Calling to invoke specialized backend APIs for transactional fulfillment — LMS retrieval, webinar bookings.
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {['n8n', 'REST APIs', 'RAG'].map(tag => (
+              <span key={tag} style={{
+                fontFamily: TELE, fontSize: 10,
+                color: 'rgba(220,38,38,0.85)',
+                backgroundColor: 'rgba(127,29,29,0.2)',
+                border: '1px solid rgba(220,38,38,0.2)',
+                padding: '3px 10px', borderRadius: 4,
+                letterSpacing: '0.05em',
+              }}>{tag}</span>
             ))}
-            <div style={{ position: 'absolute', inset: 0, background: 'conic-gradient(from 0deg, transparent 0deg, rgba(34,197,94,0.18) 0deg, transparent 60deg)', animation: 'radarSweep 4s linear infinite' }} />
-            <div style={{ position: 'absolute', top: '50%', left: '50%', width: 4, height: 4, borderRadius: '50%', backgroundColor: '#22c55e', transform: 'translate(-50%, -50%)', boxShadow: '0 0 6px #22c55e' }} />
           </div>
+        </div>
+      </motion.div>
 
-          {/* LED grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 5, alignSelf: 'center' }}>
-            {LED_PATTERN.map((on, i) => (
-              <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: on ? '#22c55e' : '#14532d', animation: on ? 'pulse6 2s infinite' : 'none', animationDelay: `${i * 0.3}s` }} />
+      {/* ── Artifact 2: SuperBot Voice Node (Top Right) ── */}
+      <motion.div
+        variants={f4Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', maxWidth: 400 }}
+      >
+        <div style={{ borderLeft: '3px solid #dc2626', paddingLeft: 18 }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '0 0 14px',
+          }}>SuperBot AI // High-Velocity Voice</p>
+
+          <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
+            {[{ v: '+15%', l: 'Qualified Leads' }, { v: '−5%', l: 'Sales Cycle' }].map((m, i) => (
+              <div key={m.l}>
+                <Declassify delay={i * 0.1}>
+                  <span style={{
+                    fontFamily: SWISS, fontWeight: 900,
+                    fontSize: 'clamp(28px, 3.5vw, 44px)',
+                    color: '#F3F4F6', lineHeight: 0.85,
+                    display: 'block', letterSpacing: '-0.02em',
+                  }}>{m.v}</span>
+                </Declassify>
+                <span style={{
+                  fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                  textTransform: 'uppercase', marginTop: 6, display: 'block',
+                }}>{m.l}</span>
+              </div>
             ))}
           </div>
 
-          {/* Data waterfall */}
-          <div style={{ width: 68, height: 110, overflow: 'hidden', position: 'relative', border: '1px solid rgba(107,114,128,0.08)', flexShrink: 0 }}>
-            <div style={{ animation: 'dataFall 8s linear infinite', position: 'absolute', top: 0, left: 4 }}>
-              {WATERFALL_WORDS.map((w, i) => (
-                <p key={i} style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(61,155,100,0.35)', margin: 0, lineHeight: 2.2, whiteSpace: 'nowrap' }}>{w}</p>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
+          }}>
+            Architected a RAG-based AI Voice Assistant for real-time lead qualification. Powered by n8n data ingestion and PostgreSQL for instant memory retrieval, slashing sales analysis time.
+          </p>
+        </div>
+      </motion.div>
 
-        {/* Radial chart + main metric */}
-        <motion.div variants={fadeUp} className="flex items-center gap-6 mb-8">
-          <div style={{ width: 100, height: 100, flexShrink: 0 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadialBarChart cx="50%" cy="50%" innerRadius="70%" outerRadius="100%" data={[{ value: 25, fill: '#B22222' }]} startAngle={90} endAngle={-270} barSize={7}>
-                <RadialBar background={{ fill: 'rgba(107,114,128,0.08)' }} dataKey="value" cornerRadius={4} />
-              </RadialBarChart>
-            </ResponsiveContainer>
-          </div>
-          <div>
-            <Declassify>
-              <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 56px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>+25%</span>
-            </Declassify>
-            <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>Automated Self-Service</span>
-            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: '6px 0 0', maxWidth: 300 }}>
-              Architected the Miles One Agentic Assistant — Goal-Oriented Agent Framework on n8n.
-            </p>
-          </div>
-        </motion.div>
+      {/* ── Artifact 3: Massive Impact Metric (Bottom Left) ── */}
+      <motion.div
+        variants={f4Left}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(64px, 6vw, 96px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              display: 'block', letterSpacing: '-0.03em',
+            }}>+25%</span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>Automated Self-Service Lift</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
+          }}>
+            Leveraged Retrieval-Augmented Generation (RAG) for deep context and memory retrieval, driving massive adoption of automated, zero-touch transactional resolutions.
+          </p>
+        </div>
+      </motion.div>
 
-        {/* Secondary metrics */}
-        <motion.div variants={fadeUp} className="flex gap-8">
-          {[
-            { v: '−5%', l: 'Sales Cycle', d: 'Built SuperBot AI Voice Assistant, +15% qualified leads.' },
-            { v: '100%', l: 'Real-Time Insights', d: 'RAG-based AI analysis with PostgreSQL data warehouse.' },
-          ].map((m, i) => (
-            <div key={m.l}>
-              <Declassify delay={i * 0.12}>
-                <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(28px, 3.5vw, 42px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
-              </Declassify>
-              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
-              <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: '4px 0 0', maxWidth: 200 }}>{m.d}</p>
-            </div>
-          ))}
-        </motion.div>
-      </RightFlank>
+      {/* ── Artifact 4: Agentic Reporting & ELT (Bottom Right) ── */}
+      <motion.div
+        variants={f4Right}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
+      >
+        <p style={{
+          fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+          color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+          textTransform: 'uppercase', margin: '0 0 10px',
+        }}>Agentic Reporting // ETL & ELT</p>
+        <p style={{
+          fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+          color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: '0 0 14px',
+        }}>
+          Engineered a 0-1 Agentic Reporting Platform transcending traditional BI. Integrated an RAG-based AI analysis layer with a core PostgreSQL data warehouse via n8n pipelines.
+        </p>
+        <div style={{ borderLeft: '2px solid rgba(107,114,128,0.35)', paddingLeft: 14 }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(229,231,235,0.9)', lineHeight: 1.65, margin: 0,
+          }}>
+            Provided leadership with a direct chat interface for real-time, substantive analysis, eliminating manual reporting latency.
+          </p>
+        </div>
+      </motion.div>
+
     </motion.div>
   </section>
 );
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 5 — TELETYPE (Operations — Left Flank)
-   Torn paper, ticker tape, dot-matrix, timestamped entries
+   FOLD 5 — INTERNAL SAAS & ECOSYSTEM ARCHITECTURE (Absolute Spatial Canvas)
+   MarTech, CRM, and microservice wins across four corners
 ════════════════════════════════════════════════════ */
-const TICKER_TEXT = '▸ COMMUNITY +30% ▸ WEBINAR +40% ▸ LMS DEPLOY ▸ CRM SPOC ▸ OPS −30% ▸ CALENDAR SYNC ▸ ZOOM INTEGRATION ▸ ';
+const f5Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f5Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f5Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
 
 const Fold5 = () => (
-  <section className="min-h-screen relative z-[2] flex items-center">
-    {/* Dot-matrix */}
-    <div className="absolute inset-0 pointer-events-none" style={{
-      backgroundImage: 'radial-gradient(circle, rgba(107,114,128,0.05) 1px, transparent 1px)', backgroundSize: '4px 4px',
-    }} />
+  <section className="min-h-screen relative z-[2] w-full overflow-hidden">
+    {/* Edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="w-full px-6 md:px-10 lg:px-16 py-16" variants={S08} initial="hidden" whileInView="visible" viewport={VP}>
-      <LeftFlank>
-        <FoldNum n="05" label="Internal Operations" />
+    <motion.div className="relative min-h-screen w-full" variants={f5Stagger} initial="hidden" whileInView="visible" viewport={VP}>
 
-        {/* Ticker tape */}
-        <motion.div variants={fadeUp} style={{
-          height: 24, overflow: 'hidden', marginBottom: 12,
-          backgroundColor: 'rgba(7,10,13,0.85)',
-          borderBottom: '1px solid rgba(107,114,128,0.1)', borderTop: '1px solid rgba(107,114,128,0.1)',
+      {/* ── Artifact 1: MarTech & CDP Architecture (Top Left) ── */}
+      <motion.div
+        variants={f5Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', left: '8%', maxWidth: 420 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.9)',
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '24px', borderRadius: 8,
+          backdropFilter: 'blur(12px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, rgba(107,114,128,0.025) 0px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, rgba(107,114,128,0.025) 0px, transparent 1px, transparent 28px)',
         }}>
-          <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'tickerScroll 20s linear infinite' }}>
-            <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(178,34,34,0.45)', letterSpacing: '0.12em', lineHeight: '24px' }}>{TICKER_TEXT}{TICKER_TEXT}</span>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 14px',
+          }}>MarTech & CDP Architecture</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.7, margin: '0 0 18px',
+          }}>
+            Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem — Apps, Websites, CRM, and LMS.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[
+              { label: 'ETL / Orchestration', value: 'n8n & Zapier' },
+              { label: 'Comms Routing', value: 'Netcore · Clevertap · Wati' },
+            ].map(row => (
+              <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>{row.label}:</span>
+                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>{row.value}</span>
+              </div>
+            ))}
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* Torn paper container */}
-        <motion.div variants={fadeUp} style={{
-          clipPath: 'polygon(0 5px, 2% 2px, 4% 6px, 6% 1px, 8% 5px, 10% 3px, 12% 7px, 14% 1px, 16% 4px, 18% 2px, 20% 6px, 22% 1px, 24% 5px, 26% 3px, 28% 6px, 30% 1px, 32% 4px, 34% 2px, 36% 6px, 38% 3px, 40% 7px, 42% 1px, 44% 5px, 46% 2px, 48% 6px, 50% 3px, 52% 7px, 54% 1px, 56% 4px, 58% 2px, 60% 6px, 62% 3px, 64% 7px, 66% 1px, 68% 5px, 70% 2px, 72% 6px, 74% 1px, 76% 4px, 78% 2px, 80% 6px, 82% 3px, 84% 7px, 86% 1px, 88% 5px, 90% 2px, 92% 6px, 94% 1px, 96% 4px, 98% 2px, 100% 5px, 100% 100%, 0 100%)',
-          backgroundColor: 'rgba(7,10,13,0.85)', backdropFilter: 'blur(6px)',
-          padding: '16px 16px 12px',
-        }}>
-          {[
-            { t: '23:14', id: 'T-001', title: 'Community', text: 'Productized calendar booking microservice. +12% acquisition, +30% engagement.' },
-            { t: '23:19', id: 'T-002', title: 'Webinar SaaS', text: 'Internal Webinar + Content Microservice, Zoom + CRM integration. +40% frequency.' },
-            { t: '23:35', id: 'T-003', title: 'LMS Deploy', text: '0-1 LMS for 40K users. Learner data taxonomy via CDP for personalized notifs.' },
-            { t: '23:48', id: 'T-004', title: 'CRM Build', text: 'Led Internal CRM. Enquiry → SPOC Allocation with Source Detection + Sales Queue.' },
-            { t: '23:59', id: 'T-005', title: 'Ops Automation', text: 'Automated syncs across marketing, CRM, analytics. +25% cross-functional visibility.' },
-          ].map(e => (
-            <div key={e.id} style={{ padding: '6px 0', borderBottom: '1px solid rgba(107,114,128,0.06)', display: 'flex', gap: 10 }}>
-              <div style={{ flexShrink: 0, width: 40 }}>
-                <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(178,34,34,0.5)', display: 'block', letterSpacing: '0.12em' }}>[{e.t}]</span>
-                <span style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(214,205,184,0.15)', display: 'block' }}>{e.id}</span>
-              </div>
-              <div>
-                <p style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 700, color: 'rgba(244,236,216,0.65)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 2px' }}>{e.title}</p>
-                <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0 }}>{e.text}</p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
+      {/* ── Artifact 2: CRM Routing Protocol (Top Right) ── */}
+      <motion.div
+        variants={f5Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', maxWidth: 400 }}
+      >
+        <div style={{ borderLeft: '2px solid #dc2626', paddingLeft: 16 }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '0 0 8px',
+          }}>Miles Force // Internal CRM</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 15, fontWeight: 700,
+            color: '#F3F4F6', lineHeight: 1.25, margin: '0 0 12px',
+          }}>Lead Routing & Source Detection</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
+          }}>
+            Led the development of the Miles Force CRM module. Optimized the critical lead management flow from Enquiry to SPOC Allocation. Implemented a dynamic Sales Queue Module designed for day-level lead distribution to maximize sales efficiency.
+          </p>
+        </div>
+      </motion.div>
 
-        {/* Big metrics */}
-        <motion.div variants={fadeUp} className="flex gap-10 mt-6">
-          {[{ v: '+15%', l: 'Learner Engagement' }, { v: '−30%', l: 'Ops Workload' }].map((m, i) => (
-            <div key={m.l}>
-              <Declassify delay={i * 0.12}>
-                <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(36px, 5vw, 56px)', color: '#E5E7EB', lineHeight: 1, display: 'block' }}>{m.v}</span>
-              </Declassify>
-              <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 4, display: 'block' }}>{m.l}</span>
-            </div>
-          ))}
-        </motion.div>
-      </LeftFlank>
+      {/* ── Artifact 3: Community Microservice (Bottom Left) ── */}
+      <motion.div
+        variants={f5Left}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(64px, 6vw, 96px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              display: 'block', letterSpacing: '-0.03em',
+            }}>+30%</span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>Post-Course Engagement</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Productized a multi-platform calendar booking microservice for Community Engagement, achieving a 12% lift in community-led acquisition.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 4: Webinar SaaS Microservice (Bottom Right) ── */}
+      <motion.div
+        variants={f5Right}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify delay={0.1}>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(64px, 6vw, 96px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              display: 'block', letterSpacing: '-0.03em',
+            }}>+40%</span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>Scaled Webinar Frequency</p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Developed an Internal SaaS Content Microservice integrated with Zoom and our CRM. This custom web page builder scaled deployments and drove a 20% increase in base conversion.
+          </p>
+        </div>
+      </motion.div>
+
     </motion.div>
   </section>
 );
