@@ -29,8 +29,106 @@ const DossierStyles = () => (
     @keyframes pulse6 { 0%,100% { opacity:1; } 50% { opacity:.35; } }
     @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
     @keyframes logoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .dossier-cursor { cursor: none !important; }
+    .dossier-cursor * { cursor: none !important; }
+    .dossier-cursor a, .dossier-cursor button { cursor: none !important; }
   `}</style>
 );
+
+/* ════════════════════════════════════
+   CROSSHAIR CURSOR — follows mouse, red + on dossier
+════════════════════════════════════ */
+const CrosshairCursor = () => {
+  const [pos, setPos] = React.useState({ x: -100, y: -100 });
+  const [clicking, setClicking] = React.useState(false);
+
+  React.useEffect(() => {
+    const onMove = (e) => setPos({ x: e.clientX, y: e.clientY });
+    const onDown = () => setClicking(true);
+    const onUp   = () => setClicking(false);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mousedown', onDown);
+    window.addEventListener('mouseup',   onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousedown', onDown);
+      window.removeEventListener('mouseup',   onUp);
+    };
+  }, []);
+
+  const size = clicking ? 12 : 16;
+  const opacity = clicking ? 1 : 0.75;
+
+  return (
+    <div
+      className="fixed pointer-events-none z-[9999]"
+      style={{
+        left: pos.x,
+        top: pos.y,
+        transform: 'translate(-50%, -50%)',
+        transition: 'width 0.08s ease, height 0.08s ease, opacity 0.08s ease',
+      }}
+    >
+      {/* Horizontal bar */}
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: size * 2, height: 1,
+        backgroundColor: `rgba(220,38,38,${opacity})`,
+      }} />
+      {/* Vertical bar */}
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 1, height: size * 2,
+        backgroundColor: `rgba(220,38,38,${opacity})`,
+      }} />
+      {/* Centre dot */}
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 3, height: 3, borderRadius: '50%',
+        backgroundColor: `rgba(220,38,38,${opacity})`,
+      }} />
+    </div>
+  );
+};
+
+/* ════════════════════════════════════
+   ASK HOOK — always-visible inline tag that fires a contextual question
+   into the AI chat. Ghost state → active state on hover.
+════════════════════════════════════ */
+const AskHook = ({ question }) => {
+  const [active, setActive] = useState(false);
+
+  const fire = (e) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('ask-about-this', { detail: { question } }));
+  };
+
+  return (
+    <button
+      onClick={fire}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        verticalAlign: 'middle', marginLeft: 10,
+        fontFamily: TELE, fontSize: 8, letterSpacing: '0.18em',
+        textTransform: 'uppercase', cursor: 'pointer', outline: 'none',
+        padding: '2px 8px', whiteSpace: 'nowrap',
+        border: `1px solid ${active ? 'rgba(220,38,38,0.7)' : 'rgba(220,38,38,0.2)'}`,
+        color: active ? '#f87171' : 'rgba(220,38,38,0.38)',
+        backgroundColor: active ? 'rgba(220,38,38,0.08)' : 'transparent',
+        boxShadow: active ? '0 0 10px rgba(220,38,38,0.15)' : 'none',
+        transition: 'border-color 0.18s, color 0.18s, background-color 0.18s, box-shadow 0.18s',
+      }}
+    >
+      <span style={{ fontSize: 10, lineHeight: 1, marginBottom: 1 }}>⊕</span>
+      {active ? 'ASK ABOUT THIS' : 'ASK'}
+    </button>
+  );
+};
 
 /* ════════════════════════════════════
    FIXED CENTERED PORTRAIT — always visible, content scrolls around it
@@ -47,10 +145,10 @@ const FixedPortrait = () => (
         width: 'clamp(500px, 60vw, 900px)',
         height: 'auto',
         marginTop: '12vh',
-        opacity: 0.55,
-        filter: 'grayscale(100%) contrast(120%) brightness(0.5)',
-        maskImage: 'radial-gradient(ellipse 55% 60% at 50% 42%, black 30%, transparent 75%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 55% 60% at 50% 42%, black 30%, transparent 75%)',
+        opacity: 0.32,
+        filter: 'grayscale(100%) contrast(130%) brightness(0.45)',
+        maskImage: 'radial-gradient(ellipse 50% 58% at 50% 42%, black 25%, transparent 72%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 50% 58% at 50% 42%, black 25%, transparent 72%)',
         userSelect: 'none',
         objectPosition: 'center top',
       }}
@@ -237,8 +335,8 @@ const Fold1 = () => (
         style={{ bottom: '10%', right: '8%', gap: 32 }}
       >
         {[
-          { metric: '5+', label: 'YEARS EXPERIENCE', delay: 0 },
-          { metric: '>₹20 Cr', label: 'REVENUE IMPACT', delay: 0.15 },
+          { metric: '5+',     label: 'YEARS EXPERIENCE', delay: 0,    q: "You have 5+ years as a PM — what has been the most pivotal product decision you have made, and what did it teach you?" },
+          { metric: '>₹20 Cr', label: 'REVENUE IMPACT',    delay: 0.15, q: "Which specific product or initiative contributed most to the ₹20 Crore revenue impact, and how did you measure it?" },
         ].map(badge => (
           <div key={badge.label} style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
@@ -259,7 +357,7 @@ const Fold1 = () => (
               color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
               textTransform: 'uppercase',
               marginTop: 6, display: 'block',
-            }}>{badge.label}</span>
+            }}>{badge.label}<AskHook question={badge.q} /></span>
           </div>
         ))}
       </motion.div>
@@ -468,7 +566,7 @@ const Fold3 = () => (
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '10px 0',
-          }}>Learners Onboarded</p>
+          }}>Learners Onboarded<AskHook question="The Miles One app onboarded 40,000+ learners — what was the product architecture behind that onboarding funnel and how did you balance lead gen with learner activation?" /></p>
           <p style={{
             fontFamily: SWISS, fontSize: 13, fontWeight: 400,
             color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
@@ -705,7 +803,7 @@ const Fold4 = () => (
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
-          }}>Automated Self-Service Lift</p>
+          }}>Automated Self-Service Lift<AskHook question="The agentic framework drove a 25% self-service lift — what was the RAG pipeline design and how did you handle context retrieval and memory for transactional resolutions?" /></p>
           <p style={{
             fontFamily: SWISS, fontSize: 13, fontWeight: 400,
             color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
@@ -877,7 +975,7 @@ const Fold5 = () => (
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
           }}>
-            POST-COURSE ENGAGEMENT
+            POST-COURSE ENGAGEMENT<AskHook question="The multi-platform calendar booking microservice produced a 30% post-course engagement lift — how did you design the service and what channels did it connect to drive community acquisition?" />
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 13,
@@ -910,7 +1008,7 @@ const Fold5 = () => (
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
           }}>
-            SCALED WEBINAR FREQUENCY
+            SCALED WEBINAR FREQUENCY<AskHook question="The Zoom-integrated SaaS content microservice scaled webinar frequency by 40% — how did the web page builder work, how did it integrate with the CRM, and what drove the 20% base conversion improvement?" />
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 13,
@@ -1015,7 +1113,7 @@ const Fold6 = () => (
             color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '8px 0 12px',
           }}>
-            DEV ERROR REDUCTION
+            DEV ERROR REDUCTION<AskHook question="An 80% drop in dev errors is a massive outcome — what was broken in the AlmaBetter JIRA and Basecamp setup, and what specific workflow changes did you make to fix velocity and content readiness?" />
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 13,
@@ -1048,7 +1146,7 @@ const Fold6 = () => (
             color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0 4px',
           }}>
-            PEAK CSAT SCORE
+            PEAK CSAT SCORE<AskHook question="AlmaBetter's CSAT moved from 7.0 to a peak of 9.1 — how did you design the productized ticketing system, what did the n8n ELT layer actually do, and where did you cut the 35% resolution time?" />
           </p>
           <span style={{
             fontFamily: TELE, fontSize: 11,
@@ -1230,7 +1328,7 @@ const Fold7 = () => (
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
           }}>
-            COURSE COMPLETION LIFT
+            COURSE COMPLETION LIFT<AskHook question="You identified a 120-minute decay curve at UpGrad that no one had seen — how did you find it in the behavioral data, and what product interventions did you ship to convert that insight into a 20% completion lift?" />
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 13,
@@ -1293,11 +1391,11 @@ const f8Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.18, 
 const VP8       = { once: true, margin: '-120px' };
 
 const PROFICIENCY_BARS = [
-  { label: 'DATA PLATFORM ARCHITECTURE',      pct: 95 },
-  { label: 'ENTERPRISE AUTOMATION (ETL/ELT)', pct: 90 },
-  { label: 'AI / ML INTEGRATION (RAG)',       pct: 85 },
-  { label: 'PRODUCT-LED GROWTH (PLG)',        pct: 90 },
-  { label: '0–1 MVP DEPLOYMENT',              pct: 95 },
+  { label: 'DATA PLATFORM ARCHITECTURE',      pct: 95, q: "Give me a concrete example of a data platform architecture decision you made — what was the problem, what stack did you choose, and what was the downstream product impact?" },
+  { label: 'ENTERPRISE AUTOMATION (ETL/ELT)', pct: 90, q: "Walk me through the most complex ETL or ELT pipeline you have built — what was being moved, where did n8n fit in, and how did it change how the product team operated?" },
+  { label: 'AI / ML INTEGRATION (RAG)',       pct: 85, q: "Describe a production RAG implementation you shipped — what was the retrieval strategy, how did you handle hallucination risk, and what metric moved as a result?" },
+  { label: 'PRODUCT-LED GROWTH (PLG)',        pct: 90, q: "What is the most effective PLG growth loop you have designed and shipped — how did you identify the activation moment and what did the loop look like end-to-end?" },
+  { label: '0–1 MVP DEPLOYMENT',              pct: 95, q: "Walk me through the 0-to-1 product you are most proud of — from the first principles conversation through to live deployment and first real users." },
 ];
 
 const ARSENAL_CATEGORIES = [
@@ -1359,7 +1457,7 @@ const FoldTechStack = () => (
                 color: 'rgba(209,213,219,0.8)', letterSpacing: '0.12em',
                 textTransform: 'uppercase', margin: '0 0 8px',
               }}>
-                {bar.label}
+                {bar.label}<AskHook question={bar.q} />
               </p>
               {/* Track */}
               <div style={{
@@ -1449,137 +1547,225 @@ const FoldTechStack = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 8 — VERIFIED INFORMANTS (Testimonial Carousel)
+   FOLD 8 — WIRETAP TERMINAL (Interactive Intercepts)
+   Dual-pane surveillance terminal — click to decrypt
 ════════════════════════════════════════════════════ */
-const INFORMANTS = [
+const INTERCEPTS = [
   {
     codename: 'THE ARCHITECT',
     role: 'PRINCIPAL ENGINEER',
-    quote: "Satyajit builds deterministic architecture. He doesn't just pass PRDs; he ensures the engineering layer actually scales.",
-    hue: 'linear-gradient(145deg, #0a0f14 0%, #111827 60%, #0c1118 100%)',
+    quote: "Satyajit builds deterministic architecture. He doesn't just pass PRDs — he ensures the engineering layer actually scales. The way he pre-empted failure points in our RAG pipeline saved us two sprints.",
   },
   {
     codename: 'THE STRATEGIST',
     role: 'VP PRODUCT',
-    quote: "His GTM thinking is rare. He connects product decisions directly to revenue outcomes with precision most PMs never reach.",
-    hue: 'linear-gradient(145deg, #100a14 0%, #1a0f22 60%, #120c18 100%)',
+    quote: "His GTM thinking is rare. He connects product decisions directly to revenue outcomes with a precision most PMs never reach. The Events vertical went from zero to a repeatable acquisition machine under his ownership.",
   },
   {
     codename: 'THE ANALYST',
     role: 'DATA SCIENCE LEAD',
-    quote: "The most data-fluent PM I've worked with. Satyajit turns behavioral signals into product interventions that actually move metrics.",
-    hue: 'linear-gradient(145deg, #0a1408 0%, #0d1a0b 60%, #0b1609 100%)',
+    quote: "The most data-fluent PM I've worked with. Satyajit turns behavioral signals into product interventions that actually move metrics. He identified a 120-minute engagement decay curve that nobody else had seen.",
   },
   {
     codename: 'THE OPERATOR',
     role: 'ENGINEERING MANAGER',
-    quote: "He ran the entire CRM module migration with zero velocity loss. The kind of execution that makes you wonder how he managed it alone.",
-    hue: 'linear-gradient(145deg, #14100a 0%, #1c1510 60%, #16120c 100%)',
+    quote: "He ran the entire CRM module migration with zero velocity loss. The kind of execution that makes you wonder how he managed it alone. The Sales Queue module was spec'd, built, and deployed in under three weeks.",
   },
   {
     codename: 'THE COMMISSIONER',
     role: 'DIRECTOR OF PRODUCT',
-    quote: "Product leadership material. Satyajit thinks in systems, not features. Every initiative he touched had compounding returns.",
-    hue: 'linear-gradient(145deg, #0a0a16 0%, #12121e 60%, #0c0c18 100%)',
+    quote: "Product leadership material. Satyajit thinks in systems, not features. Every initiative he touched had compounding returns. He's the kind of operator you build a roadmap around.",
   },
   {
     codename: 'THE WITNESS',
     role: 'SENIOR PM',
-    quote: "Working alongside him on the AI pipeline showed me what first-principles product thinking looks like in practice.",
-    hue: 'linear-gradient(145deg, #160a0a 0%, #200f0f 60%, #180c0c 100%)',
+    quote: "Working alongside him on the AI pipeline showed me what first-principles product thinking looks like in practice. He doesn't copy patterns — he interrogates the problem until the right architecture surfaces.",
   },
 ];
 
-const Fold8 = () => (
-  <section
-    className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden pt-12"
-    style={{ zIndex: 2 }}
-  >
-    {/* Section header */}
-    <motion.p
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-      style={{
-        fontFamily: TELE, fontSize: 11,
-        color: 'rgba(107,114,128,0.65)', letterSpacing: '0.4em',
-        textTransform: 'uppercase', marginBottom: 32,
-      }}
-    >
-      [ VERIFIED FIELD INFORMANTS ]
-    </motion.p>
+const Fold8 = () => {
+  const [activeIntercept, setActiveIntercept] = useState(0);
+  const active = INTERCEPTS[activeIntercept];
 
-    {/* Carousel */}
-    <div
-      className="w-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-8 pb-12"
-      style={{ paddingLeft: '10vw', paddingRight: '10vw' }}
+  return (
+    <section
+      className="relative w-full flex flex-col justify-center items-center overflow-hidden py-24 px-6"
+      style={{ zIndex: 2, minHeight: '80vh' }}
     >
-      {INFORMANTS.map((inf, i) => (
-        <motion.div
-          key={inf.codename}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1], delay: i * 0.08 }}
-          className="relative shrink-0 snap-center overflow-hidden"
+      {/* Edge gradients */}
+      <div className="absolute inset-y-0 left-0 w-1/4 pointer-events-none z-[1]"
+        style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.95) 0%, transparent 100%)' }} />
+      <div className="absolute inset-y-0 right-0 w-1/4 pointer-events-none z-[1]"
+        style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.95) 0%, transparent 100%)' }} />
+
+      {/* Section header */}
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+        style={{
+          fontFamily: TELE, fontSize: 10,
+          color: 'rgba(107,114,128,0.55)', letterSpacing: '0.4em',
+          textTransform: 'uppercase', marginBottom: 28,
+        }}
+      >
+        [ VERIFIED FIELD INFORMANTS ]
+      </motion.p>
+
+      {/* ── Dual-pane terminal ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+        className="w-full max-w-5xl flex flex-col md:flex-row gap-0 relative z-20"
+        style={{
+          border: '1px solid rgba(55,65,81,0.7)',
+          backgroundColor: 'rgba(5,5,5,0.88)',
+          backdropFilter: 'blur(16px)',
+        }}
+      >
+        {/* CRT scanline overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[1]"
           style={{
-            width: 'clamp(280px, 30vw, 450px)',
-            aspectRatio: '3/4',
-            border: '1px solid rgba(55,65,81,0.6)',
-            background: inf.hue,
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)',
+            borderRadius: 'inherit',
+          }}
+        />
+
+        {/* ── Left pane: Frequencies ── */}
+        <div
+          className="relative z-10 flex flex-col"
+          style={{
+            width: '100%', maxWidth: 260, flexShrink: 0,
+            borderRight: '1px solid rgba(55,65,81,0.5)',
+            padding: '24px 20px',
           }}
         >
-          {/* Dark tint */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ backgroundColor: '#0F172A', mixBlendMode: 'multiply', opacity: 0.8 }}
-          />
+          <span style={{
+            fontFamily: TELE, fontSize: 10,
+            color: '#dc2626', letterSpacing: '0.25em',
+            textTransform: 'uppercase', display: 'block', marginBottom: 16,
+          }}>
+            [ AVAILABLE INTERCEPTS ]
+          </span>
 
-          {/* Corner brackets */}
-          <div className="absolute pointer-events-none" style={{ top: 16, left: 16, width: 20, height: 20, borderTop: '1px solid rgba(220,38,38,0.45)', borderLeft: '1px solid rgba(220,38,38,0.45)' }} />
-          <div className="absolute pointer-events-none" style={{ top: 16, right: 16, width: 20, height: 20, borderTop: '1px solid rgba(220,38,38,0.45)', borderRight: '1px solid rgba(220,38,38,0.45)' }} />
-          <div className="absolute pointer-events-none" style={{ bottom: 16, left: 16, width: 20, height: 20, borderBottom: '1px solid rgba(220,38,38,0.45)', borderLeft: '1px solid rgba(220,38,38,0.45)' }} />
-          <div className="absolute pointer-events-none" style={{ bottom: 16, right: 16, width: 20, height: 20, borderBottom: '1px solid rgba(220,38,38,0.45)', borderRight: '1px solid rgba(220,38,38,0.45)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {INTERCEPTS.map((inf, i) => (
+              <button
+                key={inf.codename}
+                onClick={() => setActiveIntercept(i)}
+                style={{
+                  textAlign: 'left',
+                  padding: '10px 14px',
+                  fontFamily: TELE, fontSize: 10,
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                  borderLeft: `2px solid ${activeIntercept === i ? '#dc2626' : 'rgba(55,65,81,0.6)'}`,
+                  backgroundColor: activeIntercept === i ? 'rgba(185,28,28,0.08)' : 'transparent',
+                  color: activeIntercept === i ? '#F3F4F6' : 'rgba(107,114,128,0.7)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  border: 'none',
+                  borderLeft: `2px solid ${activeIntercept === i ? '#dc2626' : 'rgba(55,65,81,0.6)'}`,
+                  outline: 'none',
+                  width: '100%',
+                }}
+                onMouseEnter={e => {
+                  if (activeIntercept !== i) {
+                    e.currentTarget.style.borderLeftColor = 'rgba(107,114,128,0.8)';
+                    e.currentTarget.style.color = 'rgba(209,213,219,0.8)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (activeIntercept !== i) {
+                    e.currentTarget.style.borderLeftColor = 'rgba(55,65,81,0.6)';
+                    e.currentTarget.style.color = 'rgba(107,114,128,0.7)';
+                  }
+                }}
+              >
+                <span style={{ display: 'block', marginBottom: 2 }}>{inf.codename}</span>
+                <span style={{
+                  fontFamily: TELE, fontSize: 9,
+                  color: activeIntercept === i ? 'rgba(239,68,68,0.6)' : 'rgba(75,85,99,0.6)',
+                  letterSpacing: '0.1em',
+                }}>
+                  {inf.role}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-          {/* Top header */}
-          <div className="relative z-10" style={{ padding: '24px 24px 0' }}>
-            <p style={{
-              fontFamily: SWISS, fontSize: 18, fontWeight: 700,
-              color: 'rgba(229,231,235,0.9)', letterSpacing: '0.1em',
-              textTransform: 'uppercase', margin: '0 0 4px',
+        {/* ── Right pane: Decrypted Transcript ── */}
+        <div
+          className="relative z-10 flex flex-col justify-center"
+          style={{ flex: 1, padding: '28px 28px 28px 24px', minHeight: 280 }}
+        >
+          {/* Status bar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {/* Blinking green dot */}
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                backgroundColor: '#22c55e',
+                animation: 'pulse6 1.4s ease-in-out infinite',
+                boxShadow: '0 0 6px rgba(34,197,94,0.6)',
+              }} />
+              <span style={{
+                fontFamily: TELE, fontSize: 9,
+                color: 'rgba(34,197,94,0.7)', letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+              }}>
+                STATUS: DECRYPTED
+              </span>
+            </div>
+            <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(55,65,81,0.4)' }} />
+            <span style={{
+              fontFamily: TELE, fontSize: 9,
+              color: 'rgba(107,114,128,0.5)', letterSpacing: '0.15em',
+              textTransform: 'uppercase',
             }}>
-              {inf.codename}
-            </p>
-            <p style={{
-              fontFamily: TELE, fontSize: 10,
-              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
-              textTransform: 'uppercase', margin: 0,
-            }}>
-              {inf.role} · FIELD TESTIMONY
-            </p>
+              {active.codename}
+            </span>
           </div>
 
-          {/* Quote box — bottom gradient */}
-          <div
-            className="absolute bottom-0 left-0 w-full z-10"
+          {/* Animated quote — key forces re-animation on tab change */}
+          <motion.p
+            key={activeIntercept}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
             style={{
-              padding: '48px 24px 24px',
-              background: 'linear-gradient(to top, rgba(0,0,0,1) 55%, rgba(0,0,0,0.85) 75%, transparent 100%)',
+              fontFamily: TELE, fontSize: 13,
+              color: 'rgba(209,213,219,0.85)', lineHeight: 1.9,
+              margin: 0,
             }}
           >
-            <p style={{
-              fontFamily: TELE, fontSize: 12,
-              color: 'rgba(209,213,219,0.8)', lineHeight: 1.75, margin: 0,
-            }}>
-              &ldquo;{inf.quote}&rdquo;
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  </section>
-);
+            &ldquo;{active.quote}&rdquo;
+          </motion.p>
+
+          {/* Sign-off */}
+          <motion.span
+            key={`role-${activeIntercept}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            style={{
+              fontFamily: TELE, fontSize: 10,
+              color: 'rgba(75,85,99,0.7)', letterSpacing: '0.15em',
+              display: 'block', marginTop: 20,
+            }}
+          >
+            {'> [ VERIFIED : '}{active.role}{' ]'}
+          </motion.span>
+        </div>
+      </motion.div>
+    </section>
+  );
+};
 
 
 /* ════════════════════════════════════════════════════
@@ -1739,7 +1925,8 @@ const LogoCarousel = () => (
    ROOT EXPORT
 ════════════════════════════════════ */
 const Dossier = () => (
-  <div className="relative bg-[#0F1419]">
+  <div className="relative bg-[#0F1419] dossier-cursor">
+    <CrosshairCursor />
     <DossierStyles />
     <FixedPortrait />
     <div className="relative z-[2]">

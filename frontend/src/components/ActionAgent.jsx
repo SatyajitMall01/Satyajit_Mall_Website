@@ -51,8 +51,9 @@ const ActionAgent = () => {
   const [messages, setMessages]           = useState([]);
   const [input, setInput]                 = useState('');
   const [isTransmitting, setIsTransmitting] = useState(false);
-  const bottomRef = useRef(null);
-  const inputRef  = useRef(null);
+  const bottomRef  = useRef(null);
+  const inputRef   = useRef(null);
+  const pendingRef = useRef(null);
 
   /* Session UUID — one per browser, persisted to localStorage */
   useEffect(() => {
@@ -71,6 +72,35 @@ const ActionAgent = () => {
     return () => window.removeEventListener('open-action-agent', handler);
   }, []);
 
+  /* "Ask about this" hooks — open chat and fire the contextual question */
+  useEffect(() => {
+    const handler = (e) => {
+      const q = e.detail?.question;
+      if (!q) return;
+      setIsOpen(true);
+      if (sessionId) {
+        // Small delay so the chat window animates in before the message lands
+        setTimeout(() => performSend(q), 380);
+      } else {
+        pendingRef.current = q;
+      }
+    };
+    window.addEventListener('ask-about-this', handler);
+    return () => window.removeEventListener('ask-about-this', handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
+
+  /* Flush pending question once session is ready */
+  useEffect(() => {
+    if (sessionId && pendingRef.current) {
+      const q = pendingRef.current;
+      pendingRef.current = null;
+      setIsOpen(true);
+      setTimeout(() => performSend(q), 380);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
+
   /* Auto-scroll on every new message or transmitting change */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -81,48 +111,42 @@ const ActionAgent = () => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 400);
   }, [isOpen]);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    const text = input.trim();
+  /* Core send — callable from form submit or programmatically */
+  const performSend = async (text) => {
     if (!text || !sessionId || isTransmitting) return;
-
     setMessages(prev => [...prev, { role: 'user', text }]);
-    setInput('');
     setIsTransmitting(true);
-
     try {
       const res = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: text, session_id: sessionId }),
       });
-
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-
-      setMessages(prev => [
-        ...prev,
-        {
-          role: 'agent',
-          text: data.answer,
-          sources: data.sources || [],
-          chunks: data.chunks_used ?? 0,
-        },
-      ]);
+      setMessages(prev => [...prev, {
+        role: 'agent',
+        text: data.answer,
+        sources: data.sources || [],
+        chunks: data.chunks_used ?? 0,
+      }]);
     } catch (err) {
-      setMessages(prev => [
-        ...prev,
-        {
-          role: 'agent',
-          text: `TRANSMISSION FAILED \u2014 ${err.message ?? 'Connection to secure channel interrupted.'}`,
-          sources: [],
-          chunks: 0,
-          error: true,
-        },
-      ]);
+      setMessages(prev => [...prev, {
+        role: 'agent',
+        text: `TRANSMISSION FAILED \u2014 ${err.message ?? 'Connection to secure channel interrupted.'}`,
+        sources: [], chunks: 0, error: true,
+      }]);
     } finally {
       setIsTransmitting(false);
     }
+  };
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text) return;
+    setInput('');
+    performSend(text);
   };
 
   const closeWindow = () => { setIsOpen(false); setIsExpanded(false); };
