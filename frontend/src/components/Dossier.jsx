@@ -8,10 +8,6 @@ const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const EXPO  = [0.16, 1, 0.3, 1];
 const VP    = { once: true, margin: '-60px' };
 
-const fadeUp = {
-  hidden:  { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EXPO } },
-};
 
 const slideLeft = {
   hidden:  { opacity: 0, x: -50 },
@@ -23,8 +19,6 @@ const slideRight = {
 };
 
 const S15 = { hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } } };
-const S12 = { hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } };
-const S10 = { hidden: {}, visible: { transition: { staggerChildren: 0.10, delayChildren: 0.1 } } };
 
 /* ── Injected keyframes ── */
 const DossierStyles = () => (
@@ -91,9 +85,6 @@ const Declassify = ({ children, delay = 0 }) => {
    SHARED MICRO-COMPONENTS
 ════════════════════════════════════ */
 
-const BlinkCursor = () => (
-  <span style={{ animation: 'blink 1.06s step-end infinite', fontFamily: TELE, color: 'rgba(61,155,100,0.75)' }}>█</span>
-);
 
 const Redacted = ({ children }) => {
   const [revealed, setRevealed] = useState(false);
@@ -112,24 +103,6 @@ const Redacted = ({ children }) => {
   );
 };
 
-const FoldNum = ({ n, label }) => (
-  <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-    <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 13, color: '#dc2626' }}>{n}</span>
-    <div style={{ width: 28, height: 1, backgroundColor: '#dc2626' }} />
-    <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, letterSpacing: '0.3em', color: '#dc2626', textTransform: 'uppercase' }}>{label}</span>
-  </motion.div>
-);
-
-/* ── Layout helpers ──
-   Flank = content column on left or right of the fixed center portrait
-   On mobile: full width. On desktop: ~42% width on the designated side.
-*/
-const LeftFlank = ({ children, className = '' }) => (
-  <div className={`w-full md:w-[42%] md:pr-4 ${className}`}>{children}</div>
-);
-const RightFlank = ({ children, className = '' }) => (
-  <div className={`w-full md:w-[42%] md:ml-auto md:pl-4 ${className}`}>{children}</div>
-);
 
 /* ════════════════════════════════════════════════════
    FOLD 1 — THE EVIDENCE WALL
@@ -783,12 +756,21 @@ const f5Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0,
 const f5Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
 
 const Fold5 = () => (
-  <section className="min-h-screen relative z-[2] w-full overflow-hidden">
-    {/* Edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+  <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
-    <motion.div className="relative min-h-screen w-full" variants={f5Stagger} initial="hidden" whileInView="visible" viewport={VP}>
+    {/* Heavy edge gradients — text contrast against portrait */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+
+    <motion.div
+      className="relative min-h-screen w-full"
+      variants={f5Stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VP}
+    >
 
       {/* ── Artifact 1: MarTech & CDP Architecture (Top Left) ── */}
       <motion.div
@@ -797,31 +779,46 @@ const Fold5 = () => (
         style={{ top: '15%', left: '8%', maxWidth: 420 }}
       >
         <div style={{
-          backgroundColor: 'rgba(10,10,10,0.9)',
+          backgroundColor: 'rgba(10,10,10,0.90)',
           border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px', borderRadius: 8,
+          padding: '24px',
+          borderRadius: 8,
           backdropFilter: 'blur(12px)',
-          backgroundImage: 'repeating-linear-gradient(0deg, rgba(107,114,128,0.025) 0px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, rgba(107,114,128,0.025) 0px, transparent 1px, transparent 28px)',
+          backgroundImage: [
+            'repeating-linear-gradient(0deg,  rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
+            'repeating-linear-gradient(90deg, rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
+          ].join(', '),
         }}>
+          {/* Header */}
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 700,
             color: '#dc2626', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 14px',
-          }}>MarTech & CDP Architecture</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.7, margin: '0 0 18px',
+            textTransform: 'uppercase', margin: '0 0 12px',
           }}>
-            Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem — Apps, Websites, CRM, and LMS.
+            MARTECH &amp; CDP ARCHITECTURE
           </p>
+
+          {/* Body */}
+          <p style={{
+            fontFamily: SWISS, fontSize: 13, lineHeight: 1.7,
+            color: 'rgba(209,213,219,0.85)', margin: '0 0 18px',
+          }}>
+            Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem (Apps, Websites, CRM, LMS).
+          </p>
+
+          {/* Orchestration routing rows */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
               { label: 'ETL / Orchestration', value: 'n8n & Zapier' },
-              { label: 'Comms Routing', value: 'Netcore · Clevertap · Wati' },
+              { label: 'Comms Routing',        value: 'Netcore · Clevertap · Wati' },
             ].map(row => (
               <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>{row.label}:</span>
-                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>{row.value}</span>
+                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>
+                  {row.label}:
+                </span>
+                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>
+                  {row.value}
+                </span>
               </div>
             ))}
           </div>
@@ -839,13 +836,18 @@ const Fold5 = () => (
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
             color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '0 0 8px',
-          }}>Miles Force // Internal CRM</p>
+          }}>
+            MILES FORCE // INTERNAL CRM
+          </p>
           <p style={{
-            fontFamily: SWISS, fontSize: 15, fontWeight: 700,
-            color: '#F3F4F6', lineHeight: 1.25, margin: '0 0 12px',
-          }}>Lead Routing & Source Detection</p>
+            fontFamily: SWISS, fontSize: 13, fontWeight: 700,
+            color: '#F3F4F6', letterSpacing: '0.02em',
+            textTransform: 'uppercase', margin: '0 0 10px',
+          }}>
+            LEAD ROUTING &amp; SOURCE DETECTION
+          </p>
           <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            fontFamily: SWISS, fontSize: 13,
             color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
           }}>
             Led the development of the Miles Force CRM module. Optimized the critical lead management flow from Enquiry to SPOC Allocation. Implemented a dynamic Sales Queue Module designed for day-level lead distribution to maximize sales efficiency.
@@ -853,28 +855,32 @@ const Fold5 = () => (
         </div>
       </motion.div>
 
-      {/* ── Artifact 3: Community Microservice (Bottom Left) ── */}
+      {/* ── Artifact 3: Microservice Impact 1 — +30% (Bottom Left) ── */}
       <motion.div
         variants={f5Left}
         className="absolute z-10 hidden md:block"
         style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
           <Declassify>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
               fontSize: 'clamp(64px, 6vw, 96px)',
               color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>+30%</span>
+              letterSpacing: '-0.03em', display: 'block',
+            }}>
+              +30%
+            </span>
           </Declassify>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
-          }}>Post-Course Engagement</p>
+          }}>
+            POST-COURSE ENGAGEMENT
+          </p>
           <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            fontFamily: SWISS, fontSize: 13,
             color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
           }}>
             Productized a multi-platform calendar booking microservice for Community Engagement, achieving a 12% lift in community-led acquisition.
@@ -882,28 +888,32 @@ const Fold5 = () => (
         </div>
       </motion.div>
 
-      {/* ── Artifact 4: Webinar SaaS Microservice (Bottom Right) ── */}
+      {/* ── Artifact 4: Microservice Impact 2 — +40% (Bottom Right) ── */}
       <motion.div
         variants={f5Right}
         className="absolute z-10 hidden md:block"
         style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
           <Declassify delay={0.1}>
             <span style={{
               fontFamily: SWISS, fontWeight: 900,
               fontSize: 'clamp(64px, 6vw, 96px)',
               color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>+40%</span>
+              letterSpacing: '-0.03em', display: 'block',
+            }}>
+              +40%
+            </span>
           </Declassify>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
             color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '12px 0',
-          }}>Scaled Webinar Frequency</p>
+          }}>
+            SCALED WEBINAR FREQUENCY
+          </p>
           <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
+            fontFamily: SWISS, fontSize: 13,
             color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
           }}>
             Developed an Internal SaaS Content Microservice integrated with Zoom and our CRM. This custom web page builder scaled deployments and drove a 20% increase in base conversion.
@@ -917,149 +927,601 @@ const Fold5 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 6 — SURVEILLANCE BOARD (Prior Roles — Right Flank)
-   Cards at angles, pushpins, string connections
+   FOLD 6 — TACTICAL OPERATIONS BOARD (AlmaBetter)
+   After-action report aesthetic — absolute spatial canvas
 ════════════════════════════════════════════════════ */
-const CARDS = [
-  { metric: '9.1', label: 'Peak CSAT', co: 'AlmaBetter', sub: 'Productized ticketing system via n8n ELT, −35% resolution time.', clip: true },
-  { metric: '+20%', label: 'QoQ Revenue', co: 'Miles Events', sub: '+60% enrollments, +40% attendance via Events GTM.', clip: false },
-  { metric: '+40%', label: 'Qualified Leads', co: 'Miles Marketing', sub: '−20% WhatsApp cost, −15% comms cost, −10% sales cycle.', clip: true },
-  { metric: '-80%', label: 'Dev Errors', co: 'AlmaBetter', sub: 'JIRA + Basecamp redesign, sprint velocity normalized.', terminal: true },
-  { metric: '+20%', label: 'Course Completion', co: 'UpGrad', sub: "Identified '120-min decay curve', +12% learner success.", clip: false },
-];
-const ROTS = [-2.5, 1.8, -1.2, 2.8, -1.8];
-const PINS = ['#B22222', '#D4A574', '#B22222', '#4A6741', '#D4A574'];
+const f6Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f6Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f6Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
+const VP6       = { once: true, margin: '-150px' };
 
 const Fold6 = () => (
-  <section className="min-h-screen relative z-[2] flex items-center">
-    {/* Coffee stain */}
-    <div className="absolute inset-0 pointer-events-none" style={{
-      background: 'radial-gradient(circle 55px at 72% 28%, transparent 48%, rgba(120,80,40,0.03) 50%, rgba(120,80,40,0.012) 70%, transparent 72%)',
-    }} />
+  <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
-    <motion.div className="w-full px-6 md:px-10 lg:px-16 py-16" variants={S10} initial="hidden" whileInView="visible" viewport={VP}>
-      <RightFlank className="md:w-[50%]">
-        <FoldNum n="06" label="Prior Jurisdictions" />
+    {/* Heavy edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
 
-        <div className="flex flex-wrap gap-5">
-          {CARDS.map((card, i) => (
-            <motion.div key={i} variants={fadeUp} style={{ width: 'clamp(180px, 45%, 230px)', flexShrink: 0 }}>
-              <div style={{
-                transform: `rotate(${ROTS[i]}deg)`,
-                border: '1px solid rgba(180,160,120,0.18)',
-                backgroundColor: 'rgba(10,13,16,0.82)',
-                backdropFilter: 'blur(4px)',
-                padding: '22px 16px 16px', position: 'relative',
-              }}>
-                <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%)', width: 9, height: 9, borderRadius: '50%', backgroundColor: PINS[i], boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
-                {card.clip && <div style={{ position: 'absolute', top: 8, right: 8, width: 18, height: 5, borderRadius: 3, backgroundColor: 'rgba(107,114,128,0.25)', transform: 'rotate(22deg)' }} />}
-                <span style={{ fontFamily: SWISS, fontSize: 10, fontWeight: 600, color: '#dc2626', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>{card.co}</span>
+    <motion.div
+      className="relative min-h-screen w-full"
+      variants={f6Stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VP6}
+    >
 
-                {card.terminal ? (
-                  <div style={{ backgroundColor: '#070A0D', padding: '8px 10px', border: '1px solid rgba(107,114,128,0.12)' }}>
-                    {['> DEV_ERRORS ↓ 80%', '> JIRA + Basecamp redesign'].map((l, j) => (
-                      <p key={j} style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(61,155,100,0.75)', lineHeight: 1.8, margin: 0 }}>{l}</p>
-                    ))}
-                    <p style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(34,197,94,0.85)', lineHeight: 1.8, margin: 0 }}>{'> Sprint velocity normalized'}</p>
-                  </div>
-                ) : (
-                  <Declassify delay={i * 0.06}>
-                    <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(24px, 3vw, 36px)', color: '#E5E7EB', lineHeight: 0.95, display: 'block' }}>{card.metric}</span>
-                    <div className="flex items-center gap-2 mt-1 mb-1">
-                      <span style={{ fontFamily: SWISS, fontWeight: 800, fontSize: 9, color: '#B22222' }}>//</span>
-                      <span style={{ fontFamily: SWISS, fontSize: 8, fontWeight: 600, color: 'rgba(180,160,120,0.4)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{card.label}</span>
-                    </div>
-                    <p style={{ fontFamily: SWISS, fontSize: 11, fontWeight: 400, color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: 0 }}>{card.sub}</p>
-                  </Declassify>
-                )}
-              </div>
-            </motion.div>
-          ))}
+      {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
+      <motion.div
+        variants={f6Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', left: '8%', maxWidth: 400 }}
+      >
+        <div style={{
+          borderBottom: '1px solid rgba(107,114,128,0.4)',
+          borderLeft: '1px solid rgba(107,114,128,0.4)',
+          paddingLeft: 16,
+          paddingBottom: 16,
+        }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.3em',
+            textTransform: 'uppercase', margin: '0 0 8px',
+          }}>
+            PAST JURISDICTION // ALMABETTER
+          </p>
+          <p style={{
+            fontFamily: TELE, fontSize: 12,
+            color: 'rgba(156,163,175,0.75)', margin: '0 0 8px',
+          }}>
+            ASSOCIATE PROGRAM MANAGER // PRODUCT GROWTH
+          </p>
+          <span style={{
+            fontFamily: TELE, fontSize: 11,
+            color: 'rgba(107,114,128,0.65)', display: 'block',
+          }}>
+            [ NOV 2022 – OCT 2023 ]
+          </span>
         </div>
-      </RightFlank>
+      </motion.div>
+
+      {/* ── Artifact 2: Engineering Ops Node (Top Right) ── */}
+      <motion.div
+        variants={f6Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', maxWidth: 380 }}
+      >
+        {/* Crosshair marker — top right corner */}
+        <div style={{ position: 'relative' }}>
+          <span style={{
+            position: 'absolute', top: 0, right: 0,
+            fontFamily: SWISS, fontSize: 18, fontWeight: 300,
+            color: 'rgba(220,38,38,0.5)', lineHeight: 1,
+          }}>+</span>
+
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(48px, 5vw, 72px)',
+              color: '#F3F4F6', lineHeight: 1,
+              letterSpacing: '-0.03em', display: 'block',
+            }}>
+              -80%
+            </span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '8px 0 12px',
+          }}>
+            DEV ERROR REDUCTION
+          </p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Redesigned engineering workflows and sprint cycles using JIRA and Basecamp. Resolved velocity misalignments and accelerated content readiness by two full weeks.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 3: Resolution Matrix (Bottom Left) ── */}
+      <motion.div
+        variants={f6Left}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
+      >
+        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(64px, 6vw, 96px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              letterSpacing: '-0.03em', display: 'block',
+            }}>
+              9.1
+            </span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0 4px',
+          }}>
+            PEAK CSAT SCORE
+          </p>
+          <span style={{
+            fontFamily: TELE, fontSize: 11,
+            color: 'rgba(107,114,128,0.65)', display: 'block', marginBottom: 12,
+          }}>
+            [ UP FROM 7.0 ]
+          </span>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Architected and shipped a productized ticketing system. Utilized an n8n ELT layer to cut resolution time by 35% and completely transform the customer support experience.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 4: GTM & Acquisition Board (Bottom Right) ── */}
+      <motion.div
+        variants={f6Right}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', right: '8%', maxWidth: 420 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.90)',
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '24px',
+          backdropFilter: 'blur(12px)',
+        }}>
+          {/* Dual metrics row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            {[
+              { metric: '+20%', label: 'QoQ Revenue' },
+              { metric: '+40%', label: 'Qualified Leads' },
+            ].map(item => (
+              <div key={item.label}>
+                <Declassify>
+                  <span style={{
+                    fontFamily: SWISS, fontWeight: 700,
+                    fontSize: 'clamp(28px, 3vw, 36px)',
+                    color: '#FFFFFF', lineHeight: 1,
+                    display: 'block', letterSpacing: '-0.02em',
+                  }}>
+                    {item.metric}
+                  </span>
+                </Declassify>
+                <p style={{
+                  fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+                  textTransform: 'uppercase', margin: '6px 0 0',
+                }}>
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.6)', marginBottom: 16 }} />
+
+          <p style={{
+            fontFamily: SWISS, fontSize: 13,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Orchestrated the Go-to-Market strategy for the Events Vertical. Optimized acquisition spend across WhatsApp and MarTech channels, increasing online enrollments by 60% and shortening the sales cycle by 10%.
+          </p>
+        </div>
+      </motion.div>
+
     </motion.div>
   </section>
 );
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 7 — SEALED LEDGER (Education — Left Flank)
-   Crease lines, CLASSIFIED watermark, dotted leaders, wax seal
+   FOLD 7 — UPGRAD (Behavioral Data & Content Strategy)
+   Absolute spatial canvas — four corners
 ════════════════════════════════════════════════════ */
+const f7Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f7Right   = { hidden: { opacity: 0, x:  30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f7Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } } };
+const VP7       = { once: true, margin: '-150px' };
+
 const Fold7 = () => (
-  <section className="min-h-screen relative z-[2] flex items-center" style={{ backgroundColor: 'rgba(17,21,15,0.5)' }}>
-    {/* Crease lines */}
-    <div className="absolute left-0 right-0 pointer-events-none" style={{ top: '30%', height: 1, backgroundColor: 'rgba(107,114,128,0.1)', boxShadow: '0 1px 2px rgba(0,0,0,0.3)' }} />
-    <div className="absolute left-0 right-0 pointer-events-none" style={{ top: '65%', height: 1, backgroundColor: 'rgba(107,114,128,0.1)', boxShadow: '0 1px 2px rgba(0,0,0,0.3)' }} />
-    {/* CLASSIFIED watermark */}
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-      <span style={{ fontFamily: SWISS, fontWeight: 900, fontSize: 'clamp(70px, 11vw, 130px)', color: '#B22222', opacity: 0.04, transform: 'rotate(-25deg)', whiteSpace: 'nowrap', userSelect: 'none', letterSpacing: '0.08em' }}>
-        [ CLASSIFIED ]
-      </span>
-    </div>
+  <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
-    <motion.div className="w-full px-6 md:px-10 lg:px-16 py-16" variants={S12} initial="hidden" whileInView="visible" viewport={VP}>
-      <LeftFlank>
-        <FoldNum n="07" label="Credentials & Clearance" />
+    {/* Heavy edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
 
-        {/* Ledger rows */}
-        {[
-          { l: 'PGDM Marketing — CGPA: 8.21', r: '2019–2021', s: 'Pune Institute of Business Management · Marketing · Minors: Retail, Market Research' },
-          { l: 'B.Tech Automotive — CGPA: 7.8', r: '2015–2019', s: 'Dr. Sudhir Chandra Sur Degree Engineering College, MAKAUT' },
-        ].map(row => (
-          <motion.div key={row.r} variants={fadeUp} className="mb-5">
-            <div className="flex items-end gap-3" style={{ borderBottom: '1px dotted rgba(107,114,128,0.3)', paddingBottom: 5 }}>
-              <span style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: 'rgba(229,231,235,0.9)', whiteSpace: 'nowrap' }}>{row.l}</span>
-              <span className="flex-1" />
-              <span style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.6)' }}>{row.r}</span>
-            </div>
-            <p style={{ fontFamily: SWISS, fontSize: 12, fontWeight: 400, color: 'rgba(156,163,175,0.55)', lineHeight: 1.6, margin: '4px 0 0' }}>{row.s}</p>
-          </motion.div>
-        ))}
+    <motion.div
+      className="relative min-h-screen w-full"
+      variants={f7Stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VP7}
+    >
 
-        {/* Cert stamps */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-3 mt-4 mb-6">
-          {['Certified Scrum Product Owner (CSPO)', 'Six Sigma Green Belt', 'Google Analytics · Advanced Excel · SEO'].map((c, i) => (
-            <Declassify key={c} delay={i * 0.1}>
-              <span style={{ display: 'inline-block', fontFamily: SWISS, fontSize: 11, fontWeight: 600, color: 'rgba(178,34,34,0.85)', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(178,34,34,0.35)', padding: '5px 14px' }}>
-                {c}
-              </span>
-            </Declassify>
-          ))}
-        </motion.div>
-
-        {/* Skills terminal */}
-        <motion.div variants={fadeUp} style={{
-          backgroundColor: 'rgba(7,10,13,0.85)', border: '1px solid rgba(107,114,128,0.15)',
-          padding: '12px 16px', backdropFilter: 'blur(6px)',
+      {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
+      <motion.div
+        variants={f7Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', left: '8%', maxWidth: 400 }}
+      >
+        <div style={{
+          borderBottom: '1px solid rgba(107,114,128,0.4)',
+          borderLeft:   '1px solid rgba(107,114,128,0.4)',
+          paddingLeft: 16, paddingBottom: 16,
         }}>
-          {['> TOOLS: Jira | Asana | Figma | Miro | Notion',
-            '> DATA: SQL | BigQuery | Looker | Mixpanel | Amplitude',
-            '> AI/ML: LangChain | RAG | n8n | OpenAI | Vector DBs',
-            '> PRODUCT: A/B Testing | User Research | Roadmapping',
-          ].map((l, i) => (
-            <p key={i} style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(61,155,100,0.75)', lineHeight: 2, margin: 0 }}>{l}</p>
-          ))}
-          <p style={{ fontFamily: TELE, fontSize: 11, color: 'rgba(34,197,94,0.85)', lineHeight: 2, margin: 0 }}>
-            {'> CLEARANCE: FULL STACK AUTHORIZED'} <BlinkCursor />
-          </p>
-        </motion.div>
-
-        {/* Wax seal */}
-        <motion.div variants={fadeUp} className="mt-8">
-          <div style={{
-            width: 85, height: 85, borderRadius: '50%',
-            border: '4px solid #B22222',
-            background: 'radial-gradient(circle at 40% 35%, rgba(200,50,50,0.3), rgba(140,20,20,0.8))',
-            boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+            color: '#dc2626', letterSpacing: '0.3em',
+            textTransform: 'uppercase', margin: '0 0 8px',
           }}>
-            <span style={{ fontFamily: SWISS, fontSize: 7, fontWeight: 900, color: 'rgba(229,231,235,0.6)', letterSpacing: '0.2em', textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.4 }}>
-              END<br />OF<br />FILE
+            PAST JURISDICTION // UPGRAD
+          </p>
+          <p style={{
+            fontFamily: TELE, fontSize: 12,
+            color: 'rgba(156,163,175,0.75)', margin: '0 0 8px',
+          }}>
+            SR. ASSOCIATE // PROGRAM &amp; CONTENT STRATEGY
+          </p>
+          <span style={{
+            fontFamily: TELE, fontSize: 11,
+            color: 'rgba(107,114,128,0.65)', display: 'block',
+          }}>
+            [ JAN 2021 – OCT 2022 ]
+          </span>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 2: Behavioral Analysis Node (Top Right) ── */}
+      <motion.div
+        variants={f7Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '15%', right: '8%', maxWidth: 400 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.80)',
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '24px', backdropFilter: 'blur(12px)',
+        }}>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 12px',
+          }}>
+            BEHAVIORAL DATA ANALYSIS
+          </p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Addressed critical learner engagement drop-offs by analyzing deep behavioral data. Identified structural friction points and introduced new learning strategies that directly improved learner success metrics by 12%.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 3: Impact Metric (Bottom Left) ── */}
+      <motion.div
+        variants={f7Left}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
+      >
+        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+          <Declassify>
+            <span style={{
+              fontFamily: SWISS, fontWeight: 900,
+              fontSize: 'clamp(64px, 6vw, 96px)',
+              color: '#F3F4F6', lineHeight: 0.8,
+              letterSpacing: '-0.03em', display: 'block',
+            }}>
+              +20%
             </span>
+          </Declassify>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '12px 0',
+          }}>
+            COURSE COMPLETION LIFT
+          </p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 13,
+            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+          }}>
+            Translated user behavioral insights into actionable product interventions, successfully increasing overall course completion rates across cohort groups.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 4: Program Strategy (Bottom Right) ── */}
+      <motion.div
+        variants={f7Right}
+        className="absolute z-10 hidden md:block"
+        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
+      >
+        <div>
+          <p style={{
+            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+            color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '0 0 12px',
+          }}>
+            PROGRAM ROADMAP // GTM
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {[
+              'Defined and executed content roadmaps for 5 distinct post-graduate programs.',
+              'Conducted deep market analysis to identify curriculum gaps.',
+              'Led the design and 0-1 launch of new PG & BBA-MBA programs addressing unmet learner needs.',
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{
+                  fontFamily: TELE, fontSize: 10,
+                  color: 'rgba(239,68,68,0.5)', flexShrink: 0, marginTop: 2,
+                }}>{'>'}</span>
+                <p style={{
+                  fontFamily: SWISS, fontSize: 13,
+                  color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+                }}>
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+    </motion.div>
+  </section>
+);
+
+
+/* ════════════════════════════════════════════════════
+   FOLD 8 — VERIFIED INFORMANTS (Testimonial Carousel)
+════════════════════════════════════════════════════ */
+const INFORMANTS = [
+  {
+    codename: 'THE ARCHITECT',
+    role: 'PRINCIPAL ENGINEER',
+    quote: "Satyajit builds deterministic architecture. He doesn't just pass PRDs; he ensures the engineering layer actually scales.",
+    hue: 'linear-gradient(145deg, #0a0f14 0%, #111827 60%, #0c1118 100%)',
+  },
+  {
+    codename: 'THE STRATEGIST',
+    role: 'VP PRODUCT',
+    quote: "His GTM thinking is rare. He connects product decisions directly to revenue outcomes with precision most PMs never reach.",
+    hue: 'linear-gradient(145deg, #100a14 0%, #1a0f22 60%, #120c18 100%)',
+  },
+  {
+    codename: 'THE ANALYST',
+    role: 'DATA SCIENCE LEAD',
+    quote: "The most data-fluent PM I've worked with. Satyajit turns behavioral signals into product interventions that actually move metrics.",
+    hue: 'linear-gradient(145deg, #0a1408 0%, #0d1a0b 60%, #0b1609 100%)',
+  },
+  {
+    codename: 'THE OPERATOR',
+    role: 'ENGINEERING MANAGER',
+    quote: "He ran the entire CRM module migration with zero velocity loss. The kind of execution that makes you wonder how he managed it alone.",
+    hue: 'linear-gradient(145deg, #14100a 0%, #1c1510 60%, #16120c 100%)',
+  },
+  {
+    codename: 'THE COMMISSIONER',
+    role: 'DIRECTOR OF PRODUCT',
+    quote: "Product leadership material. Satyajit thinks in systems, not features. Every initiative he touched had compounding returns.",
+    hue: 'linear-gradient(145deg, #0a0a16 0%, #12121e 60%, #0c0c18 100%)',
+  },
+  {
+    codename: 'THE WITNESS',
+    role: 'SENIOR PM',
+    quote: "Working alongside him on the AI pipeline showed me what first-principles product thinking looks like in practice.",
+    hue: 'linear-gradient(145deg, #160a0a 0%, #200f0f 60%, #180c0c 100%)',
+  },
+];
+
+const Fold8 = () => (
+  <section
+    className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden pt-12"
+    style={{ zIndex: 2 }}
+  >
+    {/* Section header */}
+    <motion.p
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+      style={{
+        fontFamily: TELE, fontSize: 11,
+        color: 'rgba(107,114,128,0.65)', letterSpacing: '0.4em',
+        textTransform: 'uppercase', marginBottom: 32,
+      }}
+    >
+      [ VERIFIED FIELD INFORMANTS ]
+    </motion.p>
+
+    {/* Carousel */}
+    <div
+      className="w-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-8 pb-12"
+      style={{ paddingLeft: '10vw', paddingRight: '10vw' }}
+    >
+      {INFORMANTS.map((inf, i) => (
+        <motion.div
+          key={inf.codename}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1], delay: i * 0.08 }}
+          className="relative shrink-0 snap-center overflow-hidden"
+          style={{
+            width: 'clamp(280px, 30vw, 450px)',
+            aspectRatio: '3/4',
+            border: '1px solid rgba(55,65,81,0.6)',
+            background: inf.hue,
+          }}
+        >
+          {/* Dark tint */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ backgroundColor: '#0F172A', mixBlendMode: 'multiply', opacity: 0.8 }}
+          />
+
+          {/* Corner brackets */}
+          <div className="absolute pointer-events-none" style={{ top: 16, left: 16, width: 20, height: 20, borderTop: '1px solid rgba(220,38,38,0.45)', borderLeft: '1px solid rgba(220,38,38,0.45)' }} />
+          <div className="absolute pointer-events-none" style={{ top: 16, right: 16, width: 20, height: 20, borderTop: '1px solid rgba(220,38,38,0.45)', borderRight: '1px solid rgba(220,38,38,0.45)' }} />
+          <div className="absolute pointer-events-none" style={{ bottom: 16, left: 16, width: 20, height: 20, borderBottom: '1px solid rgba(220,38,38,0.45)', borderLeft: '1px solid rgba(220,38,38,0.45)' }} />
+          <div className="absolute pointer-events-none" style={{ bottom: 16, right: 16, width: 20, height: 20, borderBottom: '1px solid rgba(220,38,38,0.45)', borderRight: '1px solid rgba(220,38,38,0.45)' }} />
+
+          {/* Top header */}
+          <div className="relative z-10" style={{ padding: '24px 24px 0' }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 18, fontWeight: 700,
+              color: 'rgba(229,231,235,0.9)', letterSpacing: '0.1em',
+              textTransform: 'uppercase', margin: '0 0 4px',
+            }}>
+              {inf.codename}
+            </p>
+            <p style={{
+              fontFamily: TELE, fontSize: 10,
+              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: 0,
+            }}>
+              {inf.role} · FIELD TESTIMONY
+            </p>
+          </div>
+
+          {/* Quote box — bottom gradient */}
+          <div
+            className="absolute bottom-0 left-0 w-full z-10"
+            style={{
+              padding: '48px 24px 24px',
+              background: 'linear-gradient(to top, rgba(0,0,0,1) 55%, rgba(0,0,0,0.85) 75%, transparent 100%)',
+            }}
+          >
+            <p style={{
+              fontFamily: TELE, fontSize: 12,
+              color: 'rgba(209,213,219,0.8)', lineHeight: 1.75, margin: 0,
+            }}>
+              &ldquo;{inf.quote}&rdquo;
+            </p>
           </div>
         </motion.div>
-      </LeftFlank>
+      ))}
+    </div>
+  </section>
+);
+
+
+/* ════════════════════════════════════════════════════
+   FOLD 9 — ACADEMIC ARCHIVES & THE SEAL
+   Credentials ledger + END OF FILE stamp
+════════════════════════════════════════════════════ */
+const Fold9 = () => (
+  <section
+    className="relative min-h-screen w-full flex flex-col items-center justify-end pb-32"
+    style={{ zIndex: 10 }}
+  >
+    {/* Bottom shadow — frames the portrait */}
+    <div
+      className="absolute inset-x-0 bottom-0 h-2/3 pointer-events-none"
+      style={{ background: 'linear-gradient(to top, rgba(15,20,25,0.96) 0%, rgba(15,20,25,0.65) 55%, transparent 100%)' }}
+    />
+
+    {/* ── Academic Ledger ── */}
+    <motion.div
+      className="relative z-10 flex flex-col items-center gap-6 max-w-2xl text-center mb-16 px-6"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 1.5, ease: 'linear' }}
+    >
+      {[
+        {
+          degree: 'PGDM MARKETING',
+          institution: 'Pune Institute of Business Management',
+          detail: 'CGPA: 8.21 · Major: Marketing · Minors: Retail Marketing, Market Research',
+        },
+        {
+          degree: 'B.TECH AUTOMOTIVE ENG.',
+          institution: 'Dr. Sudhir Chandra Sur Degree Engineering College, MAKAUT',
+          detail: 'CGPA: 7.8',
+        },
+      ].map(edu => (
+        <div key={edu.degree}>
+          <p style={{
+            fontFamily: TELE, fontSize: 13,
+            color: 'rgba(156,163,175,0.85)', lineHeight: 1.7, margin: 0,
+          }}>
+            <span style={{ color: 'rgba(229,231,235,0.75)', fontWeight: 600 }}>{edu.degree}</span>
+            {' — '}{edu.institution}
+          </p>
+          <p style={{
+            fontFamily: TELE, fontSize: 11,
+            color: 'rgba(107,114,128,0.6)', margin: '4px 0 0',
+          }}>
+            {edu.detail}
+          </p>
+        </div>
+      ))}
+
+      {/* Red rule */}
+      <div style={{ width: 48, height: 1, backgroundColor: 'rgba(220,38,38,0.35)' }} />
+
+      {/* Cert badges */}
+      <div className="flex flex-wrap justify-center gap-4">
+        {[
+          'CERTIFIED SCRUM PRODUCT OWNER',
+          'SIX SIGMA GREEN BELT',
+          'GOOGLE ANALYTICS',
+          'ADVANCED EXCEL & SEO',
+        ].map(badge => (
+          <span
+            key={badge}
+            style={{
+              fontFamily: TELE, fontSize: 10,
+              color: 'rgba(209,213,219,0.7)', letterSpacing: '0.15em',
+              border: '1px solid rgba(55,65,81,0.7)',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              padding: '4px 12px',
+              backdropFilter: 'blur(4px)',
+              display: 'inline-block',
+            }}
+          >
+            [ {badge} ]
+          </span>
+        ))}
+      </div>
+    </motion.div>
+
+    {/* ── END OF FILE stamp — spring stamp-in ── */}
+    <motion.div
+      className="relative z-10 pointer-events-none select-none"
+      initial={{ scale: 1.4, opacity: 0, rotate: -6 }}
+      whileInView={{ scale: 1, opacity: 1, rotate: -6 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ type: 'spring', stiffness: 180, damping: 12, delay: 0.3 }}
+    >
+      <p style={{
+        fontFamily: SWISS, fontWeight: 900,
+        fontSize: 'clamp(52px, 9vw, 150px)',
+        color: 'rgba(185,28,28,0.8)',
+        textTransform: 'uppercase',
+        letterSpacing: '-0.03em',
+        lineHeight: 1,
+        margin: 0,
+        padding: '16px 0',
+        borderTop: '8px solid rgba(185,28,28,0.8)',
+        borderBottom: '8px solid rgba(185,28,28,0.8)',
+        mixBlendMode: 'overlay',
+        userSelect: 'none',
+      }}>
+        [ END OF FILE ]
+      </p>
     </motion.div>
   </section>
 );
@@ -1123,6 +1585,8 @@ const Dossier = () => (
       <Fold5 />
       <Fold6 />
       <Fold7 />
+      <Fold8 />
+      <Fold9 />
     </div>
   </div>
 );
