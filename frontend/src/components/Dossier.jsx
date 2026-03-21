@@ -1284,6 +1284,171 @@ const Fold7 = () => (
 
 
 /* ════════════════════════════════════════════════════
+   FOLD 8 — TECH STACK & VISUAL TELEMETRY
+   Proficiency bars (left) + hard tool arsenal (right)
+════════════════════════════════════════════════════ */
+const f8Left    = { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f8Right   = { hidden: { opacity: 0, x:  40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
+const f8Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.18, delayChildren: 0.05 } } };
+const VP8       = { once: true, margin: '-120px' };
+
+const PROFICIENCY_BARS = [
+  { label: 'DATA PLATFORM ARCHITECTURE',      pct: 95 },
+  { label: 'ENTERPRISE AUTOMATION (ETL/ELT)', pct: 90 },
+  { label: 'AI / ML INTEGRATION (RAG)',       pct: 85 },
+  { label: 'PRODUCT-LED GROWTH (PLG)',        pct: 90 },
+  { label: '0–1 MVP DEPLOYMENT',              pct: 95 },
+];
+
+const ARSENAL_CATEGORIES = [
+  {
+    subhead: '[ DATA LAYER ]',
+    tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker', 'Firebase'],
+  },
+  {
+    subhead: '[ AUTOMATION & CDP ]',
+    tools: ['n8n', 'Zapier', 'Netcore', 'Clevertap', 'Wati', 'Mixpanel'],
+  },
+  {
+    subhead: '[ STRATEGY & DELIVERY ]',
+    tools: ['Agile Scrum', 'Goal-Oriented RAG', 'Amplitude', 'JIRA'],
+  },
+];
+
+const FoldTechStack = () => (
+  <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
+
+    {/* Heavy edge gradients */}
+    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+
+    <motion.div
+      className="relative min-h-screen w-full"
+      variants={f8Stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VP8}
+    >
+
+      {/* ── Artifact 1: Proficiency Telemetry (Left) ── */}
+      <motion.div
+        variants={f8Left}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '20%', left: '8%', width: 400 }}
+      >
+        <div style={{
+          backgroundColor: 'rgba(10,10,10,0.90)',
+          border: '1px solid rgba(55,65,81,0.9)',
+          padding: '32px',
+          backdropFilter: 'blur(12px)',
+        }}>
+          <p style={{
+            fontFamily: TELE, fontSize: 10, fontWeight: 600,
+            color: '#dc2626', letterSpacing: '0.25em',
+            textTransform: 'uppercase', margin: '0 0 32px',
+          }}>
+            SYSTEM UTILIZATION // MACRO SKILLS
+          </p>
+
+          {PROFICIENCY_BARS.map((bar, i) => (
+            <div key={bar.label} style={{ marginBottom: i < PROFICIENCY_BARS.length - 1 ? 24 : 0 }}>
+              <p style={{
+                fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                color: 'rgba(209,213,219,0.8)', letterSpacing: '0.12em',
+                textTransform: 'uppercase', margin: '0 0 8px',
+              }}>
+                {bar.label}
+              </p>
+              {/* Track */}
+              <div style={{
+                height: 6, width: '100%',
+                backgroundColor: 'rgba(55,65,81,0.5)',
+                overflow: 'hidden',
+              }}>
+                {/* Fill — animates 0% → target width */}
+                <motion.div
+                  initial={{ width: '0%' }}
+                  whileInView={{ width: `${bar.pct}%` }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 1.2, ease: 'easeOut', delay: 0.1 + i * 0.12 }}
+                  style={{ height: '100%', backgroundColor: '#dc2626' }}
+                />
+              </div>
+              <p style={{
+                fontFamily: TELE, fontSize: 9,
+                color: 'rgba(107,114,128,0.5)', letterSpacing: '0.1em',
+                margin: '4px 0 0', textAlign: 'right',
+              }}>
+                {bar.pct}%
+              </p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── Artifact 2: Hard Arsenal Grid (Right) ── */}
+      <motion.div
+        variants={f8Right}
+        className="absolute z-10 hidden md:block"
+        style={{ top: '20%', right: '8%', maxWidth: 450 }}
+      >
+        <p style={{
+          fontFamily: TELE, fontSize: 10, fontWeight: 600,
+          color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+          textTransform: 'uppercase', margin: '0 0 32px',
+        }}>
+          THE ARSENAL // CORE STACK
+        </p>
+
+        {ARSENAL_CATEGORIES.map((cat, ci) => (
+          <div key={cat.subhead} style={{ marginBottom: ci < ARSENAL_CATEGORIES.length - 1 ? 32 : 0 }}>
+            <span style={{
+              fontFamily: TELE, fontSize: 10,
+              color: '#dc2626', letterSpacing: '0.25em',
+              textTransform: 'uppercase', display: 'block', marginBottom: 12,
+            }}>
+              {cat.subhead}
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {cat.tools.map(tool => (
+                <span
+                  key={tool}
+                  className="group"
+                  style={{
+                    fontFamily: TELE, fontSize: 11, fontWeight: 700,
+                    color: '#F3F4F6',
+                    border: '1px solid rgba(55,65,81,0.8)',
+                    backgroundColor: '#000',
+                    padding: '6px 12px',
+                    cursor: 'default',
+                    display: 'inline-block',
+                    transition: 'border-color 0.2s ease, color 0.2s ease',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = '#dc2626';
+                    e.currentTarget.style.color = '#f87171';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'rgba(55,65,81,0.8)';
+                    e.currentTarget.style.color = '#F3F4F6';
+                  }}
+                >
+                  {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </motion.div>
+
+    </motion.div>
+  </section>
+);
+
+
+/* ════════════════════════════════════════════════════
    FOLD 8 — VERIFIED INFORMANTS (Testimonial Carousel)
 ════════════════════════════════════════════════════ */
 const INFORMANTS = [
@@ -1585,6 +1750,7 @@ const Dossier = () => (
       <Fold5 />
       <Fold6 />
       <Fold7 />
+      <FoldTechStack />
       <Fold8 />
       <Fold9 />
     </div>
