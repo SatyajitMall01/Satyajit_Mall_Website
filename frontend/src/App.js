@@ -21,7 +21,7 @@ const HomePage = () => {
       <LedgerEdge />
 
       {/* Main content area */}
-      <main className="pl-16 min-h-screen bg-[#0F1419] relative">
+      <main className="min-h-screen bg-[#0F1419] relative">
         {/* Hero - The Cold Open */}
         <ColdOpen />
 
@@ -95,7 +95,7 @@ const DossierPage = () => (
   <div className="forensic-ledger">
     <div className="noise-overlay" />
     <LedgerEdge />
-    <main className="pl-16 min-h-screen bg-[#0F1419] relative">
+    <main className="min-h-screen bg-[#0F1419] relative">
       <Dossier />
     </main>
   </div>

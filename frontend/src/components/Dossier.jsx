@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { profileData } from '../data/mock';
 
 /* ── Design Tokens ── */
@@ -34,6 +34,446 @@ const DossierStyles = () => (
     .dossier-cursor a, .dossier-cursor button { cursor: none !important; }
   `}</style>
 );
+
+/* ════════════════════════════════════
+   CENTRAL SPINE — scroll-tracking vertical axis
+════════════════════════════════════ */
+const CentralSpine = () => {
+  const { scrollYProgress } = useScroll();
+  const dotY = useTransform(scrollYProgress, [0, 1], ['0vh', '100vh']);
+  return (
+    <div className="fixed left-1/2 top-0 h-screen -translate-x-1/2 z-[3] pointer-events-none">
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(127,29,29,0.2)' }} />
+      <motion.div
+        style={{
+          position: 'absolute', left: '50%', transform: 'translate(-50%,-50%)',
+          top: dotY,
+          width: 6, height: 6, borderRadius: '50%',
+          backgroundColor: '#dc2626',
+          boxShadow: '0 0 10px rgba(220,38,38,0.9), 0 0 24px rgba(220,38,38,0.4)',
+        }}
+      />
+    </div>
+  );
+};
+
+/* ════════════════════════════════════
+   TELEMETRY METRIC — animated SVG sparkline
+════════════════════════════════════ */
+const TelemetryMetric = ({ points = [0.3, 0.5, 0.4, 0.7, 0.6, 0.8, 0.75, 0.95], label = '' }) => {
+  const W = 100, H = 28;
+  const pts = points.map((v, i) => [
+    (i / (points.length - 1)) * W,
+    (1 - v) * H,
+  ]);
+  const d = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`).join(' ');
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+      <svg width={W} height={H} style={{ overflow: 'visible', flexShrink: 0 }}>
+        <motion.path
+          d={d}
+          fill="none"
+          stroke="#dc2626"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          whileInView={{ pathLength: 1, opacity: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 1.4, ease: 'easeInOut', delay: 0.2 }}
+          style={{ filter: 'drop-shadow(0 0 4px rgba(220,38,38,0.6))' }}
+        />
+        {/* End dot */}
+        <motion.circle
+          cx={pts[pts.length - 1][0]}
+          cy={pts[pts.length - 1][1]}
+          r={2.5}
+          fill="#dc2626"
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.3, delay: 1.5 }}
+          style={{ filter: 'drop-shadow(0 0 4px rgba(220,38,38,0.8))' }}
+        />
+      </svg>
+      {label && (
+        <span style={{
+          fontFamily: "'Courier New', Courier, monospace",
+          fontSize: 8, color: 'rgba(107,114,128,0.5)',
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+        }}>
+          {label}
+        </span>
+      )}
+    </div>
+  );
+};
+
+
+/* ════════════════════════════════════
+   HEX GRID — tactical tool arsenal
+════════════════════════════════════ */
+const HexCell = ({ label, groupIndex, activeGroup, onHover, onLeave }) => {
+  const isActive = activeGroup === groupIndex;
+  const isDimmed = activeGroup !== null && activeGroup !== groupIndex;
+  return (
+    <div
+      onMouseEnter={() => onHover(groupIndex)}
+      onMouseLeave={onLeave}
+      style={{
+        width: 76, height: 76,
+        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+        backgroundColor: isActive
+          ? 'rgba(220,38,38,0.18)'
+          : 'rgba(17,24,39,0.8)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'default',
+        opacity: isDimmed ? 0.25 : 1,
+        transition: 'all 0.25s ease',
+        boxShadow: isActive ? '0 0 20px rgba(220,38,38,0.35)' : 'none',
+        outline: isActive ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(55,65,81,0.6)',
+        outlineOffset: -1,
+      }}
+    >
+      <span style={{
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontSize: 9, fontWeight: 600,
+        color: isActive ? '#f87171' : 'rgba(209,213,219,0.75)',
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        padding: '0 8px',
+        lineHeight: 1.3,
+        transition: 'color 0.25s ease',
+      }}>
+        {label}
+      </span>
+    </div>
+  );
+};
+
+const HexGrid = ({ categories }) => {
+  const [activeGroup, setActiveGroup] = useState(null);
+  return (
+    <div>
+      {categories.map((cat, gi) => (
+        <div key={cat.subhead} style={{ marginBottom: 24 }}>
+          <span style={{
+            fontFamily: "'Courier New', Courier, monospace",
+            fontSize: 9, color: activeGroup === gi ? '#dc2626' : 'rgba(107,114,128,0.5)',
+            letterSpacing: '0.25em', textTransform: 'uppercase',
+            display: 'block', marginBottom: 10,
+            transition: 'color 0.25s ease',
+          }}>
+            {cat.subhead}
+          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {cat.tools.map(tool => (
+              <HexCell
+                key={tool}
+                label={tool}
+                groupIndex={gi}
+                activeGroup={activeGroup}
+                onHover={setActiveGroup}
+                onLeave={() => setActiveGroup(null)}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ════════════════════════════════════
+   ACTION CONSOLE — terminal CTA at end of dossier
+════════════════════════════════════ */
+/* ── Contact Modal — renders via portal over everything ── */
+const ContactModal = ({ onClose }) => {
+  const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const TELE  = "'Courier New', Courier, monospace";
+  const [hovEmail, setHovEmail] = useState(false);
+  const [hovLI, setHovLI]       = useState(false);
+
+  // Close on Escape key
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9998,
+        backgroundColor: 'rgba(0,0,0,0.75)',
+        backdropFilter: 'blur(6px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 24,
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.96 }}
+        transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%', maxWidth: 480,
+          backgroundColor: 'rgba(6,8,12,0.98)',
+          border: '1px solid rgba(220,38,38,0.35)',
+          borderRadius: 6,
+          padding: '36px 32px 28px',
+          boxShadow: '0 0 60px rgba(220,38,38,0.15), 0 32px 64px rgba(0,0,0,0.8)',
+          position: 'relative',
+        }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute', top: 16, right: 16,
+            width: 28, height: 28,
+            background: 'transparent',
+            border: '1px solid rgba(75,85,99,0.5)',
+            borderRadius: 3,
+            color: 'rgba(156,163,175,0.7)',
+            cursor: 'pointer', outline: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: TELE, fontSize: 14, lineHeight: 1,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.color = '#ef4444'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(75,85,99,0.5)'; e.currentTarget.style.color = 'rgba(156,163,175,0.7)'; }}
+        >
+          ×
+        </button>
+
+        {/* Header */}
+        <p style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(220,38,38,0.7)', letterSpacing: '0.35em', textTransform: 'uppercase', margin: '0 0 6px' }}>
+          [ SECURE CHANNEL OPEN ]
+        </p>
+        <p style={{ fontFamily: SWISS, fontSize: 18, fontWeight: 700, color: '#f3f4f6', margin: '0 0 6px', letterSpacing: '0.02em' }}>
+          Get in touch
+        </p>
+        <p style={{ fontFamily: SWISS, fontSize: 14, color: 'rgba(156,163,175,0.8)', margin: '0 0 28px', lineHeight: 1.5 }}>
+          Choose how you'd like to connect.
+        </p>
+
+        <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.4)', marginBottom: 24 }} />
+
+        {/* Email option */}
+        <a
+          href="mailto:satyajitmall01@gmail.com"
+          onMouseEnter={() => setHovEmail(true)}
+          onMouseLeave={() => setHovEmail(false)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 16,
+            padding: '16px 20px', marginBottom: 12,
+            backgroundColor: hovEmail ? 'rgba(220,38,38,0.08)' : 'rgba(255,255,255,0.02)',
+            border: `1px solid ${hovEmail ? 'rgba(220,38,38,0.5)' : 'rgba(55,65,81,0.5)'}`,
+            borderRadius: 4,
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+          }}
+        >
+          {/* Gmail icon */}
+          <div style={{
+            width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
+            backgroundColor: hovEmail ? 'rgba(220,38,38,0.15)' : 'rgba(55,65,81,0.3)',
+            border: `1px solid ${hovEmail ? 'rgba(220,38,38,0.4)' : 'rgba(55,65,81,0.4)'}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.2s ease',
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.7)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <polyline points="22,6 12,13 2,6" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.7)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovEmail ? '#f3f4f6' : 'rgba(209,213,219,0.9)', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
+              Send an Email
+            </p>
+            <p style={{ fontFamily: TELE, fontSize: 10, color: hovEmail ? 'rgba(220,38,38,0.8)' : 'rgba(107,114,128,0.7)', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
+              satyajitmall01@gmail.com
+            </p>
+          </div>
+          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovEmail ? '#ef4444' : 'rgba(75,85,99,0.5)', transition: 'color 0.2s ease' }}>→</span>
+        </a>
+
+        {/* LinkedIn option */}
+        <a
+          href="https://www.linkedin.com/in/satyajit-mall/"
+          target="_blank"
+          rel="noopener noreferrer"
+          onMouseEnter={() => setHovLI(true)}
+          onMouseLeave={() => setHovLI(false)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 16,
+            padding: '16px 20px',
+            backgroundColor: hovLI ? 'rgba(10,102,194,0.1)' : 'rgba(255,255,255,0.02)',
+            border: `1px solid ${hovLI ? 'rgba(10,102,194,0.5)' : 'rgba(55,65,81,0.5)'}`,
+            borderRadius: 4,
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+          }}
+        >
+          {/* LinkedIn icon */}
+          <div style={{
+            width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
+            backgroundColor: hovLI ? 'rgba(10,102,194,0.2)' : 'rgba(55,65,81,0.3)',
+            border: `1px solid ${hovLI ? 'rgba(10,102,194,0.5)' : 'rgba(55,65,81,0.4)'}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.2s ease',
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={hovLI ? '#60a5fa' : 'rgba(156,163,175,0.7)'}>
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </div>
+          <div>
+            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovLI ? '#f3f4f6' : 'rgba(209,213,219,0.9)', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
+              Connect on LinkedIn
+            </p>
+            <p style={{ fontFamily: TELE, fontSize: 10, color: hovLI ? 'rgba(96,165,250,0.8)' : 'rgba(107,114,128,0.7)', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
+              linkedin.com/in/satyajit-mall
+            </p>
+          </div>
+          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovLI ? '#60a5fa' : 'rgba(75,85,99,0.5)', transition: 'color 0.2s ease' }}>→</span>
+        </a>
+
+        <p style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(75,85,99,0.4)', letterSpacing: '0.2em', textTransform: 'uppercase', textAlign: 'center', marginTop: 20 }}>
+          ESC TO CLOSE // RESPONSE WITHIN 24H
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const ActionConsole = () => {
+  const [hov1, setHov1]           = useState(false);
+  const [hov2, setHov2]           = useState(false);
+  const [contactOpen, setContact] = useState(false);
+  const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const TELE  = "'Courier New', Courier, monospace";
+
+  return (
+    <>
+      {/* Contact modal — rendered via AnimatePresence for smooth in/out */}
+      <AnimatePresence>
+        {contactOpen && <ContactModal onClose={() => setContact(false)} />}
+      </AnimatePresence>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+        style={{
+          width: '100%', maxWidth: 720,
+          margin: '48px auto 0',
+          padding: '0 24px',
+        }}
+      >
+        {/* Header */}
+        <p style={{
+          fontFamily: TELE, fontSize: 9,
+          color: 'rgba(107,114,128,0.5)', letterSpacing: '0.4em',
+          textTransform: 'uppercase', textAlign: 'center',
+          marginBottom: 24,
+        }}>
+          [ COMMAND TERMINAL — CHOOSE YOUR PROTOCOL ]
+        </p>
+
+        {/* Divider */}
+        <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.4)', marginBottom: 32 }} />
+
+        {/* CTA row */}
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+
+          {/* CTA 1 — Extract Data */}
+          <a
+            href="/Satyajit_Mall_Resume_Master.pdf"
+            download="Satyajit_Mall_Resume_Master.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={() => setHov1(true)}
+            onMouseLeave={() => setHov1(false)}
+            style={{
+              flex: 1, minWidth: 240, maxWidth: 320,
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              padding: '24px 28px',
+              backgroundColor: hov1 ? 'rgba(127,29,29,0.2)' : 'rgba(255,255,255,0.02)',
+              border: `1px solid ${hov1 ? 'rgba(220,38,38,0.65)' : 'rgba(75,85,99,0.5)'}`,
+              borderRadius: 4,
+              textDecoration: 'none',
+              transition: 'all 0.25s ease',
+              boxShadow: hov1 ? '0 0 30px rgba(220,38,38,0.12)' : 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(107,114,128,0.6)', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 10, display: 'block' }}>
+              PROTOCOL — ALPHA
+            </span>
+            <span style={{ fontFamily: SWISS, fontSize: 15, fontWeight: 700, color: hov1 ? '#f3f4f6' : 'rgba(229,231,235,0.95)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, display: 'block', transition: 'color 0.2s ease' }}>
+              Download CV
+            </span>
+            <span style={{ fontFamily: TELE, fontSize: 10, color: hov1 ? '#ef4444' : 'rgba(107,114,128,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'color 0.2s ease' }}>
+              Extract Raw Data →
+            </span>
+          </a>
+
+          {/* Vertical divider */}
+          <div style={{ width: 1, backgroundColor: 'rgba(55,65,81,0.35)', alignSelf: 'stretch', flexShrink: 0 }} />
+
+          {/* CTA 2 — Secure Channel (opens modal) */}
+          <button
+            onClick={() => setContact(true)}
+            onMouseEnter={() => setHov2(true)}
+            onMouseLeave={() => setHov2(false)}
+            style={{
+              flex: 1, minWidth: 240, maxWidth: 320,
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+              padding: '24px 28px',
+              backgroundColor: hov2 ? '#7f1d1d' : '#991b1b',
+              border: '1px solid rgba(220,38,38,0.45)',
+              borderRadius: 4,
+              textAlign: 'left',
+              transition: 'all 0.25s ease',
+              boxShadow: hov2
+                ? '0 0 40px rgba(220,38,38,0.4), 0 8px 32px rgba(220,38,38,0.3)'
+                : '0 0 24px rgba(220,38,38,0.2), 0 4px 16px rgba(220,38,38,0.15)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(252,165,165,0.7)', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 10, display: 'block' }}>
+              PROTOCOL — BRAVO
+            </span>
+            <span style={{ fontFamily: SWISS, fontSize: 15, fontWeight: 700, color: '#ffffff', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>
+              Get in Touch
+            </span>
+            <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(252,165,165,0.8)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+              Email · LinkedIn →
+            </span>
+          </button>
+        </div>
+
+        {/* Footer line */}
+        <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.3)', marginTop: 32, marginBottom: 16 }} />
+        <p style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(75,85,99,0.4)', letterSpacing: '0.25em', textTransform: 'uppercase', textAlign: 'center' }}>
+          ALL COMMUNICATIONS ENCRYPTED // RESPONSE WITHIN 24H
+        </p>
+      </motion.div>
+    </>
+  );
+};
 
 /* ════════════════════════════════════
    CROSSHAIR CURSOR — follows mouse, red + on dossier
@@ -99,33 +539,50 @@ const CrosshairCursor = () => {
    into the AI chat. Ghost state → active state on hover.
 ════════════════════════════════════ */
 const AskHook = ({ question }) => {
-  const [active, setActive] = useState(false);
-
+  const [hov, setHov] = useState(false);
   const fire = (e) => {
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent('ask-about-this', { detail: { question } }));
   };
-
   return (
     <button
       onClick={fire}
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
-        display: 'inline-flex', alignItems: 'center', gap: 5,
-        verticalAlign: 'middle', marginLeft: 10,
-        fontFamily: TELE, fontSize: 8, letterSpacing: '0.18em',
-        textTransform: 'uppercase', cursor: 'pointer', outline: 'none',
-        padding: '2px 8px', whiteSpace: 'nowrap',
-        border: `1px solid ${active ? 'rgba(220,38,38,0.7)' : 'rgba(220,38,38,0.2)'}`,
-        color: active ? '#f87171' : 'rgba(220,38,38,0.38)',
-        backgroundColor: active ? 'rgba(220,38,38,0.08)' : 'transparent',
-        boxShadow: active ? '0 0 10px rgba(220,38,38,0.15)' : 'none',
-        transition: 'border-color 0.18s, color 0.18s, background-color 0.18s, box-shadow 0.18s',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 7,
+        marginTop: 12,
+        fontFamily: TELE,
+        fontSize: 10,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        padding: '6px 14px',
+        border: `1px solid ${hov ? '#ef4444' : 'rgba(220,38,38,0.55)'}`,
+        color: hov ? '#ffffff' : '#ef4444',
+        backgroundColor: hov ? '#7f1d1d' : 'rgba(127,29,29,0.22)',
+        boxShadow: hov
+          ? '0 0 20px rgba(220,38,38,0.35), inset 0 0 12px rgba(220,38,38,0.08)'
+          : '0 0 8px rgba(220,38,38,0.1)',
+        transition: 'all 0.2s ease',
+        cursor: 'pointer',
+        outline: 'none',
+        whiteSpace: 'nowrap',
+        width: 'fit-content',
+        borderRadius: 2,
       }}
     >
-      <span style={{ fontSize: 10, lineHeight: 1, marginBottom: 1 }}>⊕</span>
-      {active ? 'ASK ABOUT THIS' : 'ASK'}
+      {/* Pulsing live dot */}
+      <span style={{
+        width: 6, height: 6, borderRadius: '50%',
+        backgroundColor: hov ? '#fca5a5' : '#ef4444',
+        flexShrink: 0,
+        boxShadow: hov ? '0 0 8px #ef4444' : '0 0 5px rgba(239,68,68,0.8)',
+        animation: 'pulse6 1.8s ease-in-out infinite',
+        display: 'inline-block',
+      }} />
+      {hov ? 'Ask about this →' : 'Ask AI'}
     </button>
   );
 };
@@ -254,7 +711,7 @@ const Fold1 = () => (
       >
         <span style={{
           fontFamily: SWISS,
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: 600,
           color: 'rgba(127,29,29,0.9)',
           letterSpacing: '0.3em',
@@ -303,13 +760,26 @@ const Fold1 = () => (
         className="absolute z-10"
         style={{ bottom: '10%', left: '8%', width: 'clamp(300px, 30vw, 420px)' }}
       >
-        <div style={{
-          backgroundColor: 'rgba(5,5,5,0.9)',
-          borderBottom: '2px solid #991B1B',
-          padding: '24px 22px',
-          position: 'relative',
-          backdropFilter: 'blur(6px)',
-        }}>
+        <div
+          style={{
+            backgroundColor: 'rgba(5,5,5,0.96)',
+            borderBottom: '2px solid #991B1B',
+            padding: '24px 22px',
+            position: 'relative',
+            backdropFilter: 'blur(6px)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-4px)';
+            e.currentTarget.style.borderBottomColor = '#dc2626';
+            e.currentTarget.style.boxShadow = '0 0 30px rgba(220,38,38,0.12)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderBottomColor = '#991B1B';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
           {/* Corner brackets ┌ ┐ └ ┘ */}
           <div style={{ position: 'absolute', top: 0, left: 0, width: 14, height: 14, borderTop: '2px solid rgba(229,231,235,0.2)', borderLeft: '2px solid rgba(229,231,235,0.2)' }} />
           <div style={{ position: 'absolute', top: 0, right: 0, width: 14, height: 14, borderTop: '2px solid rgba(229,231,235,0.2)', borderRight: '2px solid rgba(229,231,235,0.2)' }} />
@@ -317,7 +787,7 @@ const Fold1 = () => (
           <div style={{ position: 'absolute', bottom: 0, right: 0, width: 14, height: 14, borderBottom: '2px solid rgba(229,231,235,0.2)', borderRight: '2px solid rgba(229,231,235,0.2)' }} />
 
           <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400, color: 'rgba(209,213,219,0.9)',
+            fontFamily: SWISS, fontSize: 15, fontWeight: 400, color: 'rgba(209,213,219,0.9)',
             lineHeight: 1.75, margin: 0,
           }}>
             Product Manager with 5+ years of experience driving product-led growth through
@@ -325,6 +795,7 @@ const Fold1 = () => (
             fragmented data, architecting 0-to-1 launches, and deploying intelligent self-service
             solutions that scale.
           </p>
+          <AskHook question="You have 5+ years as a PM specializing in data platforms and AI — how do you split your time between strategy, technical architecture, and stakeholder management day-to-day?" />
         </div>
       </motion.div>
 
@@ -382,144 +853,145 @@ const Fold2 = () => (
     <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
     <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="relative min-h-screen w-full" variants={f2Stagger} initial="hidden" whileInView="visible" viewport={VP}>
+    <motion.div
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
+      variants={f2Stagger} initial="hidden" whileInView="visible" viewport={VP}
+    >
 
-      {/* ── Artifact 1: Technical Stack Matrix (Top Left) ── */}
-      <motion.div
-        variants={f2Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', left: '8%', maxWidth: 400 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.8)',
-          border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px', borderRadius: 8,
-          backdropFilter: 'blur(12px)',
-        }}>
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 1: Technical Stack Matrix (Top Left) ── */}
+        <motion.div variants={f2Left} style={{ maxWidth: 400 }}>
+          <div style={{
+            backgroundColor: 'rgba(8,8,10,0.93)',
+            border: '1px solid rgba(55,65,81,0.9)',
+            padding: '24px', borderRadius: 8,
+            backdropFilter: 'blur(12px)',
+          }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 18px',
+            }}>Technical Stack</p>
+
+            {[
+              { label: 'Data Platforms',   tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker'] },
+              { label: 'Automation & CDP', tools: ['n8n', 'Zapier', 'Netcore', 'Clevertap'] },
+              { label: 'Product Delivery', tools: ['Agile Scrum', 'MVP Architecting', 'CSPO'] },
+            ].map((group, gi) => (
+              <div key={group.label} style={{ marginBottom: gi < 2 ? 16 : 0 }}>
+                <p style={{
+                  fontFamily: SWISS, fontSize: 9, fontWeight: 600,
+                  color: 'rgba(107,114,128,0.7)', letterSpacing: '0.18em',
+                  textTransform: 'uppercase', margin: '0 0 7px',
+                }}>{group.label}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {group.tools.map(tool => (
+                    <span key={tool} style={{
+                      fontFamily: SWISS, fontSize: 11, fontWeight: 500,
+                      color: 'rgba(229,231,235,0.88)',
+                      backgroundColor: 'rgba(31,41,55,0.75)',
+                      border: '1px solid rgba(55,65,81,0.7)',
+                      padding: '3px 10px', borderRadius: 4,
+                    }}>{tool}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 2: Core Competencies (Top Right) ── */}
+        <motion.div variants={f2Right} style={{ maxWidth: 420 }}>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 700,
             color: '#dc2626', letterSpacing: '0.25em',
             textTransform: 'uppercase', margin: '0 0 18px',
-          }}>Technical Stack</p>
+          }}>Core Competencies</p>
 
-          {[
-            { label: 'Data Platforms',   tools: ['BigQuery', 'PostgreSQL', 'GA4', 'Looker'] },
-            { label: 'Automation & CDP', tools: ['n8n', 'Zapier', 'Netcore', 'Clevertap'] },
-            { label: 'Product Delivery', tools: ['Agile Scrum', 'MVP Architecting', 'CSPO'] },
-          ].map((group, gi) => (
-            <div key={group.label} style={{ marginBottom: gi < 2 ? 16 : 0 }}>
-              <p style={{
-                fontFamily: SWISS, fontSize: 9, fontWeight: 600,
-                color: 'rgba(107,114,128,0.7)', letterSpacing: '0.18em',
-                textTransform: 'uppercase', margin: '0 0 7px',
-              }}>{group.label}</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {group.tools.map(tool => (
-                  <span key={tool} style={{
-                    fontFamily: SWISS, fontSize: 11, fontWeight: 500,
-                    color: 'rgba(229,231,235,0.88)',
-                    backgroundColor: 'rgba(31,41,55,0.75)',
-                    border: '1px solid rgba(55,65,81,0.7)',
-                    padding: '3px 10px', borderRadius: 4,
-                  }}>{tool}</span>
-                ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {[
+              { title: 'Unifying Fragmented Data',   body: 'Architecting deterministic data pipelines that bridge apps, CRM, and analytics.' },
+              { title: 'Automating Operations',       body: 'Deploying enterprise workflows that eliminate manual operational silos and slash support costs.' },
+              { title: 'Driving Product-Led Growth', body: 'Building self-serve, AI-driven product loops that directly multiply top-line revenue.' },
+            ].map(item => (
+              <div key={item.title} style={{ borderLeft: '2px solid #dc2626', paddingLeft: 14 }}>
+                <p style={{
+                  fontFamily: SWISS, fontSize: 15, fontWeight: 600,
+                  color: 'rgba(229,231,235,0.95)', margin: '0 0 5px', lineHeight: 1.3,
+                }}>{item.title}</p>
+                <p style={{
+                  fontFamily: SWISS, fontSize: 12, fontWeight: 400,
+                  color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+                }}>{item.body}</p>
               </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
-      {/* ── Artifact 2: Core Competencies (Top Right) ── */}
-      <motion.div
-        variants={f2Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', maxWidth: 420 }}
-      >
-        <p style={{
-          fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-          color: '#dc2626', letterSpacing: '0.25em',
-          textTransform: 'uppercase', margin: '0 0 18px',
-        }}>Core Competencies</p>
+      </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {[
-            { title: 'Unifying Fragmented Data',   body: 'Architecting deterministic data pipelines that bridge apps, CRM, and analytics.' },
-            { title: 'Automating Operations',       body: 'Deploying enterprise workflows that eliminate manual operational silos and slash support costs.' },
-            { title: 'Driving Product-Led Growth', body: 'Building self-serve, AI-driven product loops that directly multiply top-line revenue.' },
-          ].map(item => (
-            <div key={item.title} style={{ borderLeft: '2px solid #dc2626', paddingLeft: 14 }}>
-              <p style={{
-                fontFamily: SWISS, fontSize: 13, fontWeight: 600,
-                color: 'rgba(229,231,235,0.95)', margin: '0 0 5px', lineHeight: 1.3,
-              }}>{item.title}</p>
-              <p style={{
-                fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-                color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
-              }}>{item.body}</p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-      {/* ── Artifact 3: Impact Metric −40% (Bottom Left) ── */}
-      <motion.div
-        variants={f2Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(60px, 5.5vw, 88px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>−40%</span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>Time-to-Market Reduction</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
-          }}>
-            Governed CDP implementation and event taxonomy across the full product ecosystem,
-            eliminating engineering bottlenecks for real-time personalization.
-          </p>
-        </div>
-      </motion.div>
+        {/* ── Artifact 3: Impact Metric −40% (Bottom Left) ── */}
+        <motion.div variants={f2Left} style={{ maxWidth: 380 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(60px, 5.5vw, 88px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                display: 'block', letterSpacing: '-0.03em',
+              }}>−40%</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>Time-to-Market Reduction</p>
+            <AskHook question="The −40% time-to-market reduction came from the CDP and event taxonomy — what was the engineering bottleneck before, and what was the first product that shipped faster as a result?" />
+            <TelemetryMetric points={[0.9, 0.82, 0.75, 0.68, 0.58, 0.52, 0.45, 0.38, 0.32, 0.6]} label="time-to-market index" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+            }}>
+              Governed CDP implementation and event taxonomy across the full product ecosystem,
+              eliminating engineering bottlenecks for real-time personalization.
+            </p>
+          </div>
+        </motion.div>
 
-      {/* ── Artifact 4: Impact Metric +20% (Bottom Right) ── */}
-      <motion.div
-        variants={f2Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify delay={0.15}>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(60px, 5.5vw, 88px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>+20%</span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>Overall ROAS Lift</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
-          }}>
-            Architected a proprietary end-to-end attribution platform powered by compounded
-            automation models to recover leads and scale revenue.
-          </p>
-        </div>
-      </motion.div>
+        {/* ── Artifact 4: Impact Metric +20% (Bottom Right) ── */}
+        <motion.div variants={f2Right} style={{ maxWidth: 380 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify delay={0.15}>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(60px, 5.5vw, 88px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                display: 'block', letterSpacing: '-0.03em',
+              }}>+20%</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>Overall ROAS Lift</p>
+            <AskHook question="The +20% ROAS lift came from a proprietary attribution platform — how did the automation model recover leads, and how did you measure ROAS improvement at the channel level?" />
+            <TelemetryMetric points={[0.4, 0.45, 0.5, 0.55, 0.58, 0.62, 0.68, 0.74, 0.82, 0.92]} label="roas trajectory" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+            }}>
+              Architected a proprietary end-to-end attribution platform powered by compounded
+              automation models to recover leads and scale revenue.
+            </p>
+          </div>
+        </motion.div>
+
+      </div>
 
     </motion.div>
   </section>
@@ -540,146 +1012,147 @@ const Fold3 = () => (
     <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
     <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="relative min-h-screen w-full" variants={f3Stagger} initial="hidden" whileInView="visible" viewport={VP}>
+    <motion.div
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
+      variants={f3Stagger} initial="hidden" whileInView="visible" viewport={VP}
+    >
 
-      {/* ── Artifact 1: Core App Launch (Top Left) ── */}
-      <motion.div
-        variants={f3Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '12%', left: '8%', maxWidth: 400 }}
-      >
-        <div style={{ borderTop: '2px solid rgba(220,38,38,0.5)', paddingTop: 16 }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 16px',
-          }}>Miles Education // Dec 2023 – Present</p>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(60px, 5.5vw, 88px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>40,000+</span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '10px 0',
-          }}>Learners Onboarded<AskHook question="The Miles One app onboarded 40,000+ learners — what was the product architecture behind that onboarding funnel and how did you balance lead gen with learner activation?" /></p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            <Redacted>Spearheaded the 0-1 launch of the Miles One app.</Redacted>{' '}
-            Architected a dual-purpose MVP for lead generation and nurturing that generated {'>'}{'\u20B9'}20 Cr in revenue.
-          </p>
-        </div>
-      </motion.div>
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-      {/* ── Artifact 2: ML Pipeline Card (Top Right) ── */}
-      <motion.div
-        variants={f3Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', width: 350 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.8)',
-          border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px', borderRadius: 8,
-          backdropFilter: 'blur(12px)',
-        }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 8px',
-          }}>Predictive ML Pipeline</p>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(36px, 4vw, 56px)',
-              color: '#F3F4F6', lineHeight: 0.85,
-              display: 'block', letterSpacing: '-0.02em',
-            }}>+15%</span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: '#dc2626', letterSpacing: '0.15em',
-            textTransform: 'uppercase', margin: '8px 0 14px',
-          }}>Day 7 Activation Lift</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
-          }}>
-            Unified GA4 and Firebase data into BigQuery. Deployed predictive churn models to drive hyper-targeted LTV optimization.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 3: OTT Ecosystem (Bottom Left) ── */}
-      <motion.div
-        variants={f3Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(60px, 5.5vw, 88px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>30,000+</span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>OTT Subscribers</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
-          }}>
-            Led the 0-1 development of Masterclass, a bite-sized, subscription-based OTT product securing 2,000+ B2B paid subscriptions.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 4: Efficiency Matrix (Bottom Right) ── */}
-      <motion.div
-        variants={f3Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 350 }}
-      >
-        <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
-          {[
-            { v: '−10%', l: 'Early Churn' },
-            { v: '+15%', l: 'Lead Conversion' },
-          ].map((m, i) => (
-            <div key={m.l}>
-              <Declassify delay={i * 0.1}>
-                <span style={{
-                  fontFamily: SWISS, fontWeight: 900,
-                  fontSize: 'clamp(36px, 4vw, 52px)',
-                  color: '#F3F4F6', lineHeight: 0.85,
-                  display: 'block', letterSpacing: '-0.02em',
-                }}>{m.v}</span>
-              </Declassify>
+        {/* ── Artifact 1: Core App Launch (Top Left) ── */}
+        <motion.div variants={f3Left} style={{ maxWidth: 400 }}>
+          <div style={{ borderTop: '2px solid rgba(220,38,38,0.5)', paddingTop: 16 }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 16px',
+            }}>Miles Education // Dec 2023 – Present</p>
+            <Declassify>
               <span style={{
-                fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
-                textTransform: 'uppercase', marginTop: 6, display: 'block',
-              }}>{m.l}</span>
-            </div>
-          ))}
-        </div>
-        <p style={{
-          fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-          color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
-        }}>
-          Translated 100+ qualitative interviews into actionable, segment-based onboarding flows and high-converting B2B GTM strategies.
-        </p>
-      </motion.div>
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(60px, 5.5vw, 88px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                display: 'block', letterSpacing: '-0.03em',
+              }}>40,000+</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '10px 0',
+            }}>Learners Onboarded</p>
+            <AskHook question="The Miles One app onboarded 40,000+ learners — what was the product architecture behind that onboarding funnel and how did you balance lead gen with learner activation?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              <Redacted>Spearheaded the 0-1 launch of the Miles One app.</Redacted>{' '}
+              Architected a dual-purpose MVP for lead generation and nurturing that generated {'>'}{'\u20B9'}20 Cr in revenue.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 2: ML Pipeline Card (Top Right) ── */}
+        <motion.div variants={f3Right} style={{ maxWidth: 350 }}>
+          <div style={{
+            backgroundColor: 'rgba(8,8,10,0.93)',
+            border: '1px solid rgba(55,65,81,0.9)',
+            padding: '24px', borderRadius: 8,
+            backdropFilter: 'blur(12px)',
+          }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 8px',
+            }}>Predictive ML Pipeline</p>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(36px, 4vw, 56px)',
+                color: '#F3F4F6', lineHeight: 0.85,
+                display: 'block', letterSpacing: '-0.02em',
+              }}>+15%</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: '#dc2626', letterSpacing: '0.15em',
+              textTransform: 'uppercase', margin: '8px 0 14px',
+            }}>Day 7 Activation Lift</p>
+            <AskHook question="The predictive churn model drove a +15% Day 7 activation lift — how did you unify GA4 and Firebase in BigQuery, and what signals did the model use for hyper-targeted LTV optimization?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Unified GA4 and Firebase data into BigQuery. Deployed predictive churn models to drive hyper-targeted LTV optimization.
+            </p>
+          </div>
+        </motion.div>
+
+      </div>
+
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 3: OTT Ecosystem (Bottom Left) ── */}
+        <motion.div variants={f3Left} style={{ maxWidth: 380 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(60px, 5.5vw, 88px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                display: 'block', letterSpacing: '-0.03em',
+              }}>30,000+</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>OTT Subscribers</p>
+            <AskHook question="The Masterclass OTT product hit 30,000+ subscribers — what was the subscription model, how did you differentiate it from free content, and how did you get to 2,000+ B2B paid subs?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+            }}>
+              Led the 0-1 development of Masterclass, a bite-sized, subscription-based OTT product securing 2,000+ B2B paid subscriptions.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 4: Efficiency Matrix (Bottom Right) ── */}
+        <motion.div variants={f3Right} style={{ maxWidth: 350 }}>
+          <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
+            {[
+              { v: '−10%', l: 'Early Churn' },
+              { v: '+15%', l: 'Lead Conversion' },
+            ].map((m, i) => (
+              <div key={m.l}>
+                <Declassify delay={i * 0.1}>
+                  <span style={{
+                    fontFamily: SWISS, fontWeight: 900,
+                    fontSize: 'clamp(36px, 4vw, 52px)',
+                    color: '#F3F4F6', lineHeight: 0.85,
+                    display: 'block', letterSpacing: '-0.02em',
+                  }}>{m.v}</span>
+                </Declassify>
+                <span style={{
+                  fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                  textTransform: 'uppercase', marginTop: 6, display: 'block',
+                }}>{m.l}</span>
+              </div>
+            ))}
+          </div>
+          <p style={{
+            fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+            color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+          }}>
+            Translated 100+ qualitative interviews into actionable, segment-based onboarding flows and high-converting B2B GTM strategies.
+          </p>
+          <AskHook question="Translating 100+ qualitative interviews into segmented onboarding flows is a major research-to-product cycle — how did you structure those interviews, and how did the −10% churn and +15% conversion outcomes validate your findings?" />
+        </motion.div>
+
+      </div>
 
     </motion.div>
   </section>
@@ -700,145 +1173,147 @@ const Fold4 = () => (
     <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
     <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
 
-    <motion.div className="relative min-h-screen w-full" variants={f4Stagger} initial="hidden" whileInView="visible" viewport={VP}>
+    <motion.div
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
+      variants={f4Stagger} initial="hidden" whileInView="visible" viewport={VP}
+    >
 
-      {/* ── Artifact 1: AI Architecture Node (Top Left) ── */}
-      <motion.div
-        variants={f4Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', left: '8%', maxWidth: 420 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.9)',
-          borderTop: '2px solid #dc2626',
-          border: '1px solid rgba(55,65,81,0.9)',
-          borderTopWidth: 2, borderTopColor: '#dc2626',
-          padding: '24px', borderRadius: 8,
-          backdropFilter: 'blur(12px)',
-        }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 14px',
-          }}>Agentic Framework // Function Calling</p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.7, margin: '0 0 18px',
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 1: AI Architecture Node (Top Left) ── */}
+        <motion.div variants={f4Left} style={{ maxWidth: 420 }}>
+          <div style={{
+            backgroundColor: 'rgba(10,10,10,0.9)',
+            borderTop: '2px solid #dc2626',
+            border: '1px solid rgba(55,65,81,0.9)',
+            borderTopWidth: 2, borderTopColor: '#dc2626',
+            padding: '24px', borderRadius: 8,
+            backdropFilter: 'blur(12px)',
           }}>
-            Architected the Miles One Agentic Assistant. Established a Goal-Oriented Framework managed via an n8n Orchestration Layer. Utilized dynamic Function-Calling to invoke specialized backend APIs for transactional fulfillment — LMS retrieval, webinar bookings.
-          </p>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {['n8n', 'REST APIs', 'RAG'].map(tag => (
-              <span key={tag} style={{
-                fontFamily: TELE, fontSize: 10,
-                color: 'rgba(220,38,38,0.85)',
-                backgroundColor: 'rgba(127,29,29,0.2)',
-                border: '1px solid rgba(220,38,38,0.2)',
-                padding: '3px 10px', borderRadius: 4,
-                letterSpacing: '0.05em',
-              }}>{tag}</span>
-            ))}
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 14px',
+            }}>MILES ONE AI ASSISTANT</p>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.7, margin: '0 0 18px',
+            }}>
+              Built the Miles One conversational AI assistant — an intelligent chatbot that handles student queries, books webinars, and retrieves course materials automatically. Connects to the LMS and booking systems to fulfil requests without human intervention.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {['n8n', 'REST APIs', 'RAG'].map(tag => (
+                <span key={tag} style={{
+                  fontFamily: TELE, fontSize: 10,
+                  color: 'rgba(220,38,38,0.85)',
+                  backgroundColor: 'rgba(127,29,29,0.2)',
+                  border: '1px solid rgba(220,38,38,0.2)',
+                  padding: '3px 10px', borderRadius: 4,
+                  letterSpacing: '0.05em',
+                }}>{tag}</span>
+              ))}
+            </div>
+            <AskHook question="The Miles One agentic assistant used function-calling and n8n orchestration for transactional fulfillment — how did you design the goal-oriented framework and what was the hardest edge case to handle in the LMS retrieval?" />
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* ── Artifact 2: SuperBot Voice Node (Top Right) ── */}
-      <motion.div
-        variants={f4Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', maxWidth: 400 }}
-      >
-        <div style={{ borderLeft: '3px solid #dc2626', paddingLeft: 18 }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '0 0 14px',
-          }}>SuperBot AI // High-Velocity Voice</p>
+        {/* ── Artifact 2: SuperBot Voice Node (Top Right) ── */}
+        <motion.div variants={f4Right} style={{ maxWidth: 400 }}>
+          <div style={{ borderLeft: '3px solid #dc2626', paddingLeft: 18 }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '0 0 14px',
+            }}>SuperBot AI // High-Velocity Voice</p>
 
-          <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
-            {[{ v: '+15%', l: 'Qualified Leads' }, { v: '−5%', l: 'Sales Cycle' }].map((m, i) => (
-              <div key={m.l}>
-                <Declassify delay={i * 0.1}>
+            <div style={{ display: 'flex', gap: 32, marginBottom: 16 }}>
+              {[{ v: '+15%', l: 'Qualified Leads' }, { v: '−5%', l: 'Sales Cycle' }].map((m, i) => (
+                <div key={m.l}>
+                  <Declassify delay={i * 0.1}>
+                    <span style={{
+                      fontFamily: SWISS, fontWeight: 900,
+                      fontSize: 'clamp(28px, 3.5vw, 44px)',
+                      color: '#F3F4F6', lineHeight: 0.85,
+                      display: 'block', letterSpacing: '-0.02em',
+                    }}>{m.v}</span>
+                  </Declassify>
                   <span style={{
-                    fontFamily: SWISS, fontWeight: 900,
-                    fontSize: 'clamp(28px, 3.5vw, 44px)',
-                    color: '#F3F4F6', lineHeight: 0.85,
-                    display: 'block', letterSpacing: '-0.02em',
-                  }}>{m.v}</span>
-                </Declassify>
-                <span style={{
-                  fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
-                  textTransform: 'uppercase', marginTop: 6, display: 'block',
-                }}>{m.l}</span>
-              </div>
-            ))}
+                    fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                    color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                    textTransform: 'uppercase', marginTop: 6, display: 'block',
+                  }}>{m.l}</span>
+                </div>
+              ))}
+            </div>
+
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Architected a RAG-based AI Voice Assistant for real-time lead qualification. Powered by n8n data ingestion and PostgreSQL for instant memory retrieval, slashing sales analysis time.
+            </p>
+            <AskHook question="The SuperBot RAG voice assistant used n8n + PostgreSQL for memory — how did you design the retrieval layer, what was the latency profile in production, and how did it drive the +15% qualified lead increase?" />
           </div>
+        </motion.div>
 
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
-          }}>
-            Architected a RAG-based AI Voice Assistant for real-time lead qualification. Powered by n8n data ingestion and PostgreSQL for instant memory retrieval, slashing sales analysis time.
-          </p>
-        </div>
-      </motion.div>
+      </div>
 
-      {/* ── Artifact 3: Massive Impact Metric (Bottom Left) ── */}
-      <motion.div
-        variants={f4Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(64px, 6vw, 96px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              display: 'block', letterSpacing: '-0.03em',
-            }}>+25%</span>
-          </Declassify>
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 3: Massive Impact Metric (Bottom Left) ── */}
+        <motion.div variants={f4Left} style={{ maxWidth: 380 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(64px, 6vw, 96px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                display: 'block', letterSpacing: '-0.03em',
+              }}>+25%</span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>Automated Self-Service Lift</p>
+            <AskHook question="The agentic framework drove a 25% self-service lift — what was the RAG pipeline design and how did you handle context retrieval and memory for transactional resolutions?" />
+            <TelemetryMetric points={[0.5, 0.52, 0.55, 0.6, 0.65, 0.7, 0.72, 0.78, 0.85, 0.95]} label="self-service adoption" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+            }}>
+              Students resolve queries, rebook sessions, and access content without ever needing to speak to support — driving massive adoption of zero-touch automated service.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 4: Agentic Reporting & ELT (Bottom Right) ── */}
+        <motion.div variants={f4Right} style={{ maxWidth: 380 }}>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>Automated Self-Service Lift<AskHook question="The agentic framework drove a 25% self-service lift — what was the RAG pipeline design and how did you handle context retrieval and memory for transactional resolutions?" /></p>
+            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', margin: '0 0 10px',
+          }}>AI REPORTING PLATFORM</p>
           <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(156,163,175,0.72)', lineHeight: 1.65, margin: 0,
+            fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+            color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: '0 0 14px',
           }}>
-            Leveraged Retrieval-Augmented Generation (RAG) for deep context and memory retrieval, driving massive adoption of automated, zero-touch transactional resolutions.
+            Built a custom reporting platform that lets leadership ask questions in plain English and get instant answers from our data warehouse — eliminating manual BI reporting.
           </p>
-        </div>
-      </motion.div>
+          <div style={{ borderLeft: '2px solid rgba(107,114,128,0.35)', paddingLeft: 14 }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 400,
+              color: 'rgba(229,231,235,0.9)', lineHeight: 1.65, margin: 0,
+            }}>
+              Provided leadership with a direct chat interface for real-time, substantive analysis, eliminating manual reporting latency.
+            </p>
+          </div>
+          <AskHook question="The agentic reporting platform eliminated manual BI latency — what was the data warehouse schema, how did the RAG layer translate natural language to SQL, and what was the leadership adoption curve like?" />
+        </motion.div>
 
-      {/* ── Artifact 4: Agentic Reporting & ELT (Bottom Right) ── */}
-      <motion.div
-        variants={f4Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
-      >
-        <p style={{
-          fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-          color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
-          textTransform: 'uppercase', margin: '0 0 10px',
-        }}>Agentic Reporting // ETL & ELT</p>
-        <p style={{
-          fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-          color: 'rgba(156,163,175,0.75)', lineHeight: 1.65, margin: '0 0 14px',
-        }}>
-          Engineered a 0-1 Agentic Reporting Platform transcending traditional BI. Integrated an RAG-based AI analysis layer with a core PostgreSQL data warehouse via n8n pipelines.
-        </p>
-        <div style={{ borderLeft: '2px solid rgba(107,114,128,0.35)', paddingLeft: 14 }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 400,
-            color: 'rgba(229,231,235,0.9)', lineHeight: 1.65, margin: 0,
-          }}>
-            Provided leadership with a direct chat interface for real-time, substantive analysis, eliminating manual reporting latency.
-          </p>
-        </div>
-      </motion.div>
+      </div>
 
     </motion.div>
   </section>
@@ -863,161 +1338,154 @@ const Fold5 = () => (
       style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
 
     <motion.div
-      className="relative min-h-screen w-full"
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
       variants={f5Stagger}
       initial="hidden"
       whileInView="visible"
       viewport={VP}
     >
 
-      {/* ── Artifact 1: MarTech & CDP Architecture (Top Left) ── */}
-      <motion.div
-        variants={f5Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', left: '8%', maxWidth: 420 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.90)',
-          border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px',
-          borderRadius: 8,
-          backdropFilter: 'blur(12px)',
-          backgroundImage: [
-            'repeating-linear-gradient(0deg,  rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
-            'repeating-linear-gradient(90deg, rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
-          ].join(', '),
-        }}>
-          {/* Header */}
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 12px',
-          }}>
-            MARTECH &amp; CDP ARCHITECTURE
-          </p>
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-          {/* Body */}
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, lineHeight: 1.7,
-            color: 'rgba(209,213,219,0.85)', margin: '0 0 18px',
+        {/* ── Artifact 1: MarTech & CDP Architecture (Top Left) ── */}
+        <motion.div variants={f5Left} style={{ maxWidth: 420 }}>
+          <div style={{
+            backgroundColor: 'rgba(8,8,10,0.94)',
+            border: '1px solid rgba(55,65,81,0.9)',
+            padding: '24px',
+            borderRadius: 8,
+            backdropFilter: 'blur(12px)',
+            backgroundImage: [
+              'repeating-linear-gradient(0deg,  rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
+              'repeating-linear-gradient(90deg, rgba(107,114,128,0.03) 0px, transparent 1px, transparent 28px)',
+            ].join(', '),
           }}>
-            Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem (Apps, Websites, CRM, LMS).
-          </p>
-
-          {/* Orchestration routing rows */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {[
-              { label: 'ETL / Orchestration', value: 'n8n & Zapier' },
-              { label: 'Comms Routing',        value: 'Netcore · Clevertap · Wati' },
-            ].map(row => (
-              <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>
-                  {row.label}:
-                </span>
-                <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>
-                  {row.value}
-                </span>
-              </div>
-            ))}
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 12px',
+            }}>
+              MARTECH &amp; CDP ARCHITECTURE
+            </p>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, lineHeight: 1.7,
+              color: 'rgba(229,231,235,0.95)', margin: '0 0 18px',
+            }}>
+              Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem (Apps, Websites, CRM, LMS).
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[
+                { label: 'ETL / Orchestration', value: 'n8n & Zapier' },
+                { label: 'Comms Routing',        value: 'Netcore · Clevertap · Wati' },
+              ].map(row => (
+                <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                  <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>
+                    {row.label}:
+                  </span>
+                  <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>
+                    {row.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <AskHook question="You governed the CDP implementation across apps, websites, CRM, and LMS simultaneously — how did you design the event taxonomy, and what was the most complex data routing problem you solved with n8n?" />
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* ── Artifact 2: CRM Routing Protocol (Top Right) ── */}
-      <motion.div
-        variants={f5Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', maxWidth: 400 }}
-      >
-        <div style={{ borderLeft: '2px solid #dc2626', paddingLeft: 16 }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '0 0 8px',
-          }}>
-            MILES FORCE // INTERNAL CRM
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13, fontWeight: 700,
-            color: '#F3F4F6', letterSpacing: '0.02em',
-            textTransform: 'uppercase', margin: '0 0 10px',
-          }}>
-            LEAD ROUTING &amp; SOURCE DETECTION
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(156,163,175,0.8)', lineHeight: 1.65, margin: 0,
-          }}>
-            Led the development of the Miles Force CRM module. Optimized the critical lead management flow from Enquiry to SPOC Allocation. Implemented a dynamic Sales Queue Module designed for day-level lead distribution to maximize sales efficiency.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 3: Microservice Impact 1 — +30% (Bottom Left) ── */}
-      <motion.div
-        variants={f5Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(64px, 6vw, 96px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              letterSpacing: '-0.03em', display: 'block',
+        {/* ── Artifact 2: CRM Routing Protocol (Top Right) ── */}
+        <motion.div variants={f5Right} style={{ maxWidth: 400 }}>
+          <div style={{ borderLeft: '2px solid #dc2626', paddingLeft: 16 }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '0 0 8px',
             }}>
-              +30%
-            </span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>
-            POST-COURSE ENGAGEMENT<AskHook question="The multi-platform calendar booking microservice produced a 30% post-course engagement lift — how did you design the service and what channels did it connect to drive community acquisition?" />
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Productized a multi-platform calendar booking microservice for Community Engagement, achieving a 12% lift in community-led acquisition.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 4: Microservice Impact 2 — +40% (Bottom Right) ── */}
-      <motion.div
-        variants={f5Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
-      >
-        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify delay={0.1}>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(64px, 6vw, 96px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              letterSpacing: '-0.03em', display: 'block',
+              MILES FORCE // INTERNAL CRM
+            </p>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15, fontWeight: 700,
+              color: '#F3F4F6', letterSpacing: '0.02em',
+              textTransform: 'uppercase', margin: '0 0 10px',
             }}>
-              +40%
-            </span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>
-            SCALED WEBINAR FREQUENCY<AskHook question="The Zoom-integrated SaaS content microservice scaled webinar frequency by 40% — how did the web page builder work, how did it integrate with the CRM, and what drove the 20% base conversion improvement?" />
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Developed an Internal SaaS Content Microservice integrated with Zoom and our CRM. This custom web page builder scaled deployments and drove a 20% increase in base conversion.
-          </p>
-        </div>
-      </motion.div>
+              LEAD ROUTING &amp; SOURCE DETECTION
+            </p>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Led the development of the Miles Force CRM module. Optimized the critical lead management flow from Enquiry to Sales Rep Allocation. Implemented a dynamic Sales Queue Module designed for day-level lead distribution to maximize sales efficiency.
+            </p>
+            <AskHook question="The Miles Force CRM module optimized the lead flow from Enquiry to SPOC Allocation — what were the failure modes in the original flow, and how did the dynamic Sales Queue Module change day-level distribution?" />
+          </div>
+        </motion.div>
+
+      </div>
+
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 3: Microservice Impact 1 — +30% (Bottom Left) ── */}
+        <motion.div variants={f5Left} style={{ maxWidth: 380 }}>
+          <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(64px, 6vw, 96px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                letterSpacing: '-0.03em', display: 'block',
+              }}>
+                +30%
+              </span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>
+              POST-COURSE ENGAGEMENT
+            </p>
+            <AskHook question="The multi-platform calendar booking microservice produced a 30% post-course engagement lift — how did you design the service and what channels did it connect to drive community acquisition?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Productized a multi-platform calendar booking microservice for Community Engagement, achieving a 12% lift in community-led acquisition.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 4: Microservice Impact 2 — +40% (Bottom Right) ── */}
+        <motion.div variants={f5Right} style={{ maxWidth: 380 }}>
+          <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify delay={0.1}>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(64px, 6vw, 96px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                letterSpacing: '-0.03em', display: 'block',
+              }}>
+                +40%
+              </span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>
+              SCALED WEBINAR FREQUENCY
+            </p>
+            <AskHook question="The Zoom-integrated SaaS content microservice scaled webinar frequency by 40% — how did the web page builder work, how did it integrate with the CRM, and what drove the 20% base conversion improvement?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Developed an Internal SaaS Content Microservice integrated with Zoom and our CRM. This custom web page builder scaled deployments and drove a 20% increase in base conversion.
+            </p>
+          </div>
+        </motion.div>
+
+      </div>
 
     </motion.div>
   </section>
@@ -1043,177 +1511,170 @@ const Fold6 = () => (
       style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
 
     <motion.div
-      className="relative min-h-screen w-full"
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
       variants={f6Stagger}
       initial="hidden"
       whileInView="visible"
       viewport={VP6}
     >
 
-      {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
-      <motion.div
-        variants={f6Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', left: '8%', maxWidth: 400 }}
-      >
-        <div style={{
-          borderBottom: '1px solid rgba(107,114,128,0.4)',
-          borderLeft: '1px solid rgba(107,114,128,0.4)',
-          paddingLeft: 16,
-          paddingBottom: 16,
-        }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.3em',
-            textTransform: 'uppercase', margin: '0 0 8px',
-          }}>
-            PAST JURISDICTION // ALMABETTER
-          </p>
-          <p style={{
-            fontFamily: TELE, fontSize: 12,
-            color: 'rgba(156,163,175,0.75)', margin: '0 0 8px',
-          }}>
-            ASSOCIATE PROGRAM MANAGER // PRODUCT GROWTH
-          </p>
-          <span style={{
-            fontFamily: TELE, fontSize: 11,
-            color: 'rgba(107,114,128,0.65)', display: 'block',
-          }}>
-            [ NOV 2022 – OCT 2023 ]
-          </span>
-        </div>
-      </motion.div>
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-      {/* ── Artifact 2: Engineering Ops Node (Top Right) ── */}
-      <motion.div
-        variants={f6Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', maxWidth: 380 }}
-      >
-        {/* Crosshair marker — top right corner */}
-        <div style={{ position: 'relative' }}>
-          <span style={{
-            position: 'absolute', top: 0, right: 0,
-            fontFamily: SWISS, fontSize: 18, fontWeight: 300,
-            color: 'rgba(220,38,38,0.5)', lineHeight: 1,
-          }}>+</span>
-
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(48px, 5vw, 72px)',
-              color: '#F3F4F6', lineHeight: 1,
-              letterSpacing: '-0.03em', display: 'block',
+        {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
+        <motion.div variants={f6Left} style={{ maxWidth: 400 }}>
+          <div style={{
+            borderBottom: '1px solid rgba(107,114,128,0.4)',
+            borderLeft: '1px solid rgba(107,114,128,0.4)',
+            paddingLeft: 16,
+            paddingBottom: 16,
+          }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.3em',
+              textTransform: 'uppercase', margin: '0 0 8px',
             }}>
-              -80%
-            </span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '8px 0 12px',
-          }}>
-            DEV ERROR REDUCTION<AskHook question="An 80% drop in dev errors is a massive outcome — what was broken in the AlmaBetter JIRA and Basecamp setup, and what specific workflow changes did you make to fix velocity and content readiness?" />
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Redesigned engineering workflows and sprint cycles using JIRA and Basecamp. Resolved velocity misalignments and accelerated content readiness by two full weeks.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 3: Resolution Matrix (Bottom Left) ── */}
-      <motion.div
-        variants={f6Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(64px, 6vw, 96px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              letterSpacing: '-0.03em', display: 'block',
+              PAST JURISDICTION // ALMABETTER
+            </p>
+            <p style={{
+              fontFamily: TELE, fontSize: 12,
+              color: 'rgba(209,213,219,0.92)', margin: '0 0 8px',
             }}>
-              9.1
+              ASSOCIATE PROGRAM MANAGER // PRODUCT GROWTH
+            </p>
+            <span style={{
+              fontFamily: TELE, fontSize: 11,
+              color: 'rgba(107,114,128,0.65)', display: 'block',
+            }}>
+              [ NOV 2022 – OCT 2023 ]
             </span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0 4px',
-          }}>
-            PEAK CSAT SCORE<AskHook question="AlmaBetter's CSAT moved from 7.0 to a peak of 9.1 — how did you design the productized ticketing system, what did the n8n ELT layer actually do, and where did you cut the 35% resolution time?" />
-          </p>
-          <span style={{
-            fontFamily: TELE, fontSize: 11,
-            color: 'rgba(107,114,128,0.65)', display: 'block', marginBottom: 12,
-          }}>
-            [ UP FROM 7.0 ]
-          </span>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Architected and shipped a productized ticketing system. Utilized an n8n ELT layer to cut resolution time by 35% and completely transform the customer support experience.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 4: GTM & Acquisition Board (Bottom Right) ── */}
-      <motion.div
-        variants={f6Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 420 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.90)',
-          border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px',
-          backdropFilter: 'blur(12px)',
-        }}>
-          {/* Dual metrics row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-            {[
-              { metric: '+20%', label: 'QoQ Revenue' },
-              { metric: '+40%', label: 'Qualified Leads' },
-            ].map(item => (
-              <div key={item.label}>
-                <Declassify>
-                  <span style={{
-                    fontFamily: SWISS, fontWeight: 700,
-                    fontSize: 'clamp(28px, 3vw, 36px)',
-                    color: '#FFFFFF', lineHeight: 1,
-                    display: 'block', letterSpacing: '-0.02em',
-                  }}>
-                    {item.metric}
-                  </span>
-                </Declassify>
-                <p style={{
-                  fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
-                  textTransform: 'uppercase', margin: '6px 0 0',
-                }}>
-                  {item.label}
-                </p>
-              </div>
-            ))}
           </div>
+        </motion.div>
 
-          {/* Divider */}
-          <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.6)', marginBottom: 16 }} />
+        {/* ── Artifact 2: Engineering Ops Node (Top Right) ── */}
+        <motion.div variants={f6Right} style={{ maxWidth: 380 }}>
+          <div style={{ position: 'relative' }}>
+            <span style={{
+              position: 'absolute', top: 0, right: 0,
+              fontFamily: SWISS, fontSize: 18, fontWeight: 300,
+              color: 'rgba(220,38,38,0.5)', lineHeight: 1,
+            }}>+</span>
 
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(48px, 5vw, 72px)',
+                color: '#F3F4F6', lineHeight: 1,
+                letterSpacing: '-0.03em', display: 'block',
+              }}>
+                -80%
+              </span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '8px 0 12px',
+            }}>
+              DEV ERROR REDUCTION
+            </p>
+            <AskHook question="An 80% drop in dev errors is a massive outcome — what was broken in the AlmaBetter JIRA and Basecamp setup, and what specific workflow changes did you make to fix velocity and content readiness?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Redesigned engineering workflows and sprint cycles using JIRA and Basecamp. Resolved velocity misalignments and accelerated content readiness by two full weeks.
+            </p>
+          </div>
+        </motion.div>
+
+      </div>
+
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 3: Resolution Matrix (Bottom Left) ── */}
+        <motion.div variants={f6Left} style={{ maxWidth: 380 }}>
+          <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(64px, 6vw, 96px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                letterSpacing: '-0.03em', display: 'block',
+              }}>
+                9.1
+              </span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0 4px',
+            }}>
+              PEAK CSAT SCORE
+            </p>
+            <AskHook question="AlmaBetter's CSAT moved from 7.0 to a peak of 9.1 — how did you design the productized ticketing system, what did the n8n ELT layer actually do, and where did you cut the 35% resolution time?" />
+            <TelemetryMetric points={[0.55, 0.58, 0.6, 0.63, 0.68, 0.72, 0.76, 0.82, 0.88, 0.95]} label="csat trajectory" />
+            <span style={{
+              fontFamily: TELE, fontSize: 11,
+              color: 'rgba(107,114,128,0.65)', display: 'block', marginBottom: 12,
+            }}>
+              [ UP FROM 7.0 ]
+            </span>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Architected and shipped a productized ticketing system. Utilized an n8n ELT layer to cut resolution time by 35% and completely transform the customer support experience.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 4: GTM & Acquisition Board (Bottom Right) ── */}
+        <motion.div variants={f6Right} style={{ maxWidth: 420 }}>
+          <div style={{
+            backgroundColor: 'rgba(8,8,10,0.94)',
+            border: '1px solid rgba(55,65,81,0.9)',
+            padding: '24px',
+            backdropFilter: 'blur(12px)',
           }}>
-            Orchestrated the Go-to-Market strategy for the Events Vertical. Optimized acquisition spend across WhatsApp and MarTech channels, increasing online enrollments by 60% and shortening the sales cycle by 10%.
-          </p>
-        </div>
-      </motion.div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+              {[
+                { metric: '+20%', label: 'QoQ Revenue' },
+                { metric: '+40%', label: 'Qualified Leads' },
+              ].map(item => (
+                <div key={item.label}>
+                  <Declassify>
+                    <span style={{
+                      fontFamily: SWISS, fontWeight: 700,
+                      fontSize: 'clamp(28px, 3vw, 36px)',
+                      color: '#FFFFFF', lineHeight: 1,
+                      display: 'block', letterSpacing: '-0.02em',
+                    }}>
+                      {item.metric}
+                    </span>
+                  </Declassify>
+                  <p style={{
+                    fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+                    color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+                    textTransform: 'uppercase', margin: '6px 0 0',
+                  }}>
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.6)', marginBottom: 16 }} />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Orchestrated the Go-to-Market strategy for the Events Vertical. Optimized acquisition spend across WhatsApp and MarTech channels, increasing online enrollments by 60% and shortening the sales cycle by 10%.
+            </p>
+            <AskHook question="The Events GTM strategy increased online enrollments by 60% and shortened the sales cycle by 10% — how did you allocate spend across WhatsApp and MarTech channels, and what was the key acquisition insight that drove the QoQ lift?" />
+          </div>
+        </motion.div>
+
+      </div>
 
     </motion.div>
   </section>
@@ -1239,142 +1700,139 @@ const Fold7 = () => (
       style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
 
     <motion.div
-      className="relative min-h-screen w-full"
+      className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
       variants={f7Stagger}
       initial="hidden"
       whileInView="visible"
       viewport={VP7}
     >
 
-      {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
-      <motion.div
-        variants={f7Left}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', left: '8%', maxWidth: 400 }}
-      >
-        <div style={{
-          borderBottom: '1px solid rgba(107,114,128,0.4)',
-          borderLeft:   '1px solid rgba(107,114,128,0.4)',
-          paddingLeft: 16, paddingBottom: 16,
-        }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 700,
-            color: '#dc2626', letterSpacing: '0.3em',
-            textTransform: 'uppercase', margin: '0 0 8px',
-          }}>
-            PAST JURISDICTION // UPGRAD
-          </p>
-          <p style={{
-            fontFamily: TELE, fontSize: 12,
-            color: 'rgba(156,163,175,0.75)', margin: '0 0 8px',
-          }}>
-            SR. ASSOCIATE // PROGRAM &amp; CONTENT STRATEGY
-          </p>
-          <span style={{
-            fontFamily: TELE, fontSize: 11,
-            color: 'rgba(107,114,128,0.65)', display: 'block',
-          }}>
-            [ JAN 2021 – OCT 2022 ]
-          </span>
-        </div>
-      </motion.div>
+      {/* ── Top row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-      {/* ── Artifact 2: Behavioral Analysis Node (Top Right) ── */}
-      <motion.div
-        variants={f7Right}
-        className="absolute z-10 hidden md:block"
-        style={{ top: '15%', right: '8%', maxWidth: 400 }}
-      >
-        <div style={{
-          backgroundColor: 'rgba(10,10,10,0.80)',
-          border: '1px solid rgba(55,65,81,0.9)',
-          padding: '24px', backdropFilter: 'blur(12px)',
-        }}>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.25em',
-            textTransform: 'uppercase', margin: '0 0 12px',
+        {/* ── Artifact 1: Jurisdiction Tab (Top Left) ── */}
+        <motion.div variants={f7Left} style={{ maxWidth: 400 }}>
+          <div style={{
+            borderBottom: '1px solid rgba(107,114,128,0.4)',
+            borderLeft:   '1px solid rgba(107,114,128,0.4)',
+            paddingLeft: 16, paddingBottom: 16,
           }}>
-            BEHAVIORAL DATA ANALYSIS
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Addressed critical learner engagement drop-offs by analyzing deep behavioral data. Identified structural friction points and introduced new learning strategies that directly improved learner success metrics by 12%.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 3: Impact Metric (Bottom Left) ── */}
-      <motion.div
-        variants={f7Left}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', left: '8%', maxWidth: 380 }}
-      >
-        <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
-          <Declassify>
-            <span style={{
-              fontFamily: SWISS, fontWeight: 900,
-              fontSize: 'clamp(64px, 6vw, 96px)',
-              color: '#F3F4F6', lineHeight: 0.8,
-              letterSpacing: '-0.03em', display: 'block',
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+              color: '#dc2626', letterSpacing: '0.3em',
+              textTransform: 'uppercase', margin: '0 0 8px',
             }}>
-              +20%
+              PAST JURISDICTION // UPGRAD
+            </p>
+            <p style={{
+              fontFamily: TELE, fontSize: 12,
+              color: 'rgba(209,213,219,0.92)', margin: '0 0 8px',
+            }}>
+              SR. ASSOCIATE // PROGRAM &amp; CONTENT STRATEGY
+            </p>
+            <span style={{
+              fontFamily: TELE, fontSize: 11,
+              color: 'rgba(107,114,128,0.65)', display: 'block',
+            }}>
+              [ JAN 2021 – OCT 2022 ]
             </span>
-          </Declassify>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '12px 0',
-          }}>
-            COURSE COMPLETION LIFT<AskHook question="You identified a 120-minute decay curve at UpGrad that no one had seen — how did you find it in the behavioral data, and what product interventions did you ship to convert that insight into a 20% completion lift?" />
-          </p>
-          <p style={{
-            fontFamily: SWISS, fontSize: 13,
-            color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-          }}>
-            Translated user behavioral insights into actionable product interventions, successfully increasing overall course completion rates across cohort groups.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Artifact 4: Program Strategy (Bottom Right) ── */}
-      <motion.div
-        variants={f7Right}
-        className="absolute z-10 hidden md:block"
-        style={{ bottom: '12%', right: '8%', maxWidth: 380 }}
-      >
-        <div>
-          <p style={{
-            fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
-            textTransform: 'uppercase', margin: '0 0 12px',
-          }}>
-            PROGRAM ROADMAP // GTM
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {[
-              'Defined and executed content roadmaps for 5 distinct post-graduate programs.',
-              'Conducted deep market analysis to identify curriculum gaps.',
-              'Led the design and 0-1 launch of new PG & BBA-MBA programs addressing unmet learner needs.',
-            ].map((item, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span style={{
-                  fontFamily: TELE, fontSize: 10,
-                  color: 'rgba(239,68,68,0.5)', flexShrink: 0, marginTop: 2,
-                }}>{'>'}</span>
-                <p style={{
-                  fontFamily: SWISS, fontSize: 13,
-                  color: 'rgba(209,213,219,0.85)', lineHeight: 1.65, margin: 0,
-                }}>
-                  {item}
-                </p>
-              </div>
-            ))}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        {/* ── Artifact 2: Behavioral Analysis Node (Top Right) ── */}
+        <motion.div variants={f7Right} style={{ maxWidth: 400 }}>
+          <div style={{
+            backgroundColor: 'rgba(10,10,10,0.80)',
+            border: '1px solid rgba(55,65,81,0.9)',
+            padding: '24px', backdropFilter: 'blur(12px)',
+          }}>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.25em',
+              textTransform: 'uppercase', margin: '0 0 12px',
+            }}>
+              BEHAVIORAL DATA ANALYSIS
+            </p>
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Addressed critical learner engagement drop-offs by analyzing deep behavioral data. Identified structural friction points and introduced new learning strategies that directly improved learner success metrics by 12%.
+            </p>
+            <AskHook question="You identified structural friction points in UpGrad's learner journey through behavioral data — what metrics did you analyze, what was the most surprising friction point you found, and what product intervention had the biggest impact?" />
+          </div>
+        </motion.div>
+
+      </div>
+
+      {/* ── Bottom row ── */}
+      <div className="hidden md:flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+
+        {/* ── Artifact 3: Impact Metric (Bottom Left) ── */}
+        <motion.div variants={f7Left} style={{ maxWidth: 380 }}>
+          <div style={{ borderLeft: '4px solid #dc2626', paddingLeft: 20 }}>
+            <Declassify>
+              <span style={{
+                fontFamily: SWISS, fontWeight: 900,
+                fontSize: 'clamp(64px, 6vw, 96px)',
+                color: '#F3F4F6', lineHeight: 0.8,
+                letterSpacing: '-0.03em', display: 'block',
+              }}>
+                +20%
+              </span>
+            </Declassify>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '12px 0',
+            }}>
+              COURSE COMPLETION LIFT
+            </p>
+            <AskHook question="You identified a 120-minute decay curve at UpGrad that no one had seen — how did you find it in the behavioral data, and what product interventions did you ship to convert that insight into a 20% completion lift?" />
+            <p style={{
+              fontFamily: SWISS, fontSize: 15,
+              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+            }}>
+              Translated user behavioral insights into actionable product interventions, successfully increasing overall course completion rates across cohort groups.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ── Artifact 4: Program Strategy (Bottom Right) ── */}
+        <motion.div variants={f7Right} style={{ maxWidth: 380 }}>
+          <div>
+            <p style={{
+              fontFamily: SWISS, fontSize: 10, fontWeight: 600,
+              color: 'rgba(239,68,68,0.8)', letterSpacing: '0.2em',
+              textTransform: 'uppercase', margin: '0 0 12px',
+            }}>
+              PROGRAM ROADMAP // GTM
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                'Defined and executed content roadmaps for 5 distinct post-graduate programs.',
+                'Conducted deep market analysis to identify curriculum gaps.',
+                'Led the design and 0-1 launch of new PG & BBA-MBA programs addressing unmet learner needs.',
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <span style={{
+                    fontFamily: TELE, fontSize: 10,
+                    color: 'rgba(239,68,68,0.5)', flexShrink: 0, marginTop: 2,
+                  }}>{'>'}</span>
+                  <p style={{
+                    fontFamily: SWISS, fontSize: 15,
+                    color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+                  }}>
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <AskHook question="You ran content roadmaps for 5 distinct post-graduate programs at UpGrad — how did you prioritize curriculum gaps across programs, and what was your process for moving from market analysis to a shipped PG program?" />
+          </div>
+        </motion.div>
+
+      </div>
 
     </motion.div>
   </section>
@@ -1437,7 +1895,7 @@ const FoldTechStack = () => (
         style={{ top: '20%', left: '8%', width: 400 }}
       >
         <div style={{
-          backgroundColor: 'rgba(10,10,10,0.90)',
+          backgroundColor: 'rgba(8,8,10,0.94)',
           border: '1px solid rgba(55,65,81,0.9)',
           padding: '32px',
           backdropFilter: 'blur(12px)',
@@ -1457,8 +1915,9 @@ const FoldTechStack = () => (
                 color: 'rgba(209,213,219,0.8)', letterSpacing: '0.12em',
                 textTransform: 'uppercase', margin: '0 0 8px',
               }}>
-                {bar.label}<AskHook question={bar.q} />
+                {bar.label}
               </p>
+              <AskHook question={bar.q} />
               {/* Track */}
               <div style={{
                 height: 6, width: '100%',
@@ -1500,45 +1959,7 @@ const FoldTechStack = () => (
           THE ARSENAL // CORE STACK
         </p>
 
-        {ARSENAL_CATEGORIES.map((cat, ci) => (
-          <div key={cat.subhead} style={{ marginBottom: ci < ARSENAL_CATEGORIES.length - 1 ? 32 : 0 }}>
-            <span style={{
-              fontFamily: TELE, fontSize: 10,
-              color: '#dc2626', letterSpacing: '0.25em',
-              textTransform: 'uppercase', display: 'block', marginBottom: 12,
-            }}>
-              {cat.subhead}
-            </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {cat.tools.map(tool => (
-                <span
-                  key={tool}
-                  className="group"
-                  style={{
-                    fontFamily: TELE, fontSize: 11, fontWeight: 700,
-                    color: '#F3F4F6',
-                    border: '1px solid rgba(55,65,81,0.8)',
-                    backgroundColor: '#000',
-                    padding: '6px 12px',
-                    cursor: 'default',
-                    display: 'inline-block',
-                    transition: 'border-color 0.2s ease, color 0.2s ease',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = '#dc2626';
-                    e.currentTarget.style.color = '#f87171';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = 'rgba(55,65,81,0.8)';
-                    e.currentTarget.style.color = '#F3F4F6';
-                  }}
-                >
-                  {tool}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
+        <HexGrid categories={ARSENAL_CATEGORIES} />
       </motion.div>
 
     </motion.div>
@@ -1621,126 +2042,137 @@ const Fold8 = () => {
         transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
         className="w-full max-w-5xl flex flex-col md:flex-row gap-0 relative z-20"
         style={{
-          border: '1px solid rgba(55,65,81,0.7)',
-          backgroundColor: 'rgba(5,5,5,0.88)',
-          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          backgroundColor: 'rgba(10,10,10,0.4)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderRadius: 8,
+          boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
         }}
       >
-        {/* CRT scanline overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none z-[1]"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)',
-            borderRadius: 'inherit',
-          }}
-        />
-
         {/* ── Left pane: Frequencies ── */}
         <div
           className="relative z-10 flex flex-col"
           style={{
             width: '100%', maxWidth: 260, flexShrink: 0,
-            borderRight: '1px solid rgba(55,65,81,0.5)',
-            padding: '24px 20px',
+            borderRight: '1px solid rgba(255,255,255,0.07)',
+            padding: '28px 20px',
           }}
         >
           <span style={{
-            fontFamily: TELE, fontSize: 10,
-            color: '#dc2626', letterSpacing: '0.25em',
-            textTransform: 'uppercase', display: 'block', marginBottom: 16,
+            fontFamily: TELE, fontSize: 9,
+            color: '#dc2626', letterSpacing: '0.3em',
+            textTransform: 'uppercase', display: 'block', marginBottom: 20,
           }}>
             [ AVAILABLE INTERCEPTS ]
           </span>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {INTERCEPTS.map((inf, i) => (
-              <button
-                key={inf.codename}
-                onClick={() => setActiveIntercept(i)}
-                style={{
-                  textAlign: 'left',
-                  padding: '10px 14px',
-                  fontFamily: TELE, fontSize: 10,
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  borderLeft: `2px solid ${activeIntercept === i ? '#dc2626' : 'rgba(55,65,81,0.6)'}`,
-                  backgroundColor: activeIntercept === i ? 'rgba(185,28,28,0.08)' : 'transparent',
-                  color: activeIntercept === i ? '#F3F4F6' : 'rgba(107,114,128,0.7)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  border: 'none',
-                  borderLeft: `2px solid ${activeIntercept === i ? '#dc2626' : 'rgba(55,65,81,0.6)'}`,
-                  outline: 'none',
-                  width: '100%',
-                }}
-                onMouseEnter={e => {
-                  if (activeIntercept !== i) {
-                    e.currentTarget.style.borderLeftColor = 'rgba(107,114,128,0.8)';
-                    e.currentTarget.style.color = 'rgba(209,213,219,0.8)';
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (activeIntercept !== i) {
-                    e.currentTarget.style.borderLeftColor = 'rgba(55,65,81,0.6)';
-                    e.currentTarget.style.color = 'rgba(107,114,128,0.7)';
-                  }
-                }}
-              >
-                <span style={{ display: 'block', marginBottom: 2 }}>{inf.codename}</span>
-                <span style={{
-                  fontFamily: TELE, fontSize: 9,
-                  color: activeIntercept === i ? 'rgba(239,68,68,0.6)' : 'rgba(75,85,99,0.6)',
-                  letterSpacing: '0.1em',
-                }}>
-                  {inf.role}
-                </span>
-              </button>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {INTERCEPTS.map((inf, i) => {
+              const isActive = activeIntercept === i;
+              return (
+                <button
+                  key={inf.codename}
+                  onClick={() => setActiveIntercept(i)}
+                  style={{
+                    textAlign: 'left',
+                    padding: '10px 14px',
+                    backgroundColor: isActive ? 'rgba(239,68,68,0.08)' : 'transparent',
+                    backgroundImage: isActive ? 'linear-gradient(to right, rgba(239,68,68,0.06), transparent)' : 'none',
+                    color: isActive ? '#ffffff' : 'rgba(156,163,175,0.8)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    border: 'none',
+                    borderLeft: `2px solid ${isActive ? '#ef4444' : 'rgba(55,65,81,0.5)'}`,
+                    outline: 'none',
+                    width: '100%',
+                    borderRadius: '0 4px 4px 0',
+                  }}
+                  onMouseEnter={e => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderLeftColor = 'rgba(156,163,175,0.5)';
+                      e.currentTarget.style.color = 'rgba(229,231,235,0.9)';
+                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isActive) {
+                      e.currentTarget.style.borderLeftColor = 'rgba(55,65,81,0.5)';
+                      e.currentTarget.style.color = 'rgba(156,163,175,0.8)';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <span style={{
+                    display: 'block', marginBottom: 3,
+                    fontFamily: SWISS, fontSize: 11, fontWeight: 700,
+                    letterSpacing: '0.12em', textTransform: 'uppercase',
+                  }}>{inf.codename}</span>
+                  <span style={{
+                    fontFamily: TELE, fontSize: 9,
+                    color: isActive ? 'rgba(239,68,68,0.7)' : 'rgba(107,114,128,0.6)',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                  }}>
+                    {inf.role}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* ── Right pane: Decrypted Transcript ── */}
         <div
-          className="relative z-10 flex flex-col justify-center"
-          style={{ flex: 1, padding: '28px 28px 28px 24px', minHeight: 280 }}
+          className="relative z-10 flex flex-col justify-center overflow-hidden"
+          style={{ flex: 1, padding: '32px 36px', minHeight: 320 }}
         >
+          {/* Giant decorative quotation mark */}
+          <span style={{
+            position: 'absolute', top: -8, left: 24,
+            fontFamily: 'Georgia, serif', fontSize: 160, lineHeight: 1,
+            color: 'rgba(255,255,255,0.04)',
+            pointerEvents: 'none', userSelect: 'none',
+            zIndex: 0,
+          }}>&ldquo;</span>
+
           {/* Status bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+          <div className="relative z-10" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              {/* Blinking green dot */}
               <div style={{
                 width: 7, height: 7, borderRadius: '50%',
-                backgroundColor: '#22c55e',
+                backgroundColor: '#4ade80',
                 animation: 'pulse6 1.4s ease-in-out infinite',
-                boxShadow: '0 0 6px rgba(34,197,94,0.6)',
+                boxShadow: '0 0 8px rgba(74,222,128,0.7)',
               }} />
               <span style={{
                 fontFamily: TELE, fontSize: 9,
-                color: 'rgba(34,197,94,0.7)', letterSpacing: '0.2em',
+                color: '#4ade80', letterSpacing: '0.25em',
                 textTransform: 'uppercase',
               }}>
                 STATUS: DECRYPTED
               </span>
             </div>
-            <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(55,65,81,0.4)' }} />
+            <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.08)' }} />
             <span style={{
               fontFamily: TELE, fontSize: 9,
-              color: 'rgba(107,114,128,0.5)', letterSpacing: '0.15em',
+              color: 'rgba(156,163,175,0.6)', letterSpacing: '0.15em',
               textTransform: 'uppercase',
             }}>
               {active.codename}
             </span>
           </div>
 
-          {/* Animated quote — key forces re-animation on tab change */}
+          {/* Animated quote — sans-serif, large, readable */}
           <motion.p
             key={activeIntercept}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+            className="relative z-10"
             style={{
-              fontFamily: TELE, fontSize: 13,
-              color: 'rgba(209,213,219,0.85)', lineHeight: 1.9,
+              fontFamily: SWISS, fontSize: 'clamp(16px, 1.6vw, 22px)',
+              fontWeight: 300, letterSpacing: '0.01em',
+              color: '#f3f4f6', lineHeight: 1.75,
               margin: 0,
             }}
           >
@@ -1752,15 +2184,20 @@ const Fold8 = () => {
             key={`role-${activeIntercept}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="relative z-10"
             style={{
               fontFamily: TELE, fontSize: 10,
-              color: 'rgba(75,85,99,0.7)', letterSpacing: '0.15em',
-              display: 'block', marginTop: 20,
+              color: '#ef4444', letterSpacing: '0.2em',
+              display: 'block', marginTop: 24,
+              textTransform: 'uppercase',
             }}
           >
             {'> [ VERIFIED : '}{active.role}{' ]'}
           </motion.span>
+          <div className="relative z-10">
+            <AskHook question={`A ${active.role.toLowerCase()} described specific work you did — ask Satyajit directly about the capability or project referenced in this intercept.`} />
+          </div>
         </div>
       </motion.div>
     </section>
@@ -1779,8 +2216,8 @@ const Fold9 = () => (
   >
     {/* Bottom shadow — frames the portrait */}
     <div
-      className="absolute inset-x-0 bottom-0 h-2/3 pointer-events-none"
-      style={{ background: 'linear-gradient(to top, rgba(15,20,25,0.96) 0%, rgba(15,20,25,0.65) 55%, transparent 100%)' }}
+      className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none"
+      style={{ background: 'linear-gradient(to top, rgba(15,20,25,0.82) 0%, rgba(15,20,25,0.45) 50%, transparent 100%)' }}
     />
 
     {/* ── Academic Ledger ── */}
@@ -1805,7 +2242,7 @@ const Fold9 = () => (
       ].map(edu => (
         <div key={edu.degree}>
           <p style={{
-            fontFamily: TELE, fontSize: 13,
+            fontFamily: TELE, fontSize: 15,
             color: 'rgba(156,163,175,0.85)', lineHeight: 1.7, margin: 0,
           }}>
             <span style={{ color: 'rgba(229,231,235,0.75)', fontWeight: 600 }}>{edu.degree}</span>
@@ -1847,6 +2284,7 @@ const Fold9 = () => (
           </span>
         ))}
       </div>
+      <AskHook question="PGDM Marketing from PIBM with an 8.21 CGPA plus a B.Tech in Automotive Engineering — how does an engineering-to-marketing-to-product-manager trajectory actually happen, and what from each phase still shows up in your PM work?" />
     </motion.div>
 
     {/* ── END OF FILE stamp — spring stamp-in ── */}
@@ -1874,7 +2312,12 @@ const Fold9 = () => (
         [ END OF FILE ]
       </p>
     </motion.div>
-  </section>
+
+      {/* ── Action Console ── */}
+      <div className="relative z-[20] w-full">
+        <ActionConsole />
+      </div>
+    </section>
 );
 
 
@@ -1927,6 +2370,7 @@ const LogoCarousel = () => (
 const Dossier = () => (
   <div className="relative bg-[#0F1419] dossier-cursor">
     <CrosshairCursor />
+    <CentralSpine />
     <DossierStyles />
     <FixedPortrait />
     <div className="relative z-[2]">

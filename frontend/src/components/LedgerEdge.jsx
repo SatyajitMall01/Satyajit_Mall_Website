@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText } from 'lucide-react';
-import { Separator } from './ui/separator';
+import { Home, Menu, X } from 'lucide-react';
+
+const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const TELE  = "'Courier New', Courier, monospace";
 
 const navItems = [
   { id: 'evidence',   label: 'The Evidence',   route: '/cases' },
@@ -11,127 +13,201 @@ const navItems = [
 ];
 
 const LedgerEdge = () => {
-  const [isFolderOpen, setIsFolderOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {/* ── Fixed Spine — always visible ── */}
-      <div className="fixed left-0 top-0 h-screen w-16 z-50 bg-[#0F1419] border-r border-[#333] flex flex-col items-center justify-between py-6">
-        {/* Toggle button */}
-        <button
-          onClick={() => setIsFolderOpen(!isFolderOpen)}
-          className="flex flex-col items-center gap-3 group"
-          aria-label="Toggle navigation"
-        >
-          <FileText
-            size={15}
-            strokeWidth={1.5}
-            className={`transition-colors duration-300 ${isFolderOpen ? 'text-[#B22222]' : 'text-[#B22222]/60 group-hover:text-[#B22222]'}`}
-          />
-          <span
-            className="text-[8px] text-[#F4ECD8]/30 tracking-[0.3em] uppercase group-hover:text-[#F4ECD8]/60 transition-colors duration-300 select-none"
-            style={{
-              fontFamily: "'Special Elite', cursive",
-              writingMode: 'vertical-rl',
-              transform: 'rotate(180deg)',
-            }}
-          >
-            Case File
-          </span>
-        </button>
-
-        {/* Confidential label — bottom of spine */}
-        <span
-          className="text-[7px] text-[#B22222]/40 tracking-[0.2em] uppercase select-none"
+      {/* ── Edge trigger strip — 3px, barely there when closed ── */}
+      {!isOpen && (
+        <div
+          onClick={() => setIsOpen(true)}
           style={{
-            fontFamily: "'Special Elite', cursive",
-            writingMode: 'vertical-rl',
-            transform: 'rotate(180deg)',
+            position: 'fixed', left: 0, top: 0,
+            width: 3, height: '100vh',
+            backgroundColor: 'rgba(178,34,34,0.25)',
+            zIndex: 50, cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
           }}
-        >
-          Confidential
-        </span>
-      </div>
+          onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(178,34,34,0.6)'; }}
+          onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'rgba(178,34,34,0.25)'; }}
+        />
+      )}
+
+      {/* ── Toggle button — floats at top-left ── */}
+      <button
+        onClick={() => setIsOpen(v => !v)}
+        aria-label="Toggle navigation"
+        style={{
+          position: 'fixed', top: 18, left: isOpen ? 292 : 14,
+          height: 36,
+          paddingLeft: 10, paddingRight: isOpen ? 10 : 14,
+          backgroundColor: isOpen ? 'rgba(139,26,26,0.95)' : 'rgba(10,12,16,0.85)',
+          border: `1px solid ${isOpen ? 'rgba(220,38,38,0.5)' : 'rgba(178,34,34,0.28)'}`,
+          borderRadius: 3,
+          display: 'flex', alignItems: 'center', gap: 8,
+          cursor: 'pointer', outline: 'none',
+          zIndex: 51,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          transition: 'left 0.4s cubic-bezier(0.25,1,0.5,1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+          boxShadow: isOpen ? '0 0 16px rgba(220,38,38,0.2)' : '0 2px 12px rgba(0,0,0,0.5)',
+        }}
+        onMouseEnter={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(178,34,34,0.6)'; }}
+        onMouseLeave={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(178,34,34,0.28)'; }}
+      >
+        {isOpen
+          ? <X size={13} strokeWidth={2} color="rgba(244,236,216,0.85)" />
+          : <Menu size={14} strokeWidth={1.5} color="rgba(220,38,38,0.9)" />
+        }
+        {!isOpen && (
+          <span style={{
+            fontFamily: TELE, fontSize: 9,
+            color: 'rgba(244,236,216,0.45)', letterSpacing: '0.2em',
+            textTransform: 'uppercase', whiteSpace: 'nowrap',
+          }}>
+            MENU
+          </span>
+        )}
+      </button>
 
       {/* ── Slide-out Drawer ── */}
       <nav
-        className={`fixed left-16 top-0 h-screen w-64 bg-[#0F1419] z-40 flex flex-col justify-between py-10 px-6 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-          isFolderOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-        style={{ borderRight: '2px solid #1A1A1A' }}
+        style={{
+          position: 'fixed', left: 0, top: 0,
+          height: '100vh', width: 280,
+          backgroundColor: 'rgba(6,8,12,0.97)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderRight: '1px solid rgba(255,255,255,0.06)',
+          zIndex: 49,
+          display: 'flex', flexDirection: 'column',
+          paddingTop: 72,
+          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.4s cubic-bezier(0.25,1,0.5,1)',
+        }}
       >
-        {/* Top section */}
-        <div>
-          <div className="flex items-center gap-2.5 mb-3">
-            <FileText size={16} strokeWidth={1.5} className="text-[#B22222]" />
-            <span
-              className="text-[#F4ECD8] text-[11px] tracking-[0.35em] uppercase"
-              style={{ fontFamily: "'Julius Sans One', sans-serif" }}
-            >
-              Case File
-            </span>
-          </div>
-
-          <Separator className="bg-[#2A2A2A] mb-10" />
-
-          {/* Navigation links */}
-          <div className="flex flex-col gap-1">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.id}
-                to={item.route}
-                className="group flex items-start gap-3.5 py-3 px-2 text-[#F4ECD8]/40 hover:text-white hover:pl-4 transition-all duration-300"
-                onClick={() => setIsFolderOpen(false)}
-              >
-                <span
-                  className="text-[10px] text-[#F4ECD8]/20 mt-[3px] tabular-nums flex-shrink-0"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
-                >
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span
-                  className="text-[12px] tracking-[0.15em] uppercase leading-snug"
-                  style={{ fontFamily: "'Special Elite', cursive" }}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            ))}
-          </div>
+        {/* Header */}
+        <div style={{
+          padding: '0 28px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+        }}>
+          <p style={{
+            fontFamily: TELE, fontSize: 9,
+            color: 'rgba(220,38,38,0.65)', letterSpacing: '0.35em',
+            textTransform: 'uppercase', margin: '0 0 7px',
+          }}>
+            [ CASE FILE ]
+          </p>
+          <p style={{
+            fontFamily: SWISS, fontSize: 12, fontWeight: 400,
+            color: 'rgba(244,236,216,0.35)', letterSpacing: '0.04em',
+            margin: 0,
+          }}>
+            Satyajit Mall — Product Manager
+          </p>
         </div>
 
-        {/* Bottom section */}
-        <div>
-          <Separator className="bg-[#2A2A2A] mb-5" />
-          <p
-            className="text-[9px] text-[#F4ECD8]/25 tracking-[0.25em] uppercase"
-            style={{ fontFamily: "'Special Elite', cursive" }}
-          >
-            Classification
+        {/* Nav links */}
+        <div style={{ flex: 1, padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto' }}>
+
+          {/* Home */}
+          <NavLink to="/" icon={<Home size={12} strokeWidth={1.5} />} label="Home" onClose={() => setIsOpen(false)} isHome />
+
+          <div style={{ height: 1, margin: '6px 28px', backgroundColor: 'rgba(255,255,255,0.04)' }} />
+
+          {navItems.map((item, i) => (
+            <NavLink
+              key={item.id}
+              to={item.route}
+              index={i + 1}
+              label={item.label}
+              onClose={() => setIsOpen(false)}
+            />
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '20px 28px',
+          borderTop: '1px solid rgba(255,255,255,0.05)',
+        }}>
+          <p style={{
+            fontFamily: TELE, fontSize: 9,
+            color: 'rgba(244,236,216,0.18)', letterSpacing: '0.22em',
+            textTransform: 'uppercase', margin: '0 0 4px',
+          }}>
+            CLASSIFICATION
           </p>
-          <p
-            className="text-[9px] text-[#B22222] tracking-[0.25em] uppercase mt-1.5"
-            style={{ fontFamily: "'Special Elite', cursive" }}
-          >
-            Confidential
+          <p style={{
+            fontFamily: TELE, fontSize: 9,
+            color: 'rgba(220,38,38,0.5)', letterSpacing: '0.28em',
+            textTransform: 'uppercase', margin: '0 0 14px',
+          }}>
+            CONFIDENTIAL
           </p>
-          <p
-            className="text-[9px] text-[#F4ECD8]/15 mt-4"
-            style={{ fontFamily: "'Special Elite', cursive" }}
-          >
+          <p style={{
+            fontFamily: SWISS, fontSize: 10,
+            color: 'rgba(244,236,216,0.13)',
+            margin: 0,
+          }}>
             &copy; 2025 S. Mall
           </p>
         </div>
       </nav>
 
-      {/* ── Backdrop — closes drawer on outside click ── */}
-      {isFolderOpen && (
+      {/* Backdrop */}
+      {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/40"
-          onClick={() => setIsFolderOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 30,
+            backgroundColor: 'rgba(0,0,0,0.55)',
+          }}
+          onClick={() => setIsOpen(false)}
         />
       )}
     </>
+  );
+};
+
+/* ── Shared nav link row ── */
+const NavLink = ({ to, label, index, icon, onClose, isHome }) => {
+  const [hov, setHov] = useState(false);
+  return (
+    <Link
+      to={to}
+      onClick={onClose}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '11px 28px',
+        color: hov ? '#ffffff' : 'rgba(156,163,175,0.65)',
+        textDecoration: 'none',
+        borderLeft: `2px solid ${hov ? (isHome ? 'rgba(255,255,255,0.3)' : '#dc2626') : 'transparent'}`,
+        backgroundColor: hov ? (isHome ? 'rgba(255,255,255,0.03)' : 'rgba(220,38,38,0.05)') : 'transparent',
+        transition: 'all 0.18s ease',
+      }}
+    >
+      {icon ? (
+        <span style={{ color: hov ? 'rgba(244,236,216,0.8)' : 'rgba(107,114,128,0.5)', flexShrink: 0 }}>
+          {icon}
+        </span>
+      ) : (
+        <span style={{
+          fontFamily: TELE, fontSize: 9,
+          color: hov ? 'rgba(107,114,128,0.9)' : 'rgba(75,85,99,0.5)',
+          flexShrink: 0, width: 18,
+        }}>
+          {String(index).padStart(2, '0')}
+        </span>
+      )}
+      <span style={{
+        fontFamily: SWISS, fontSize: 12, fontWeight: 500,
+        letterSpacing: '0.1em', textTransform: 'uppercase',
+      }}>
+        {label}
+      </span>
+    </Link>
   );
 };
 
