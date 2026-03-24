@@ -7,67 +7,49 @@ const SWISS       = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE        = "'Courier New', Courier, monospace";
 const WINDOW_SIZE = 5;
 
-/* ── Full informant database (10 records) ── */
+/* ── Verified informant database (6 records) ── */
 const INFORMANTS = [
   {
     id: 'inf-01', serial: 'S/N 001', ref: 'REF-0091A',
-    label: 'THE COMMISSIONER', role: 'Miles Leadership · Executive Witness',
-    image: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=800&q=80',
-    transcript: "Satyajit didn\u2019t just fix the churn; he re-architected the entire identity registry. The \u20B920 Cr. revenue isn\u2019t a fluke \u2014 it\u2019s a forensic result.",
+    codename: 'THE ARCHITECT', realName: 'Shivam Chopra',
+    role: 'Chief Technology Officer', division: 'MILES EDUCATION',
+    image: '/informants/shivam.png',
+    quote: "Satyajit bridges the hardest gap in tech: translating business needs into deterministic engineering architecture. When we scaled the Miles One app and the AI pipelines, he didn\u2019t just write specs; he ensured our database structures and n8n workflows actually worked in production.",
   },
   {
     id: 'inf-02', serial: 'S/N 002', ref: 'REF-0134B',
-    label: 'THE DETECTIVE', role: 'Engineering Lead · Technical Witness',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
-    transcript: "He builds the plumbing before he asks for a dev sprint. n8n, SQL, zero dependencies \u2014 the system was running before we knew the problem.",
+    codename: 'THE STRATEGIST', realName: 'Sharanya Mukhopadhyay',
+    role: 'AVP Digital Marketing', division: 'MILES EDUCATION',
+    image: '/informants/sharanya.png',
+    quote: "He is that rare PM who actually understands Go-To-Market. Satyajit built the underlying CDP and MarTech infrastructure that allowed my team to scale our webinar deployments and drive a massive +20% lift in ROAS. He directly connects product to revenue.",
   },
   {
     id: 'inf-03', serial: 'S/N 003', ref: 'REF-0267C',
-    label: 'THE WITNESS', role: 'EdTech Learner · Field Testimony',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80',
-    transcript: "The Masterclass wasn\u2019t a course. It was an experience that knew exactly when I was struggling and met me there.",
+    codename: 'THE VETERAN', realName: 'Karan Mandalam',
+    role: 'Senior Product Manager', division: 'UPGRAD | ALMABETTER | MILES',
+    image: '/informants/karan.png',
+    quote: "Having worked alongside him across three different high-growth companies, I can say his ability to drop into a chaotic environment and build 0-to-1 systems is unmatched. Whether it\u2019s enterprise CRM routing or PLG loops, he builds machines that compound in value.",
   },
   {
     id: 'inf-04', serial: 'S/N 004', ref: 'REF-0312D',
-    label: 'THE ANALYST', role: 'Data Science · Research Division',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80',
-    transcript: "He doesn\u2019t analyze data \u2014 he interrogates it. Every query is a cross-examination. The model confessed on schedule.",
+    codename: 'THE CO-PILOT', realName: 'Shamantha K',
+    role: 'AVP Product', division: 'MILES EDUCATION',
+    image: '/informants/shamantha.png',
+    quote: "Leading the core product verticals alongside Satyajit has been incredible. He doesn\u2019t just manage product; he engineers the entire underlying ecosystem. From unifying our CRM and LMS platforms to integrating complex AI automation, he builds the scalable systems that power our core user journeys.",
   },
   {
     id: 'inf-05', serial: 'S/N 005', ref: 'REF-0445E',
-    label: 'THE STRATEGIST', role: 'Product Strategy · Field Command',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80',
-    transcript: "He ships three quarters of the roadmap and then hands you the fourth. Every sprint felt like intelligence already acted upon.",
+    codename: 'THE OPERATOR', realName: 'Shalini Basu',
+    role: 'Product Lead', division: 'GROWTH & VENTURE',
+    image: '/informants/shalini.png',
+    quote: "A master of tactical execution. He has an incredible ability to identify operational debt and eliminate it. He doesn\u2019t just launch features; he drops into engineering workflows, re-engineers sprint cycles, and transforms ticketing systems to make the whole company move faster.",
   },
   {
     id: 'inf-06', serial: 'S/N 006', ref: 'REF-0523F',
-    label: 'THE LIAISON', role: 'Business Development · Field Agent',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80',
-    transcript: "He translated a \u20B92 Cr. pipeline problem into a three-line SQL fix. I\u2019ve never seen a PM read a schema like that.",
-  },
-  {
-    id: 'inf-07', serial: 'S/N 007', ref: 'REF-0611G',
-    label: 'THE OPERATIVE', role: 'Growth Marketing · Field Division',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80',
-    transcript: "The funnel wasn\u2019t broken \u2014 it was haunted. He exorcised four ghost events in one audit. ROAS recovered by Monday.",
-  },
-  {
-    id: 'inf-08', serial: 'S/N 008', ref: 'REF-0734H',
-    label: 'THE ARCHIVIST', role: 'Data Engineering · Cold Case Division',
-    image: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=800&q=80',
-    transcript: "He left the data warehouse cleaner than he found it. I\u2019m still running queries he wrote in the first week.",
-  },
-  {
-    id: 'inf-09', serial: 'S/N 009', ref: 'REF-0891I',
-    label: 'THE HANDLER', role: 'Customer Success · Field Intelligence',
-    image: 'https://images.unsplash.com/photo-1548449112-96a38a643324?w=800&q=80',
-    transcript: "He predicted churn three sprints before the model did. The AI caught up to his intuition eventually.",
-  },
-  {
-    id: 'inf-10', serial: 'S/N 010', ref: 'REF-0968J',
-    label: 'THE UNDERCOVER', role: 'UX Research · Deep Cover',
-    image: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80',
-    transcript: "He sat in on 40 support calls before writing a single line of the spec. The product shipped with zero design debt.",
+    codename: 'THE GROWTH ENGINE', realName: 'Varun Pratap Singh',
+    role: 'Head of Growth | Ex-Founder', division: 'IMARTICUS | SCALER',
+    image: '/informants/varun.png',
+    quote: "Having scaled some of the largest ed-tech funnels in the country, I know the difference between a vanity feature and a core growth engine. Satyajit builds the latter. He understands that real product-led growth requires airtight data pipelines, AI automation, and deterministic technical architecture.",
   },
 ];
 
@@ -224,8 +206,8 @@ const Informants = () => {
                     {/* Portrait — high-contrast surveillance photo */}
                     <img
                       src={card.image}
-                      alt={card.label}
-                      className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none"
+                      alt={card.codename}
+                      className="absolute inset-0 w-full h-full object-cover object-[25%] pointer-events-none select-none"
                       style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
                       draggable={false}
                     />
@@ -293,7 +275,7 @@ const Informants = () => {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {card.label}
+                          {card.codename}
                         </span>
                       </div>
 
@@ -349,7 +331,17 @@ const Informants = () => {
                             lineHeight: 1.2,
                           }}
                         >
-                          {card.label}
+                          {card.codename}
+                        </p>
+                        <p
+                          style={{
+                            fontFamily: SWISS, fontSize: 11, fontWeight: 500,
+                            color: 'rgba(214,205,184,0.6)',
+                            letterSpacing: '0.05em',
+                            marginTop: 3,
+                          }}
+                        >
+                          {card.realName}
                         </p>
                         <p
                           style={{
@@ -360,7 +352,7 @@ const Informants = () => {
                             marginTop: 5,
                           }}
                         >
-                          {card.role}
+                          {card.role} &middot; {card.division}
                         </p>
                       </motion.div>
 
@@ -373,7 +365,7 @@ const Informants = () => {
                         <div style={{ width: 28, height: 1, backgroundColor: '#C4622D', marginBottom: 18 }} />
 
                         <p style={{ fontSize: 12.5, color: 'rgba(214,205,184,0.82)', lineHeight: 1.9, letterSpacing: '0.015em' }}>
-                          &ldquo;<TypewriterText text={card.transcript} active={isActive} />&rdquo;
+                          &ldquo;<TypewriterText text={card.quote} active={isActive} />&rdquo;
                         </p>
 
                         <div
