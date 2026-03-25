@@ -78,11 +78,11 @@ const JurisdictionsBar = () => (
 
       {/* Label — first ship out of the fog */}
       <motion.span
-        className="text-[9px] text-[#F4ECD8]/25 tracking-[0.4em] uppercase flex-shrink-0"
+        className="text-[9px] text-[#F4ECD8]/50 tracking-[0.4em] uppercase flex-shrink-0"
         style={{ fontFamily: SWISS }}
         variants={labelVariants}
       >
-        Jurisdictions Patrolled:
+        Systems Deployed:
       </motion.span>
 
       <div className="hidden md:block w-px h-5 bg-[#2A2A2A]" />
@@ -95,7 +95,7 @@ const JurisdictionsBar = () => (
             className="text-[13px] md:text-[14px] tracking-[0.25em] uppercase select-none"
             style={{
               fontFamily: SWISS,
-              color: 'rgba(244, 236, 216, 0.2)',
+              color: 'rgba(244, 236, 216, 0.45)',
               textShadow: '0 0 1px rgba(244, 236, 216, 0.05)',
             }}
             variants={logoVariants}
@@ -123,7 +123,7 @@ const ColdOpen = () => {
 
   return (
     <section id="cold-open" ref={sectionRef}>
-      <div className="relative w-full min-h-[85vh] flex items-center bg-[#0F1419] overflow-hidden">
+      <div className="relative w-full min-h-[85vh] flex items-center bg-[#141A21] overflow-hidden">
 
         {/* Layer 0: Hero image — parallax sink */}
         <motion.img
@@ -137,15 +137,15 @@ const ColdOpen = () => {
         />
 
         {/* Layer 1a: Left-to-right fade */}
-        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#0F1419] via-[#0F1419]/90 to-transparent" />
+        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#141A21] via-[#141A21]/90 to-transparent" />
 
         {/* Layer 1b: Bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#0F1419] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#141A21] to-transparent" />
 
         {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" */}
         <motion.div
           className="absolute inset-0 z-[15] pointer-events-none"
-          style={{ backgroundColor: '#0F1419', opacity: shadowOpacity }}
+          style={{ backgroundColor: '#141A21', opacity: shadowOpacity }}
         />
 
         {/* Layer 3: Foreground content — sinks on scroll */}
@@ -163,10 +163,10 @@ const ColdOpen = () => {
           >
             <FileSearch size={13} strokeWidth={1.5} className="text-[#B22222]" />
             <span
-              className="text-[9px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase"
+              className="text-[9px] text-[#F4ECD8]/50 tracking-[0.4em] uppercase"
               style={{ fontFamily: SWISS }}
             >
-              Case File #001 &mdash; Active
+              Active File #001
             </span>
           </motion.div>
 

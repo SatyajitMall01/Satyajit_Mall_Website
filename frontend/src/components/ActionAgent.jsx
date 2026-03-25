@@ -24,7 +24,7 @@ const HeaderBtn = ({ onClick, title, children, red }) => (
       width: 20, height: 20,
       background: 'transparent',
       border: `1px solid ${red ? 'rgba(178,34,34,0.45)' : 'rgba(255,255,255,0.09)'}`,
-      color: red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.35)',
+      color: red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.6)',
       fontFamily: SWISS, fontSize: 12,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       cursor: 'pointer', lineHeight: 1, flexShrink: 0,
@@ -36,7 +36,7 @@ const HeaderBtn = ({ onClick, title, children, red }) => (
     }}
     onMouseLeave={e => {
       e.currentTarget.style.borderColor = red ? 'rgba(178,34,34,0.45)' : 'rgba(255,255,255,0.09)';
-      e.currentTarget.style.color       = red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.35)';
+      e.currentTarget.style.color       = red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.6)';
     }}
   >
     {children}
@@ -252,7 +252,7 @@ const ActionAgent = () => {
                 <span
                   style={{
                     fontFamily: SWISS, fontSize: 8.5,
-                    color: 'rgba(214,205,184,0.4)',
+                    color: 'rgba(214,205,184,0.65)',
                     letterSpacing: '0.32em', textTransform: 'uppercase',
                   }}
                 >
@@ -261,7 +261,7 @@ const ActionAgent = () => {
                 <span
                   style={{
                     fontFamily: SWISS, fontSize: 7.5,
-                    color: 'rgba(178,34,34,0.4)',
+                    color: 'rgba(178,34,34,0.6)',
                     letterSpacing: '0.2em',
                     marginLeft: 4,
                   }}
@@ -308,7 +308,7 @@ const ActionAgent = () => {
                   <span style={{ color: 'rgba(178,34,34,0.55)' }}>SYS &gt;</span>
                   {' '}DIGITAL TWIN LOADED &mdash; RAG CONTEXT ARMED
                   <br />
-                  <span style={{ color: 'rgba(214,205,184,0.18)' }}>
+                  <span style={{ color: 'rgba(214,205,184,0.45)' }}>
                     // Interrogation channel is live.
                     <br />
                     // Ask about Satyajit&rsquo;s product decisions, architecture, or case files.
@@ -353,7 +353,7 @@ const ActionAgent = () => {
                             <p
                               style={{
                                 fontFamily: SWISS, fontSize: 7.5, margin: '0 0 4px',
-                                color: 'rgba(214,205,184,0.14)', letterSpacing: '0.28em', textTransform: 'uppercase',
+                                color: 'rgba(214,205,184,0.4)', letterSpacing: '0.28em', textTransform: 'uppercase',
                               }}
                             >
                               // {msg.chunks} CHUNK{msg.chunks !== 1 ? 'S' : ''} REFERENCED
@@ -364,7 +364,7 @@ const ActionAgent = () => {
                               key={si}
                               style={{
                                 fontFamily: SWISS, fontSize: 7.5, margin: '2px 0 0',
-                                color: 'rgba(178,34,34,0.28)', letterSpacing: '0.12em',
+                                color: 'rgba(178,34,34,0.55)', letterSpacing: '0.12em',
                               }}
                             >
                               SRC_{String(si + 1).padStart(2, '0')}: {src}
@@ -378,12 +378,12 @@ const ActionAgent = () => {
                     <p
                       style={{
                         fontFamily: SWISS, fontSize: 11,
-                        color: 'rgba(214,205,184,0.5)',
+                        color: 'rgba(214,205,184,0.75)',
                         lineHeight: 1.75, letterSpacing: '0.02em',
                         margin: 0, textAlign: 'right', maxWidth: '90%',
                       }}
                     >
-                      <span style={{ color: 'rgba(214,205,184,0.2)', marginRight: 6 }}>USR:</span>
+                      <span style={{ color: 'rgba(214,205,184,0.5)', marginRight: 6 }}>USR:</span>
                       {msg.text}
                     </p>
                   )}
@@ -395,7 +395,7 @@ const ActionAgent = () => {
                 <div
                   style={{
                     fontFamily: SWISS, fontSize: 11,
-                    color: 'rgba(61,122,88,0.55)',
+                    color: 'rgba(61,122,88,0.75)',
                     letterSpacing: '0.04em', lineHeight: 1.8,
                   }}
                 >
@@ -423,7 +423,7 @@ const ActionAgent = () => {
               <span
                 style={{
                   fontFamily: SWISS, fontSize: 11,
-                  color: 'rgba(178,34,34,0.55)', flexShrink: 0,
+                  color: 'rgba(178,34,34,0.75)', flexShrink: 0,
                 }}
               >
                 &gt;_
@@ -456,7 +456,7 @@ const ActionAgent = () => {
                   letterSpacing: '0.22em',
                   textTransform: 'uppercase',
                   color: (isTransmitting || !input.trim())
-                    ? 'rgba(178,34,34,0.25)'
+                    ? 'rgba(178,34,34,0.45)'
                     : 'rgba(178,34,34,0.85)',
                   background: 'transparent',
                   border: '1px solid',
@@ -484,7 +484,7 @@ const ActionAgent = () => {
               <span
                 style={{
                   fontFamily: SWISS, fontSize: 6.5,
-                  color: 'rgba(214,205,184,0.07)',
+                  color: 'rgba(214,205,184,0.3)',
                   letterSpacing: '0.28em', textTransform: 'uppercase',
                 }}
               >

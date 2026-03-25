@@ -62,7 +62,7 @@ const LedgerEdge = () => {
         {!isOpen && (
           <span style={{
             fontFamily: TELE, fontSize: 9,
-            color: 'rgba(244,236,216,0.45)', letterSpacing: '0.2em',
+            color: 'rgba(244,236,216,0.65)', letterSpacing: '0.2em',
             textTransform: 'uppercase', whiteSpace: 'nowrap',
           }}>
             MENU
@@ -100,7 +100,7 @@ const LedgerEdge = () => {
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-            color: 'rgba(244,236,216,0.35)', letterSpacing: '0.04em',
+            color: 'rgba(244,236,216,0.55)', letterSpacing: '0.04em',
             margin: 0,
           }}>
             Satyajit Mall — Product Manager
@@ -133,7 +133,7 @@ const LedgerEdge = () => {
         }}>
           <p style={{
             fontFamily: TELE, fontSize: 9,
-            color: 'rgba(244,236,216,0.18)', letterSpacing: '0.22em',
+            color: 'rgba(244,236,216,0.45)', letterSpacing: '0.22em',
             textTransform: 'uppercase', margin: '0 0 4px',
           }}>
             CLASSIFICATION
@@ -147,7 +147,7 @@ const LedgerEdge = () => {
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 10,
-            color: 'rgba(244,236,216,0.13)',
+            color: 'rgba(244,236,216,0.35)',
             margin: 0,
           }}>
             &copy; 2025 S. Mall
@@ -181,7 +181,7 @@ const NavLink = ({ to, label, index, icon, onClose, isHome }) => {
       style={{
         display: 'flex', alignItems: 'center', gap: 14,
         padding: '11px 28px',
-        color: hov ? '#ffffff' : 'rgba(156,163,175,0.65)',
+        color: hov ? '#ffffff' : '#D1D5DB',
         textDecoration: 'none',
         borderLeft: `2px solid ${hov ? (isHome ? 'rgba(255,255,255,0.3)' : '#dc2626') : 'transparent'}`,
         backgroundColor: hov ? (isHome ? 'rgba(255,255,255,0.03)' : 'rgba(220,38,38,0.05)') : 'transparent',
@@ -189,13 +189,13 @@ const NavLink = ({ to, label, index, icon, onClose, isHome }) => {
       }}
     >
       {icon ? (
-        <span style={{ color: hov ? 'rgba(244,236,216,0.8)' : 'rgba(107,114,128,0.5)', flexShrink: 0 }}>
+        <span style={{ color: hov ? 'rgba(244,236,216,0.8)' : '#D1D5DB', flexShrink: 0 }}>
           {icon}
         </span>
       ) : (
         <span style={{
           fontFamily: TELE, fontSize: 9,
-          color: hov ? 'rgba(107,114,128,0.9)' : 'rgba(75,85,99,0.5)',
+          color: hov ? '#9CA3AF' : '#9CA3AF',
           flexShrink: 0, width: 18,
         }}>
           {String(index).padStart(2, '0')}

@@ -29,9 +29,6 @@ const DossierStyles = () => (
     @keyframes pulse6 { 0%,100% { opacity:1; } 50% { opacity:.35; } }
     @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
     @keyframes logoScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .dossier-cursor { cursor: none !important; }
-    .dossier-cursor * { cursor: none !important; }
-    .dossier-cursor a, .dossier-cursor button { cursor: none !important; }
   `}</style>
 );
 
@@ -99,7 +96,7 @@ const TelemetryMetric = ({ points = [0.3, 0.5, 0.4, 0.7, 0.6, 0.8, 0.75, 0.95], 
       {label && (
         <span style={{
           fontFamily: "'Courier New', Courier, monospace",
-          fontSize: 8, color: 'rgba(107,114,128,0.5)',
+          fontSize: 9, color: '#D1D5DB',
           letterSpacing: '0.1em', textTransform: 'uppercase',
         }}>
           {label}
@@ -138,7 +135,7 @@ const HexCell = ({ label, groupIndex, activeGroup, onHover, onLeave }) => {
       <span style={{
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         fontSize: 9, fontWeight: 600,
-        color: isActive ? '#f87171' : 'rgba(209,213,219,0.75)',
+        color: isActive ? '#f87171' : '#E5E7EB',
         letterSpacing: '0.08em',
         textTransform: 'uppercase',
         textAlign: 'center',
@@ -160,7 +157,7 @@ const HexGrid = ({ categories }) => {
         <div key={cat.subhead} style={{ marginBottom: 24 }}>
           <span style={{
             fontFamily: "'Courier New', Courier, monospace",
-            fontSize: 9, color: activeGroup === gi ? '#dc2626' : 'rgba(107,114,128,0.5)',
+            fontSize: 9, color: activeGroup === gi ? '#dc2626' : '#D1D5DB',
             letterSpacing: '0.25em', textTransform: 'uppercase',
             display: 'block', marginBottom: 10,
             transition: 'color 0.25s ease',
@@ -242,25 +239,25 @@ const ContactModal = ({ onClose }) => {
             background: 'transparent',
             border: '1px solid rgba(75,85,99,0.5)',
             borderRadius: 3,
-            color: 'rgba(156,163,175,0.7)',
+            color: '#D1D5DB',
             cursor: 'pointer', outline: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: TELE, fontSize: 14, lineHeight: 1,
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.color = '#ef4444'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(75,85,99,0.5)'; e.currentTarget.style.color = 'rgba(156,163,175,0.7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(75,85,99,0.5)'; e.currentTarget.style.color = '#D1D5DB'; }}
         >
           ×
         </button>
 
         {/* Header */}
         <p style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(220,38,38,0.7)', letterSpacing: '0.35em', textTransform: 'uppercase', margin: '0 0 6px' }}>
-          [ SECURE CHANNEL OPEN ]
+          [ CONTACT DIRECTORY ]
         </p>
         <p style={{ fontFamily: SWISS, fontSize: 18, fontWeight: 700, color: '#f3f4f6', margin: '0 0 6px', letterSpacing: '0.02em' }}>
           Get in touch
         </p>
-        <p style={{ fontFamily: SWISS, fontSize: 14, color: 'rgba(156,163,175,0.8)', margin: '0 0 28px', lineHeight: 1.5 }}>
+        <p style={{ fontFamily: SWISS, fontSize: 14, color: '#D1D5DB', margin: '0 0 28px', lineHeight: 1.5 }}>
           Choose how you'd like to connect.
         </p>
 
@@ -291,19 +288,19 @@ const ContactModal = ({ onClose }) => {
             transition: 'all 0.2s ease',
           }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.7)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <polyline points="22,6 12,13 2,6" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.7)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.85)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <polyline points="22,6 12,13 2,6" stroke={hovEmail ? '#f87171' : 'rgba(156,163,175,0.85)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
           <div>
-            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovEmail ? '#f3f4f6' : 'rgba(209,213,219,0.9)', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
+            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovEmail ? '#f3f4f6' : '#E5E7EB', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
               Send an Email
             </p>
-            <p style={{ fontFamily: TELE, fontSize: 10, color: hovEmail ? 'rgba(220,38,38,0.8)' : 'rgba(107,114,128,0.7)', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
+            <p style={{ fontFamily: TELE, fontSize: 10, color: hovEmail ? 'rgba(220,38,38,0.8)' : '#D1D5DB', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
               satyajitmall01@gmail.com
             </p>
           </div>
-          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovEmail ? '#ef4444' : 'rgba(75,85,99,0.5)', transition: 'color 0.2s ease' }}>→</span>
+          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovEmail ? '#ef4444' : '#9CA3AF', transition: 'color 0.2s ease' }}>→</span>
         </a>
 
         {/* LinkedIn option */}
@@ -332,23 +329,23 @@ const ContactModal = ({ onClose }) => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'all 0.2s ease',
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={hovLI ? '#60a5fa' : 'rgba(156,163,175,0.7)'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={hovLI ? '#60a5fa' : 'rgba(156,163,175,0.85)'}>
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
               <circle cx="4" cy="4" r="2"/>
             </svg>
           </div>
           <div>
-            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovLI ? '#f3f4f6' : 'rgba(209,213,219,0.9)', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
+            <p style={{ fontFamily: SWISS, fontSize: 13, fontWeight: 600, color: hovLI ? '#f3f4f6' : '#E5E7EB', margin: 0, letterSpacing: '0.02em', transition: 'color 0.2s ease' }}>
               Connect on LinkedIn
             </p>
-            <p style={{ fontFamily: TELE, fontSize: 10, color: hovLI ? 'rgba(96,165,250,0.8)' : 'rgba(107,114,128,0.7)', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
+            <p style={{ fontFamily: TELE, fontSize: 10, color: hovLI ? 'rgba(96,165,250,0.8)' : '#D1D5DB', margin: '3px 0 0', letterSpacing: '0.05em', transition: 'color 0.2s ease' }}>
               linkedin.com/in/satyajit-mall
             </p>
           </div>
-          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovLI ? '#60a5fa' : 'rgba(75,85,99,0.5)', transition: 'color 0.2s ease' }}>→</span>
+          <span style={{ marginLeft: 'auto', fontFamily: TELE, fontSize: 12, color: hovLI ? '#60a5fa' : '#9CA3AF', transition: 'color 0.2s ease' }}>→</span>
         </a>
 
-        <p style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(75,85,99,0.4)', letterSpacing: '0.2em', textTransform: 'uppercase', textAlign: 'center', marginTop: 20 }}>
+        <p style={{ fontFamily: TELE, fontSize: 8, color: '#9CA3AF', letterSpacing: '0.2em', textTransform: 'uppercase', textAlign: 'center', marginTop: 20 }}>
           ESC TO CLOSE // RESPONSE WITHIN 24H
         </p>
       </motion.div>
@@ -384,7 +381,7 @@ const ActionConsole = () => {
         {/* Header */}
         <p style={{
           fontFamily: TELE, fontSize: 9,
-          color: 'rgba(107,114,128,0.5)', letterSpacing: '0.4em',
+          color: '#D1D5DB', letterSpacing: '0.4em',
           textTransform: 'uppercase', textAlign: 'center',
           marginBottom: 24,
         }}>
@@ -418,14 +415,14 @@ const ActionConsole = () => {
               cursor: 'pointer',
             }}
           >
-            <span style={{ fontFamily: TELE, fontSize: 9, color: 'rgba(107,114,128,0.6)', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 10, display: 'block' }}>
+            <span style={{ fontFamily: TELE, fontSize: 9, color: '#D1D5DB', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 10, display: 'block' }}>
               PROTOCOL — ALPHA
             </span>
-            <span style={{ fontFamily: SWISS, fontSize: 15, fontWeight: 700, color: hov1 ? '#f3f4f6' : 'rgba(229,231,235,0.95)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, display: 'block', transition: 'color 0.2s ease' }}>
+            <span style={{ fontFamily: SWISS, fontSize: 15, fontWeight: 700, color: hov1 ? '#f3f4f6' : '#F3F4F6', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, display: 'block', transition: 'color 0.2s ease' }}>
               Download CV
             </span>
-            <span style={{ fontFamily: TELE, fontSize: 10, color: hov1 ? '#ef4444' : 'rgba(107,114,128,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'color 0.2s ease' }}>
-              Extract Raw Data →
+            <span style={{ fontFamily: TELE, fontSize: 10, color: hov1 ? '#ef4444' : '#D1D5DB', letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'color 0.2s ease' }}>
+              Download Archive →
             </span>
           </a>
 
@@ -457,7 +454,7 @@ const ActionConsole = () => {
               PROTOCOL — BRAVO
             </span>
             <span style={{ fontFamily: SWISS, fontSize: 15, fontWeight: 700, color: '#ffffff', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, display: 'block' }}>
-              Get in Touch
+              Initiate Contact
             </span>
             <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(252,165,165,0.8)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               Email · LinkedIn →
@@ -467,7 +464,7 @@ const ActionConsole = () => {
 
         {/* Footer line */}
         <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.3)', marginTop: 32, marginBottom: 16 }} />
-        <p style={{ fontFamily: TELE, fontSize: 8, color: 'rgba(75,85,99,0.4)', letterSpacing: '0.25em', textTransform: 'uppercase', textAlign: 'center' }}>
+        <p style={{ fontFamily: TELE, fontSize: 8, color: '#9CA3AF', letterSpacing: '0.25em', textTransform: 'uppercase', textAlign: 'center' }}>
           ALL COMMUNICATIONS ENCRYPTED // RESPONSE WITHIN 24H
         </p>
       </motion.div>
@@ -628,7 +625,7 @@ const Declassify = ({ children, delay = 0 }) => {
         transition={{ duration: 0.8, ease: EXPO, delay }}
         style={{
           position: 'absolute', inset: 0,
-          backgroundColor: '#0F1419',
+          backgroundColor: '#141A21',
           transformOrigin: 'right', zIndex: 2,
         }}
       />
@@ -667,10 +664,10 @@ const Redacted = ({ children }) => {
 const Fold1 = () => (
   <section className="relative min-h-screen w-full overflow-hidden z-[2]">
     {/* Edge gradients — text readable, center breathes */}
-    <div className="absolute inset-y-0 left-0 w-1/3 z-0 pointer-events-none"
-      style={{ background: 'linear-gradient(to right, #050505, transparent)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 z-0 pointer-events-none"
-      style={{ background: 'linear-gradient(to left, #050505, transparent)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 z-0 pointer-events-none"
+      style={{ background: 'linear-gradient(to right, rgba(5,5,5,0.6), transparent)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 z-0 pointer-events-none"
+      style={{ background: 'linear-gradient(to left, rgba(5,5,5,0.6), transparent)' }} />
 
     <motion.div
       className="relative w-full h-screen"
@@ -741,13 +738,13 @@ const Fold1 = () => (
           <div style={{ position: 'absolute', top: 0, right: 0, width: 16, height: 16, borderTop: '2px solid rgba(229,231,235,0.3)', borderRight: '2px solid rgba(229,231,235,0.3)' }} />
           <div style={{ position: 'absolute', bottom: 0, left: 0, width: 16, height: 16, borderBottom: '2px solid rgba(229,231,235,0.3)', borderLeft: '2px solid rgba(229,231,235,0.3)' }} />
 
-          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#D1D5DB', lineHeight: 2, margin: 0, textAlign: 'right' }}>
             Location: Bengaluru, IND
           </p>
-          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#D1D5DB', lineHeight: 2, margin: 0, textAlign: 'right' }}>
             Domain: B2C · Internal SaaS · OTT
           </p>
-          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#9CA3AF', lineHeight: 2, margin: 0, textAlign: 'right' }}>
+          <p style={{ fontFamily: SWISS, fontSize: 12, color: '#D1D5DB', lineHeight: 2, margin: 0, textAlign: 'right' }}>
             Status: Active{' '}
             <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: '#22c55e', animation: 'pulse6 2s infinite', verticalAlign: 'middle' }} />
           </p>
@@ -787,7 +784,7 @@ const Fold1 = () => (
           <div style={{ position: 'absolute', bottom: 0, right: 0, width: 14, height: 14, borderBottom: '2px solid rgba(229,231,235,0.2)', borderRight: '2px solid rgba(229,231,235,0.2)' }} />
 
           <p style={{
-            fontFamily: SWISS, fontSize: 15, fontWeight: 400, color: 'rgba(209,213,219,0.9)',
+            fontFamily: SWISS, fontSize: 15, fontWeight: 400, color: '#E5E7EB',
             lineHeight: 1.75, margin: 0,
           }}>
             Product Manager with 5+ years of experience driving product-led growth through
@@ -818,14 +815,14 @@ const Fold1 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 800,
                 fontSize: 'clamp(44px, 5.5vw, 68px)',
-                color: '#F3F4F6',
+                color: '#FFFFFF',
                 lineHeight: 0.8,
                 display: 'block',
               }}>{badge.metric}</span>
             </Declassify>
             <span style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase',
               marginTop: 6, display: 'block',
             }}>{badge.label}<AskHook question={badge.q} /></span>
@@ -840,7 +837,7 @@ const Fold1 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 2 — ARSENAL & INFRASTRUCTURE (Clean Spatial Canvas)
+   FOLD 2 — CORE INFRASTRUCTURE (Clean Spatial Canvas)
    Premium dark-mode SaaS / Technical Architect aesthetic
 ════════════════════════════════════════════════════ */
 const f2Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } } };
@@ -850,8 +847,8 @@ const f2Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, 
 const Fold2 = () => (
   <section className="min-h-screen relative z-[2] w-full overflow-hidden">
     {/* Edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -883,14 +880,14 @@ const Fold2 = () => (
               <div key={group.label} style={{ marginBottom: gi < 2 ? 16 : 0 }}>
                 <p style={{
                   fontFamily: SWISS, fontSize: 9, fontWeight: 600,
-                  color: 'rgba(107,114,128,0.7)', letterSpacing: '0.18em',
+                  color: '#D1D5DB', letterSpacing: '0.18em',
                   textTransform: 'uppercase', margin: '0 0 7px',
                 }}>{group.label}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {group.tools.map(tool => (
                     <span key={tool} style={{
                       fontFamily: SWISS, fontSize: 11, fontWeight: 500,
-                      color: 'rgba(229,231,235,0.88)',
+                      color: '#F3F4F6',
                       backgroundColor: 'rgba(31,41,55,0.75)',
                       border: '1px solid rgba(55,65,81,0.7)',
                       padding: '3px 10px', borderRadius: 4,
@@ -919,11 +916,11 @@ const Fold2 = () => (
               <div key={item.title} style={{ borderLeft: '2px solid #dc2626', paddingLeft: 14 }}>
                 <p style={{
                   fontFamily: SWISS, fontSize: 15, fontWeight: 600,
-                  color: 'rgba(229,231,235,0.95)', margin: '0 0 5px', lineHeight: 1.3,
+                  color: '#F3F4F6', margin: '0 0 5px', lineHeight: 1.3,
                 }}>{item.title}</p>
                 <p style={{
                   fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-                  color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+                  color: '#F3F4F6', lineHeight: 1.65, margin: 0,
                 }}>{item.body}</p>
               </div>
             ))}
@@ -942,20 +939,20 @@ const Fold2 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(60px, 5.5vw, 88px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 display: 'block', letterSpacing: '-0.03em',
               }}>−40%</span>
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>Time-to-Market Reduction</p>
             <AskHook question="The −40% time-to-market reduction came from the CDP and event taxonomy — what was the engineering bottleneck before, and what was the first product that shipped faster as a result?" />
             <TelemetryMetric points={[0.9, 0.82, 0.75, 0.68, 0.58, 0.52, 0.45, 0.38, 0.32, 0.6]} label="time-to-market index" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Governed CDP implementation and event taxonomy across the full product ecosystem,
               eliminating engineering bottlenecks for real-time personalization.
@@ -970,20 +967,20 @@ const Fold2 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(60px, 5.5vw, 88px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 display: 'block', letterSpacing: '-0.03em',
               }}>+20%</span>
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>Overall ROAS Lift</p>
             <AskHook question="The +20% ROAS lift came from a proprietary attribution platform — how did the automation model recover leads, and how did you measure ROAS improvement at the channel level?" />
             <TelemetryMetric points={[0.4, 0.45, 0.5, 0.55, 0.58, 0.62, 0.68, 0.74, 0.82, 0.92]} label="roas trajectory" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Architected a proprietary end-to-end attribution platform powered by compounded
               automation models to recover leads and scale revenue.
@@ -1009,8 +1006,8 @@ const f3Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, 
 const Fold3 = () => (
   <section className="min-h-screen relative z-[2] w-full overflow-hidden">
     {/* Edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -1032,19 +1029,19 @@ const Fold3 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(60px, 5.5vw, 88px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 display: 'block', letterSpacing: '-0.03em',
               }}>40,000+</span>
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '10px 0',
             }}>Learners Onboarded</p>
             <AskHook question="The Miles One app onboarded 40,000+ learners — what was the product architecture behind that onboarding funnel and how did you balance lead gen with learner activation?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               <Redacted>Spearheaded the 0-1 launch of the Miles One app.</Redacted>{' '}
               Architected a dual-purpose MVP for lead generation and nurturing that generated {'>'}{'\u20B9'}20 Cr in revenue.
@@ -1062,14 +1059,14 @@ const Fold3 = () => (
           }}>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+              color: '#D1D5DB', letterSpacing: '0.25em',
               textTransform: 'uppercase', margin: '0 0 8px',
             }}>Predictive ML Pipeline</p>
             <Declassify>
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(36px, 4vw, 56px)',
-                color: '#F3F4F6', lineHeight: 0.85,
+                color: '#FFFFFF', lineHeight: 0.85,
                 display: 'block', letterSpacing: '-0.02em',
               }}>+15%</span>
             </Declassify>
@@ -1081,7 +1078,7 @@ const Fold3 = () => (
             <AskHook question="The predictive churn model drove a +15% Day 7 activation lift — how did you unify GA4 and Firebase in BigQuery, and what signals did the model use for hyper-targeted LTV optimization?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Unified GA4 and Firebase data into BigQuery. Deployed predictive churn models to drive hyper-targeted LTV optimization.
             </p>
@@ -1100,19 +1097,19 @@ const Fold3 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(60px, 5.5vw, 88px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 display: 'block', letterSpacing: '-0.03em',
               }}>30,000+</span>
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>OTT Subscribers</p>
             <AskHook question="The Masterclass OTT product hit 30,000+ subscribers — what was the subscription model, how did you differentiate it from free content, and how did you get to 2,000+ B2B paid subs?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Led the 0-1 development of Masterclass, a bite-sized, subscription-based OTT product securing 2,000+ B2B paid subscriptions.
             </p>
@@ -1131,13 +1128,13 @@ const Fold3 = () => (
                   <span style={{
                     fontFamily: SWISS, fontWeight: 900,
                     fontSize: 'clamp(36px, 4vw, 52px)',
-                    color: '#F3F4F6', lineHeight: 0.85,
+                    color: '#FFFFFF', lineHeight: 0.85,
                     display: 'block', letterSpacing: '-0.02em',
                   }}>{m.v}</span>
                 </Declassify>
                 <span style={{
                   fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                  color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                  color: '#D1D5DB', letterSpacing: '0.18em',
                   textTransform: 'uppercase', marginTop: 6, display: 'block',
                 }}>{m.l}</span>
               </div>
@@ -1145,7 +1142,7 @@ const Fold3 = () => (
           </div>
           <p style={{
             fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-            color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+            color: '#F3F4F6', lineHeight: 1.65, margin: 0,
           }}>
             Translated 100+ qualitative interviews into actionable, segment-based onboarding flows and high-converting B2B GTM strategies.
           </p>
@@ -1170,8 +1167,8 @@ const f4Stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.14, 
 const Fold4 = () => (
   <section className="min-h-screen relative z-[2] w-full overflow-hidden">
     {/* Edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.9) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none" style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -1193,14 +1190,14 @@ const Fold4 = () => (
           }}>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(107,114,128,0.7)', letterSpacing: '0.25em',
+              color: '#D1D5DB', letterSpacing: '0.25em',
               textTransform: 'uppercase', margin: '0 0 14px',
             }}>MILES ONE AI ASSISTANT</p>
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.7, margin: '0 0 18px',
+              color: '#F3F4F6', lineHeight: 1.7, margin: '0 0 18px',
             }}>
-              Built the Miles One conversational AI assistant — an intelligent chatbot that handles student queries, books webinars, and retrieves course materials automatically. Connects to the LMS and booking systems to fulfil requests without human intervention.
+              Architected the Miles One assistant. Replaced manual routing with an n8n orchestration layer and RAG memory. The result: zero-touch resolution at scale.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {['n8n', 'REST APIs', 'RAG'].map(tag => (
@@ -1234,13 +1231,13 @@ const Fold4 = () => (
                     <span style={{
                       fontFamily: SWISS, fontWeight: 900,
                       fontSize: 'clamp(28px, 3.5vw, 44px)',
-                      color: '#F3F4F6', lineHeight: 0.85,
+                      color: '#FFFFFF', lineHeight: 0.85,
                       display: 'block', letterSpacing: '-0.02em',
                     }}>{m.v}</span>
                   </Declassify>
                   <span style={{
                     fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                    color: 'rgba(107,114,128,0.65)', letterSpacing: '0.18em',
+                    color: '#D1D5DB', letterSpacing: '0.18em',
                     textTransform: 'uppercase', marginTop: 6, display: 'block',
                   }}>{m.l}</span>
                 </div>
@@ -1249,7 +1246,7 @@ const Fold4 = () => (
 
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Architected a RAG-based AI Voice Assistant for real-time lead qualification. Powered by n8n data ingestion and PostgreSQL for instant memory retrieval, slashing sales analysis time.
             </p>
@@ -1269,20 +1266,20 @@ const Fold4 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(64px, 6vw, 96px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 display: 'block', letterSpacing: '-0.03em',
               }}>+25%</span>
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>Automated Self-Service Lift</p>
             <AskHook question="The agentic framework drove a 25% self-service lift — what was the RAG pipeline design and how did you handle context retrieval and memory for transactional resolutions?" />
             <TelemetryMetric points={[0.5, 0.52, 0.55, 0.6, 0.65, 0.7, 0.72, 0.78, 0.85, 0.95]} label="self-service adoption" />
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Students resolve queries, rebook sessions, and access content without ever needing to speak to support — driving massive adoption of zero-touch automated service.
             </p>
@@ -1293,19 +1290,19 @@ const Fold4 = () => (
         <motion.div variants={f4Right} style={{ maxWidth: 380 }}>
           <p style={{
             fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-            color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+            color: '#D1D5DB', letterSpacing: '0.2em',
             textTransform: 'uppercase', margin: '0 0 10px',
           }}>AI REPORTING PLATFORM</p>
           <p style={{
             fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-            color: 'rgba(209,213,219,0.92)', lineHeight: 1.65, margin: '0 0 14px',
+            color: '#F3F4F6', lineHeight: 1.65, margin: '0 0 14px',
           }}>
             Built a custom reporting platform that lets leadership ask questions in plain English and get instant answers from our data warehouse — eliminating manual BI reporting.
           </p>
           <div style={{ borderLeft: '2px solid rgba(107,114,128,0.35)', paddingLeft: 14 }}>
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-              color: 'rgba(229,231,235,0.9)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Provided leadership with a direct chat interface for real-time, substantive analysis, eliminating manual reporting latency.
             </p>
@@ -1332,10 +1329,10 @@ const Fold5 = () => (
   <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
     {/* Heavy edge gradients — text contrast against portrait */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -1370,7 +1367,7 @@ const Fold5 = () => (
             </p>
             <p style={{
               fontFamily: SWISS, fontSize: 15, lineHeight: 1.7,
-              color: 'rgba(229,231,235,0.95)', margin: '0 0 18px',
+              color: '#F3F4F6', margin: '0 0 18px',
             }}>
               Governed the Customer Data Platform (CDP) implementation and event taxonomy across the full product ecosystem (Apps, Websites, CRM, LMS).
             </p>
@@ -1380,10 +1377,10 @@ const Fold5 = () => (
                 { label: 'Comms Routing',        value: 'Netcore · Clevertap · Wati' },
               ].map(row => (
                 <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                  <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(107,114,128,0.65)', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontFamily: TELE, fontSize: 10, color: '#D1D5DB', whiteSpace: 'nowrap' }}>
                     {row.label}:
                   </span>
-                  <span style={{ fontFamily: TELE, fontSize: 10, color: 'rgba(229,231,235,0.75)', letterSpacing: '0.04em' }}>
+                  <span style={{ fontFamily: TELE, fontSize: 10, color: '#F3F4F6', letterSpacing: '0.04em' }}>
                     {row.value}
                   </span>
                 </div>
@@ -1398,23 +1395,23 @@ const Fold5 = () => (
           <div style={{ borderLeft: '2px solid #dc2626', paddingLeft: 16 }}>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '0 0 8px',
             }}>
               MILES FORCE // INTERNAL CRM
             </p>
             <p style={{
               fontFamily: SWISS, fontSize: 15, fontWeight: 700,
-              color: '#F3F4F6', letterSpacing: '0.02em',
+              color: '#FFFFFF', letterSpacing: '0.02em',
               textTransform: 'uppercase', margin: '0 0 10px',
             }}>
               LEAD ROUTING &amp; SOURCE DETECTION
             </p>
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
-              Led the development of the Miles Force CRM module. Optimized the critical lead management flow from Enquiry to Sales Rep Allocation. Implemented a dynamic Sales Queue Module designed for day-level lead distribution to maximize sales efficiency.
+              Engineered the internal CRM framework. Mapped the entire event taxonomy across apps and platforms to synchronize lead distribution and eliminate operational blind spots.
             </p>
             <AskHook question="The Miles Force CRM module optimized the lead flow from Enquiry to SPOC Allocation — what were the failure modes in the original flow, and how did the dynamic Sales Queue Module change day-level distribution?" />
           </div>
@@ -1432,7 +1429,7 @@ const Fold5 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(64px, 6vw, 96px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 letterSpacing: '-0.03em', display: 'block',
               }}>
                 +30%
@@ -1440,7 +1437,7 @@ const Fold5 = () => (
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>
               POST-COURSE ENGAGEMENT
@@ -1448,7 +1445,7 @@ const Fold5 = () => (
             <AskHook question="The multi-platform calendar booking microservice produced a 30% post-course engagement lift — how did you design the service and what channels did it connect to drive community acquisition?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Productized a multi-platform calendar booking microservice for Community Engagement, achieving a 12% lift in community-led acquisition.
             </p>
@@ -1462,7 +1459,7 @@ const Fold5 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(64px, 6vw, 96px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 letterSpacing: '-0.03em', display: 'block',
               }}>
                 +40%
@@ -1470,7 +1467,7 @@ const Fold5 = () => (
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>
               SCALED WEBINAR FREQUENCY
@@ -1478,7 +1475,7 @@ const Fold5 = () => (
             <AskHook question="The Zoom-integrated SaaS content microservice scaled webinar frequency by 40% — how did the web page builder work, how did it integrate with the CRM, and what drove the 20% base conversion improvement?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Developed an Internal SaaS Content Microservice integrated with Zoom and our CRM. This custom web page builder scaled deployments and drove a 20% increase in base conversion.
             </p>
@@ -1493,7 +1490,7 @@ const Fold5 = () => (
 
 
 /* ════════════════════════════════════════════════════
-   FOLD 6 — TACTICAL OPERATIONS BOARD (AlmaBetter)
+   FOLD 6 — PHASE: ALMABETTER
    After-action report aesthetic — absolute spatial canvas
 ════════════════════════════════════════════════════ */
 const f6Left    = { hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] } } };
@@ -1505,10 +1502,10 @@ const Fold6 = () => (
   <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
     {/* Heavy edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -1534,17 +1531,17 @@ const Fold6 = () => (
               color: '#dc2626', letterSpacing: '0.3em',
               textTransform: 'uppercase', margin: '0 0 8px',
             }}>
-              PAST JURISDICTION // ALMABETTER
+              PHASE // ALMABETTER
             </p>
             <p style={{
               fontFamily: TELE, fontSize: 12,
-              color: 'rgba(209,213,219,0.92)', margin: '0 0 8px',
+              color: '#F3F4F6', margin: '0 0 8px',
             }}>
               ASSOCIATE PROGRAM MANAGER // PRODUCT GROWTH
             </p>
             <span style={{
               fontFamily: TELE, fontSize: 11,
-              color: 'rgba(107,114,128,0.65)', display: 'block',
+              color: '#D1D5DB', display: 'block',
             }}>
               [ NOV 2022 – OCT 2023 ]
             </span>
@@ -1564,7 +1561,7 @@ const Fold6 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(48px, 5vw, 72px)',
-                color: '#F3F4F6', lineHeight: 1,
+                color: '#FFFFFF', lineHeight: 1,
                 letterSpacing: '-0.03em', display: 'block',
               }}>
                 -80%
@@ -1572,7 +1569,7 @@ const Fold6 = () => (
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '8px 0 12px',
             }}>
               DEV ERROR REDUCTION
@@ -1580,9 +1577,9 @@ const Fold6 = () => (
             <AskHook question="An 80% drop in dev errors is a massive outcome — what was broken in the AlmaBetter JIRA and Basecamp setup, and what specific workflow changes did you make to fix velocity and content readiness?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
-              Redesigned engineering workflows and sprint cycles using JIRA and Basecamp. Resolved velocity misalignments and accelerated content readiness by two full weeks.
+              Restructured engineering workflows. Stabilized sprint cycles and overhauled ticketing systems, accelerating Go-To-Market launches for the Events vertical.
             </p>
           </div>
         </motion.div>
@@ -1599,7 +1596,7 @@ const Fold6 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(64px, 6vw, 96px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 letterSpacing: '-0.03em', display: 'block',
               }}>
                 9.1
@@ -1616,13 +1613,13 @@ const Fold6 = () => (
             <TelemetryMetric points={[0.55, 0.58, 0.6, 0.63, 0.68, 0.72, 0.76, 0.82, 0.88, 0.95]} label="csat trajectory" />
             <span style={{
               fontFamily: TELE, fontSize: 11,
-              color: 'rgba(107,114,128,0.65)', display: 'block', marginBottom: 12,
+              color: '#D1D5DB', display: 'block', marginBottom: 12,
             }}>
               [ UP FROM 7.0 ]
             </span>
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Architected and shipped a productized ticketing system. Utilized an n8n ELT layer to cut resolution time by 35% and completely transform the customer support experience.
             </p>
@@ -1655,7 +1652,7 @@ const Fold6 = () => (
                   </Declassify>
                   <p style={{
                     fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                    color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+                    color: '#D1D5DB', letterSpacing: '0.2em',
                     textTransform: 'uppercase', margin: '6px 0 0',
                   }}>
                     {item.label}
@@ -1666,7 +1663,7 @@ const Fold6 = () => (
             <div style={{ height: 1, backgroundColor: 'rgba(55,65,81,0.6)', marginBottom: 16 }} />
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Orchestrated the Go-to-Market strategy for the Events Vertical. Optimized acquisition spend across WhatsApp and MarTech channels, increasing online enrollments by 60% and shortening the sales cycle by 10%.
             </p>
@@ -1694,10 +1691,10 @@ const Fold7 = () => (
   <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
     {/* Heavy edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative w-full min-h-screen flex flex-col justify-between py-20 px-[8%]"
@@ -1722,17 +1719,17 @@ const Fold7 = () => (
               color: '#dc2626', letterSpacing: '0.3em',
               textTransform: 'uppercase', margin: '0 0 8px',
             }}>
-              PAST JURISDICTION // UPGRAD
+              PHASE // UPGRAD
             </p>
             <p style={{
               fontFamily: TELE, fontSize: 12,
-              color: 'rgba(209,213,219,0.92)', margin: '0 0 8px',
+              color: '#F3F4F6', margin: '0 0 8px',
             }}>
               SR. ASSOCIATE // PROGRAM &amp; CONTENT STRATEGY
             </p>
             <span style={{
               fontFamily: TELE, fontSize: 11,
-              color: 'rgba(107,114,128,0.65)', display: 'block',
+              color: '#D1D5DB', display: 'block',
             }}>
               [ JAN 2021 – OCT 2022 ]
             </span>
@@ -1748,16 +1745,16 @@ const Fold7 = () => (
           }}>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(107,114,128,0.65)', letterSpacing: '0.25em',
+              color: '#D1D5DB', letterSpacing: '0.25em',
               textTransform: 'uppercase', margin: '0 0 12px',
             }}>
               BEHAVIORAL DATA ANALYSIS
             </p>
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
-              Addressed critical learner engagement drop-offs by analyzing deep behavioral data. Identified structural friction points and introduced new learning strategies that directly improved learner success metrics by 12%.
+              Analyzed learner drop-off patterns. Deployed structural product interventions based on behavioral data, improving course completion rates by 20%.
             </p>
             <AskHook question="You identified structural friction points in UpGrad's learner journey through behavioral data — what metrics did you analyze, what was the most surprising friction point you found, and what product intervention had the biggest impact?" />
           </div>
@@ -1775,7 +1772,7 @@ const Fold7 = () => (
               <span style={{
                 fontFamily: SWISS, fontWeight: 900,
                 fontSize: 'clamp(64px, 6vw, 96px)',
-                color: '#F3F4F6', lineHeight: 0.8,
+                color: '#FFFFFF', lineHeight: 0.8,
                 letterSpacing: '-0.03em', display: 'block',
               }}>
                 +20%
@@ -1783,7 +1780,7 @@ const Fold7 = () => (
             </Declassify>
             <p style={{
               fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-              color: 'rgba(156,163,175,0.7)', letterSpacing: '0.2em',
+              color: '#D1D5DB', letterSpacing: '0.2em',
               textTransform: 'uppercase', margin: '12px 0',
             }}>
               COURSE COMPLETION LIFT
@@ -1791,7 +1788,7 @@ const Fold7 = () => (
             <AskHook question="You identified a 120-minute decay curve at UpGrad that no one had seen — how did you find it in the behavioral data, and what product interventions did you ship to convert that insight into a 20% completion lift?" />
             <p style={{
               fontFamily: SWISS, fontSize: 15,
-              color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+              color: '#F3F4F6', lineHeight: 1.65, margin: 0,
             }}>
               Translated user behavioral insights into actionable product interventions, successfully increasing overall course completion rates across cohort groups.
             </p>
@@ -1821,7 +1818,7 @@ const Fold7 = () => (
                   }}>{'>'}</span>
                   <p style={{
                     fontFamily: SWISS, fontSize: 15,
-                    color: 'rgba(229,231,235,0.95)', lineHeight: 1.65, margin: 0,
+                    color: '#F3F4F6', lineHeight: 1.65, margin: 0,
                   }}>
                     {item}
                   </p>
@@ -1875,10 +1872,10 @@ const FoldTechStack = () => (
   <section className="relative min-h-screen w-full overflow-hidden" style={{ zIndex: 2 }}>
 
     {/* Heavy edge gradients */}
-    <div className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
-    <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[3]"
-      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.92) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+    <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none z-[3]"
+      style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
     <motion.div
       className="relative min-h-screen w-full"
@@ -1912,7 +1909,7 @@ const FoldTechStack = () => (
             <div key={bar.label} style={{ marginBottom: i < PROFICIENCY_BARS.length - 1 ? 24 : 0 }}>
               <p style={{
                 fontFamily: SWISS, fontSize: 10, fontWeight: 600,
-                color: 'rgba(209,213,219,0.8)', letterSpacing: '0.12em',
+                color: '#E5E7EB', letterSpacing: '0.12em',
                 textTransform: 'uppercase', margin: '0 0 8px',
               }}>
                 {bar.label}
@@ -1935,7 +1932,7 @@ const FoldTechStack = () => (
               </div>
               <p style={{
                 fontFamily: TELE, fontSize: 9,
-                color: 'rgba(107,114,128,0.5)', letterSpacing: '0.1em',
+                color: '#D1D5DB', letterSpacing: '0.1em',
                 margin: '4px 0 0', textAlign: 'right',
               }}>
                 {bar.pct}%
@@ -1953,10 +1950,10 @@ const FoldTechStack = () => (
       >
         <p style={{
           fontFamily: TELE, fontSize: 10, fontWeight: 600,
-          color: 'rgba(107,114,128,0.65)', letterSpacing: '0.2em',
+          color: '#D1D5DB', letterSpacing: '0.2em',
           textTransform: 'uppercase', margin: '0 0 32px',
         }}>
-          THE ARSENAL // CORE STACK
+          CORE INFRASTRUCTURE // STACK
         </p>
 
         <HexGrid categories={ARSENAL_CATEGORIES} />
@@ -2014,10 +2011,10 @@ const Fold8 = () => {
       style={{ zIndex: 2, minHeight: '80vh' }}
     >
       {/* Edge gradients */}
-      <div className="absolute inset-y-0 left-0 w-1/4 pointer-events-none z-[1]"
-        style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.95) 0%, transparent 100%)' }} />
-      <div className="absolute inset-y-0 right-0 w-1/4 pointer-events-none z-[1]"
-        style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.95) 0%, transparent 100%)' }} />
+      <div className="absolute inset-y-0 left-0 w-1/5 pointer-events-none z-[1]"
+        style={{ background: 'linear-gradient(to right, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
+      <div className="absolute inset-y-0 right-0 w-1/5 pointer-events-none z-[1]"
+        style={{ background: 'linear-gradient(to left, rgba(15,20,25,0.6) 0%, transparent 100%)' }} />
 
       {/* Section header */}
       <motion.p
@@ -2027,7 +2024,7 @@ const Fold8 = () => {
         transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
         style={{
           fontFamily: TELE, fontSize: 10,
-          color: 'rgba(107,114,128,0.55)', letterSpacing: '0.4em',
+          color: '#D1D5DB', letterSpacing: '0.4em',
           textTransform: 'uppercase', marginBottom: 28,
         }}
       >
@@ -2064,7 +2061,7 @@ const Fold8 = () => {
             color: '#dc2626', letterSpacing: '0.3em',
             textTransform: 'uppercase', display: 'block', marginBottom: 20,
           }}>
-            [ AVAILABLE INTERCEPTS ]
+            [ VERIFIED LOGS ]
           </span>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -2079,7 +2076,7 @@ const Fold8 = () => {
                     padding: '10px 14px',
                     backgroundColor: isActive ? 'rgba(239,68,68,0.08)' : 'transparent',
                     backgroundImage: isActive ? 'linear-gradient(to right, rgba(239,68,68,0.06), transparent)' : 'none',
-                    color: isActive ? '#ffffff' : 'rgba(156,163,175,0.8)',
+                    color: isActive ? '#ffffff' : '#D1D5DB',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                     border: 'none',
@@ -2091,14 +2088,14 @@ const Fold8 = () => {
                   onMouseEnter={e => {
                     if (!isActive) {
                       e.currentTarget.style.borderLeftColor = 'rgba(156,163,175,0.5)';
-                      e.currentTarget.style.color = 'rgba(229,231,235,0.9)';
+                      e.currentTarget.style.color = '#F3F4F6';
                       e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
                     }
                   }}
                   onMouseLeave={e => {
                     if (!isActive) {
                       e.currentTarget.style.borderLeftColor = 'rgba(55,65,81,0.5)';
-                      e.currentTarget.style.color = 'rgba(156,163,175,0.8)';
+                      e.currentTarget.style.color = '#D1D5DB';
                       e.currentTarget.style.backgroundColor = 'transparent';
                     }
                   }}
@@ -2110,7 +2107,7 @@ const Fold8 = () => {
                   }}>{inf.codename}</span>
                   <span style={{
                     fontFamily: TELE, fontSize: 9,
-                    color: isActive ? 'rgba(239,68,68,0.7)' : 'rgba(107,114,128,0.6)',
+                    color: isActive ? 'rgba(239,68,68,0.7)' : '#D1D5DB',
                     letterSpacing: '0.1em', textTransform: 'uppercase',
                   }}>
                     {inf.role}
@@ -2149,13 +2146,13 @@ const Fold8 = () => {
                 color: '#4ade80', letterSpacing: '0.25em',
                 textTransform: 'uppercase',
               }}>
-                STATUS: DECRYPTED
+                STATUS: VERIFIED
               </span>
             </div>
             <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.08)' }} />
             <span style={{
               fontFamily: TELE, fontSize: 9,
-              color: 'rgba(156,163,175,0.6)', letterSpacing: '0.15em',
+              color: '#D1D5DB', letterSpacing: '0.15em',
               textTransform: 'uppercase',
             }}>
               {active.codename}
@@ -2243,14 +2240,14 @@ const Fold9 = () => (
         <div key={edu.degree}>
           <p style={{
             fontFamily: TELE, fontSize: 15,
-            color: 'rgba(156,163,175,0.85)', lineHeight: 1.7, margin: 0,
+            color: '#D1D5DB', lineHeight: 1.7, margin: 0,
           }}>
-            <span style={{ color: 'rgba(229,231,235,0.75)', fontWeight: 600 }}>{edu.degree}</span>
+            <span style={{ color: '#F3F4F6', fontWeight: 600 }}>{edu.degree}</span>
             {' — '}{edu.institution}
           </p>
           <p style={{
             fontFamily: TELE, fontSize: 11,
-            color: 'rgba(107,114,128,0.6)', margin: '4px 0 0',
+            color: '#D1D5DB', margin: '4px 0 0',
           }}>
             {edu.detail}
           </p>
@@ -2272,7 +2269,7 @@ const Fold9 = () => (
             key={badge}
             style={{
               fontFamily: TELE, fontSize: 10,
-              color: 'rgba(209,213,219,0.7)', letterSpacing: '0.15em',
+              color: '#E5E7EB', letterSpacing: '0.15em',
               border: '1px solid rgba(55,65,81,0.7)',
               backgroundColor: 'rgba(0,0,0,0.5)',
               padding: '4px 12px',
@@ -2368,8 +2365,7 @@ const LogoCarousel = () => (
    ROOT EXPORT
 ════════════════════════════════════ */
 const Dossier = () => (
-  <div className="relative bg-[#0F1419] dossier-cursor">
-    <CrosshairCursor />
+  <div className="relative bg-[#141A21] global-cursor">
     <CentralSpine />
     <DossierStyles />
     <FixedPortrait />

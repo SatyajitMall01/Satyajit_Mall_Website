@@ -114,7 +114,7 @@ const Informants = () => {
   }, [hoveredId]);
 
   return (
-    <section className="py-24 px-8 md:px-12 bg-[#0F1419]" id="informants">
+    <section className="py-24 px-8 md:px-12 bg-[#141A21]" id="informants">
 
       {/* ── Section header ── */}
       <motion.div
@@ -126,9 +126,9 @@ const Informants = () => {
       >
         <span
           className="block mb-3 text-[9px] tracking-[0.5em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(196,98,45,0.55)' }}
+          style={{ fontFamily: TELE, color: 'rgba(196,98,45,0.75)' }}
         >
-          Exhibit B &middot; Witness Registry
+          Peer Telemetry
         </span>
 
         <div className="overflow-hidden">
@@ -146,13 +146,13 @@ const Informants = () => {
 
         <motion.p
           className="mt-2.5 text-[9px] tracking-[0.3em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.25)' }}
+          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.5)' }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, delay: 0.35 }}
         >
-          Classified Interrogation Records &mdash; Hover to Decrypt
+          Verified Endorsements &mdash; Hover to Decrypt
         </motion.p>
 
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#C4622D' }} />
@@ -246,7 +246,7 @@ const Informants = () => {
                         <span
                           style={{
                             fontFamily: TELE, fontSize: 6.5,
-                            color: 'rgba(196,98,45,0.5)',
+                            color: 'rgba(196,98,45,0.7)',
                             letterSpacing: '0.18em',
                             writingMode: 'vertical-rl',
                             transform: 'rotate(180deg)',
@@ -267,7 +267,7 @@ const Informants = () => {
                         <span
                           style={{
                             fontFamily: SWISS, fontSize: 8.5, fontWeight: 500,
-                            color: 'rgba(214,205,184,0.45)',
+                            color: 'rgba(214,205,184,0.65)',
                             letterSpacing: '0.32em',
                             writingMode: 'vertical-rl',
                             transform: 'rotate(180deg)',
@@ -346,7 +346,7 @@ const Informants = () => {
                         <p
                           style={{
                             fontFamily: TELE, fontSize: 9,
-                            color: 'rgba(214,205,184,0.35)',
+                            color: 'rgba(214,205,184,0.55)',
                             letterSpacing: '0.2em',
                             textTransform: 'uppercase',
                             marginTop: 5,
@@ -375,7 +375,7 @@ const Informants = () => {
                             borderTop: '1px solid rgba(255,255,255,0.06)',
                           }}
                         >
-                          <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.18)', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
+                          <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.4)', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
                             {card.ref}
                           </span>
                           <span
@@ -442,7 +442,7 @@ const Informants = () => {
         <span
           style={{
             fontFamily: TELE, fontSize: 7,
-            color: 'rgba(214,205,184,0.15)',
+            color: 'rgba(214,205,184,0.4)',
             letterSpacing: '0.4em', textTransform: 'uppercase',
             marginLeft: 10,
           }}
@@ -456,9 +456,9 @@ const Informants = () => {
         <Separator className="bg-[#1E2330]" />
         <p
           className="mt-4 text-[7.5px] tracking-[0.4em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.08)' }}
+          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.3)' }}
         >
-          End of Exhibits &mdash; All testimony verified &amp; sealed
+          End of Records &mdash; All records verified
         </p>
       </div>
     </section>
