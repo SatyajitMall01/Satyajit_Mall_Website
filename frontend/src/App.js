@@ -9,6 +9,8 @@ import Informants from "@/components/Informants";
 import Dossier from "@/components/Dossier";
 import InformantsPage from "@/components/InformantsPage";
 import ActionAgent from "@/components/ActionAgent";
+import CasesPage from "@/components/CasesPage";
+import CaseStudy from "@/components/CaseStudy";
 import { CrosshairCursor, GlobalCursorStyles } from "@/components/GlobalCursor";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
@@ -154,6 +156,26 @@ const InformantsRoute = () => (
   </div>
 );
 
+const CasesRoute = () => (
+  <div className="forensic-ledger global-cursor">
+    <div className="noise-overlay" />
+    <LedgerEdge />
+    <main className="min-h-screen relative">
+      <CasesPage />
+    </main>
+  </div>
+);
+
+const CaseStudyRoute = () => (
+  <div className="forensic-ledger global-cursor">
+    <div className="noise-overlay" />
+    <LedgerEdge />
+    <main className="min-h-screen relative">
+      <CaseStudy />
+    </main>
+  </div>
+);
+
 function App() {
   return (
     <TooltipProvider>
@@ -162,10 +184,11 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/dossier" element={<DossierPage />} />
           <Route path="/informants" element={<InformantsRoute />} />
-          <Route path="/cases" element={<ComingSoon title="The Cases" codename="Case Archives" />} />
+          <Route path="/cases" element={<CasesRoute />} />
+          <Route path="/case" element={<CasesRoute />} />
+          <Route path="/cases/:slug" element={<CaseStudyRoute />} />
           <Route path="/labs" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
           <Route path="/lab" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
-          <Route path="/case" element={<ComingSoon title="The Cases" codename="Case Archives" />} />
         </Routes>
         {/* Global crosshair cursor — rendered outside Routes so it persists on all pages */}
         <GlobalCursorStyles />
