@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { evidenceCards } from '../data/mock';
 import { Separator } from './ui/separator';
@@ -187,6 +188,15 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
             </div>
           </div>
         </div>
+
+        {/* Clickable link overlay — navigates to case study if slug exists */}
+        {card.slug && (
+          <Link
+            to={`/cases/${card.slug}`}
+            className="absolute inset-0 z-20"
+            aria-label={`View ${card.baseTitle} case study`}
+          />
+        )}
       </div>
     </motion.div>
   );
@@ -318,16 +328,42 @@ const HallOfTrophies = () => {
         </motion.div>
       </motion.div>
 
-      {/* Section footer */}
+      {/* Section footer + View All Cases link */}
       <div className="px-8 md:px-12 mt-14">
-        <div className="max-w-5xl">
-          <Separator className="bg-[#2A2A2A]" />
-          <p
-            className="text-[8px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase mt-4"
-            style={{ fontFamily: SWISS }}
+        <div className="max-w-5xl flex items-center justify-between">
+          <div>
+            <Separator className="bg-[#2A2A2A] mb-4" />
+            <p
+              className="text-[8px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase"
+              style={{ fontFamily: SWISS }}
+            >
+              Evidence carousel &mdash; All cases documented &amp; sealed
+            </p>
+          </div>
+          <Link
+            to="/cases"
+            className="text-[10px] tracking-[0.2em] uppercase"
+            style={{
+              fontFamily: "'Courier New', Courier, monospace",
+              color: '#dc2626',
+              textDecoration: 'none',
+              border: '1px solid rgba(220,38,38,0.3)',
+              padding: '8px 18px',
+              borderRadius: 4,
+              transition: 'all 0.3s ease',
+              flexShrink: 0,
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'rgba(220,38,38,0.6)';
+              e.currentTarget.style.background = 'rgba(220,38,38,0.08)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'rgba(220,38,38,0.3)';
+              e.currentTarget.style.background = 'transparent';
+            }}
           >
-            Evidence carousel &mdash; All cases documented &amp; sealed
-          </p>
+            View All Cases &rarr;
+          </Link>
         </div>
       </div>
     </section>

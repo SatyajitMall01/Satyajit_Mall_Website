@@ -1,14 +1,14 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Database, GitMerge, Activity, Users, Layers, Zap, BarChart3, Target, Search, Settings, Cpu, TrendingUp } from 'lucide-react';
+import { Database, GitMerge, Activity, Users, Layers, Zap, BarChart3, Target, Search, Settings, Cpu, TrendingUp, ShieldCheck, Filter, BrainCircuit, Network, Gauge } from 'lucide-react';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
 const EXPO_OUT = [0.16, 1, 0.3, 1];
 
 /* ── Icon resolver ── */
-const ICONS = { Database, GitMerge, Activity, Users, Layers, Zap, BarChart3, Target, Search, Settings, Cpu, TrendingUp };
+const ICONS = { Database, GitMerge, Activity, Users, Layers, Zap, BarChart3, Target, Search, Settings, Cpu, TrendingUp, ShieldCheck, Filter, BrainCircuit, Network, Gauge };
 const Icon = ({ name, size = 32, color = '#dc2626' }) => {
   const Comp = ICONS[name] || Database;
   return <Comp size={size} color={color} strokeWidth={1.5} />;
@@ -16,31 +16,61 @@ const Icon = ({ name, size = 32, color = '#dc2626' }) => {
 
 /* ── Full case study database ── */
 const ALL_CASES = {
-  'miles-one': {
+  'universal-gtm-identity-registry': {
     id: '01',
     codename: 'OPERATION: MILES ONE',
-    title: 'Agentic AI & Lead Orchestration',
+    title: 'The Universal GTM Identity Registry',
+    subtitle: 'Engineering a Unified Entry-Gate Architecture for High-Velocity Lead Acquisition',
     accent: '#dc2626',
     gradient: 'linear-gradient(135deg, #1a0a0a 0%, #2a1218 30%, #1a0f14 60%, #0d0a0f 100%)',
     heroCollage: [
-      { label: 'RAG Pipeline Schema', offset: 0 },
-      { label: 'n8n Orchestration Flow', offset: 1 },
-      { label: 'Miles One Dashboard', offset: 2 },
+      { label: 'PostgreSQL Identity Schema', offset: 0 },
+      { label: 'SSO Auth Flow Architecture', offset: 1 },
+      { label: 'Lead Telemetry Dashboard', offset: 2 },
     ],
+    strategicIntent: "Miles Education faced 'Identity Fragmentation.' Leads entering through webinars, whitepapers, and events created redundant, disconnected records. This 'Data Noise' resulted in duplicate acquisition costs and broken context. Miles One was engineered as the Universal Identity Registry (UIR)\u2014a sophisticated traffic controller sitting at the SSO entry-gate, ensuring a deterministic identity is established at the very first touchpoint, effectively separating 'Identity Logic' from 'Business Logic' to prevent CRM bottlenecking.",
     protocols: [
-      { icon: 'Database', title: 'Data Structuring', desc: 'Mapped raw PostgreSQL schemas for RAG ingestion and contextual memory retrieval.' },
-      { icon: 'GitMerge', title: 'n8n Pipelines', desc: 'Built dynamic function-calling workflows that route queries to specialized APIs.' },
-      { icon: 'Activity', title: 'Load Testing', desc: 'Stress-tested the AI assistant for high-velocity concurrent queries at scale.' },
-      { icon: 'Users', title: 'UAT & Adoption', desc: 'Shadowed the sales floor to refine bot logic based on real conversation patterns.' },
+      { icon: 'Database', title: 'PostgreSQL Backbone', desc: 'Engineered a sub-millisecond registry indexing phones, device fingerprints, and OAuth IDs to generate persistent Global UUIDs.' },
+      { icon: 'ShieldCheck', title: 'SSO Entry-Gate Layer', desc: 'Implemented a custom Identity Provider (IdP) passing Context Tokens across domains for frictionless omnichannel onboarding.' },
+      { icon: 'Filter', title: 'Source-Level Dedupe', desc: 'Shifted data deduplication upstream from the CRM to the entry gate, ensuring only enriched, deterministic data hits Sales.' },
+      { icon: 'Zap', title: 'Synchronous Validation', desc: "Enforced an 'Identity Precedes Activity' mandate, validating users in real-time before submission to eliminate lead leakage." },
     ],
     outcomes: [
-      { title: 'Zero-Touch Resolution', desc: 'Automated webinar bookings via function-calling without human intervention. Students get instant answers, support costs drop.' },
-      { title: '+40% Lead Velocity Lift', desc: 'Reduced the qualification cycle through instant RAG memory retrieval — leads move from inquiry to booked session in minutes, not days.' },
-      { title: 'Architectural Scalability', desc: 'Decoupled the LLM layer from the CRM, allowing for agnostic future upgrades. The orchestration layer is model-independent.' },
+      { title: '\u20B920 Cr+ Incremental Revenue', desc: 'Automatically routed re-entering students to high-ticket alumni cross-sell tracks, increasing upsell conversion by >40%.' },
+      { title: '40,000+ Unified Learners', desc: 'Consolidated highly fragmented D2C, Event, and Content funnels into a single, deterministic identity pipeline.' },
+      { title: '-10% Early Funnel Churn', desc: 'Eliminated user friction between webinar signups and LMS trial access by deploying a unified SSO handshake.' },
+      { title: '-25% Discovery Call Time', desc: 'Equipped sales floors with pre-attached identity histories, accelerating Speed to Lead and bypassing cold discovery.' },
     ],
-    next: { slug: 'almabetter', label: 'OPERATION: ALMABETTER' },
+    next: { slug: 'behavioral-ott-architecture', label: 'OPERATION: MILES MASTERCLASS' },
   },
-  'almabetter': {
+  'behavioral-ott-architecture': {
+    id: '04',
+    codename: 'OPERATION: MILES MASTERCLASS',
+    title: 'Behavioral OTT Architecture',
+    subtitle: 'Engineering High-Intent Funnels through AI-Driven Content Consumption',
+    accent: '#f59e0b',
+    gradient: 'linear-gradient(135deg, #1a150a 0%, #2a1f0e 30%, #1a1508 60%, #0f0d08 100%)',
+    heroCollage: [
+      { label: 'Player State Machine', offset: 0 },
+      { label: 'Chapter-Aware RAG Pipeline', offset: 1 },
+      { label: 'Redis Buffer Architecture', offset: 2 },
+    ],
+    strategicIntent: "In a saturated EdTech market, traditional lead magnets suffer from \u2018Engagement Decay\u2019\u2014users download a PDF but never consume it. To bridge the gap between \u2018passive viewer\u2019 and \u2018active student,\u2019 we bypassed rigid traditional LMS platforms to architect Miles Masterclass: a bespoke, Netflix-style micro-learning OTT engine. By capturing behavioral video data at 10-second intervals and feeding it into a Chapter-Aware RAG pipeline, we didn\u2019t just deliver content; we delivered context-aware, real-time AI tutoring that validated learner intent and directly fed the core revenue pipeline.",
+    protocols: [
+      { icon: 'Activity', title: '10s Behavioral Sync', desc: 'Engineered a high-frequency heartbeat system syncing local video state to a Redis buffer and PostgreSQL ledger every 10 seconds.' },
+      { icon: 'BrainCircuit', title: 'Chapter-Aware RAG', desc: "Vectorized video transcriptions into semantic chapters, allowing the LLM to \u2018see\u2019 exactly what the user is watching in real-time." },
+      { icon: 'Network', title: 'LangChain Orchestration', desc: "Utilized n8n and LangChain to dynamically adjust the AI context window based on the user\u2019s precise 10-second timestamp." },
+      { icon: 'Gauge', title: 'Sub-2s AI Latency', desc: 'Optimized token costs via Redis caching for high-frequency queries, achieving a 1.8s median AI response time for live tutoring.' },
+    ],
+    outcomes: [
+      { title: '30,000+ ToFu Users', desc: 'Successfully bypassed high-friction lead forms, capturing granular consumption data to validate actual learner intent.' },
+      { title: '2,000+ Paid Subscriptions', desc: "Transitioned casual \u2018Free Video Viewers\u2019 into paying program subscribers within a 45-day attribution window." },
+      { title: '+15% Core CPA Conversion', desc: "Lifted primary enterprise conversions by feeding highly-qualified, \u2018pre-educated\u2019 leads from the OTT ecosystem directly to Sales." },
+      { title: 'Automated Intent Triggers', desc: 'Users hitting >70% completion automatically triggered hyper-personalized, backend-driven WhatsApp scholarship campaigns.' },
+    ],
+    next: { slug: 'operational-debt-eradication', label: 'OPERATION: ALMABETTER' },
+  },
+  'operational-debt-eradication': {
     id: '02',
     codename: 'OPERATION: ALMABETTER',
     title: 'Operational Debt Eradication',
@@ -62,9 +92,9 @@ const ALL_CASES = {
       { title: '9.1 Peak CSAT', desc: 'Productized ticketing with ELT-backed resolution tracking drove customer satisfaction to its highest recorded level.' },
       { title: '2-Week Content Acceleration', desc: 'Automated the content pipeline from brief to publish, compressing a month-long cycle into two weeks.' },
     ],
-    next: { slug: 'upgrad', label: 'OPERATION: UPGRAD' },
+    next: { slug: 'behavioral-plg-architecture', label: 'OPERATION: UPGRAD' },
   },
-  'upgrad': {
+  'behavioral-plg-architecture': {
     id: '03',
     codename: 'OPERATION: UPGRAD',
     title: 'Behavioral PLG Architecture',
@@ -86,7 +116,7 @@ const ALL_CASES = {
       { title: '5 GTM Launches', desc: 'Each launch hit revenue targets through tight coordination between product builds, content readiness, and marketing campaigns.' },
       { title: 'Behavioral Intelligence Layer', desc: 'Created a reusable analytics framework that maps learner psychology to product decisions — still in use today.' },
     ],
-    next: { slug: 'miles-one', label: 'OPERATION: MILES ONE' },
+    next: { slug: 'universal-gtm-identity-registry', label: 'OPERATION: MILES ONE' },
   },
 };
 
@@ -207,7 +237,7 @@ const CaseStudy = () => {
             style={{
               fontFamily: SWISS, fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700,
               color: '#FFFFFF', letterSpacing: '-0.03em', lineHeight: 1.05,
-              marginBottom: 60,
+              marginBottom: 0,
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -215,6 +245,22 @@ const CaseStudy = () => {
           >
             {data.title}
           </motion.h1>
+
+          {/* Subtitle */}
+          {data.subtitle && (
+            <motion.p
+              style={{
+                fontFamily: SWISS, fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 300,
+                color: '#D1D5DB', lineHeight: 1.5, maxWidth: 720,
+                margin: '24px auto 60px',
+              }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EXPO_OUT, delay: 0.2 }}
+            >
+              {data.subtitle}
+            </motion.p>
+          )}
 
           {/* Hero collage container */}
           <motion.div
@@ -241,6 +287,43 @@ const CaseStudy = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════
+         SECTION 1.5: STRATEGIC INTENT
+         ════════════════════════════════════ */}
+      {data.strategicIntent && (
+        <section className="relative z-10" style={{ padding: '0 24px' }}>
+          <motion.article
+            style={{
+              maxWidth: 820, margin: '0 auto',
+              padding: '80px 0',
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.7, ease: EXPO_OUT }}
+          >
+            <p style={{
+              fontFamily: TELE, fontSize: 10, color: '#D1D5DB',
+              letterSpacing: '0.35em', textTransform: 'uppercase',
+              marginBottom: 24,
+            }}>
+              [ Strategic Intent ]
+            </p>
+            <div style={{
+              borderLeft: `2px solid ${data.accent}60`,
+              paddingLeft: 32,
+            }}>
+              <p style={{
+                fontFamily: SWISS, fontSize: 18, fontWeight: 300,
+                color: '#E5E7EB', lineHeight: 1.85,
+              }}>
+                {data.strategicIntent}
+              </p>
+            </div>
+          </motion.article>
+        </section>
+      )}
 
       {/* ════════════════════════════════════
          SECTION 2: EXECUTION PROTOCOLS
@@ -270,14 +353,20 @@ const CaseStudy = () => {
                   background: 'rgba(255,255,255,0.015)',
                   border: '1px solid rgba(255,255,255,0.04)',
                   borderRadius: 12,
-                  transition: 'border-color 0.3s ease',
+                  transition: 'all 0.3s ease',
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.5, ease: EXPO_OUT, delay: i * 0.1 }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = data.accent + '40'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)'}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = data.accent + '40';
+                  e.currentTarget.style.boxShadow = `0 0 24px ${data.accent}12`;
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 <Icon name={p.icon} size={32} color={data.accent} />
                 <p style={{
@@ -386,14 +475,15 @@ const CaseStudy = () => {
                   transition={{ duration: 0.5, ease: EXPO_OUT, delay: i * 0.12 }}
                 >
                   <h3 style={{
-                    fontFamily: SWISS, fontSize: 22, fontWeight: 700,
-                    color: '#FFFFFF', marginBottom: 8,
+                    fontFamily: SWISS, fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 700,
+                    color: '#FFFFFF', marginBottom: 12,
+                    letterSpacing: '-0.02em',
                   }}>
                     {o.title}
                   </h3>
                   <p style={{
-                    fontFamily: SWISS, fontSize: 15, fontWeight: 400,
-                    color: '#E5E7EB', lineHeight: 1.7,
+                    fontFamily: SWISS, fontSize: 16, fontWeight: 400,
+                    color: '#E5E7EB', lineHeight: 1.75,
                   }}>
                     {o.desc}
                   </p>
