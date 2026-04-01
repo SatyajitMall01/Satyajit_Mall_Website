@@ -16,7 +16,7 @@ const Icon = ({ name, size = 32, color = '#dc2626' }) => {
 
 /* ── Full case study database ── */
 const ALL_CASES = {
-  'universal-gtm-identity-registry': {
+  'the-universal-gtm-identity-registry': {
     id: '01',
     codename: 'OPERATION: MILES ONE',
     title: 'The Universal GTM Identity Registry',
@@ -68,9 +68,9 @@ const ALL_CASES = {
       { title: '+15% Core CPA Conversion', desc: "Lifted primary enterprise conversions by feeding highly-qualified, \u2018pre-educated\u2019 leads from the OTT ecosystem directly to Sales." },
       { title: 'Automated Intent Triggers', desc: 'Users hitting >70% completion automatically triggered hyper-personalized, backend-driven WhatsApp scholarship campaigns.' },
     ],
-    next: { slug: 'operational-debt-eradication', label: 'OPERATION: ALMABETTER' },
+    next: { slug: 'the-attribution-recovery-engine', label: 'OPERATION: ALMABETTER' },
   },
-  'operational-debt-eradication': {
+  'the-attribution-recovery-engine': {
     id: '02',
     codename: 'OPERATION: ALMABETTER',
     title: 'Operational Debt Eradication',
@@ -116,7 +116,7 @@ const ALL_CASES = {
       { title: '5 GTM Launches', desc: 'Each launch hit revenue targets through tight coordination between product builds, content readiness, and marketing campaigns.' },
       { title: 'Behavioral Intelligence Layer', desc: 'Created a reusable analytics framework that maps learner psychology to product decisions — still in use today.' },
     ],
-    next: { slug: 'universal-gtm-identity-registry', label: 'OPERATION: MILES ONE' },
+    next: { slug: 'the-universal-gtm-identity-registry', label: 'OPERATION: MILES ONE' },
   },
 };
 

@@ -11,6 +11,14 @@ import InformantsPage from "@/components/InformantsPage";
 import ActionAgent from "@/components/ActionAgent";
 import CasesPage from "@/components/CasesPage";
 import CaseStudy from "@/components/CaseStudy";
+import CaseMilesOne from "@/components/cases/CaseMilesOne";
+import CaseMasterclass from "@/components/cases/CaseMasterclass";
+import CaseEngage from "@/components/cases/CaseEngage";
+import CaseSuperbot from "@/components/cases/CaseSuperbot";
+import CaseActionAgents from "@/components/cases/CaseActionAgents";
+import CaseAnalytics from "@/components/cases/CaseAnalytics";
+import CaseMasterclassAnalytics from "@/components/cases/CaseMasterclassAnalytics";
+import CaseResolution from "@/components/cases/CaseResolution";
 import { CrosshairCursor, GlobalCursorStyles } from "@/components/GlobalCursor";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
@@ -186,6 +194,30 @@ function App() {
           <Route path="/informants" element={<InformantsRoute />} />
           <Route path="/cases" element={<CasesRoute />} />
           <Route path="/case" element={<CasesRoute />} />
+          <Route path="/cases/the-universal-gtm-identity-registry" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseMilesOne /></main></div>
+          } />
+          <Route path="/cases/behavioral-ott-architecture" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseMasterclass /></main></div>
+          } />
+          <Route path="/cases/the-attribution-recovery-engine" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseEngage /></main></div>
+          } />
+          <Route path="/cases/agentic-voice-qualification" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseSuperbot /></main></div>
+          } />
+          <Route path="/cases/transactional-llm-orchestration" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseActionAgents /></main></div>
+          } />
+          <Route path="/cases/product-data-unification" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseAnalytics /></main></div>
+          } />
+          <Route path="/cases/ott-product-forensics" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseMasterclassAnalytics /></main></div>
+          } />
+          <Route path="/cases/csat-engineering" element={
+            <div className="forensic-ledger global-cursor"><div className="noise-overlay" /><LedgerEdge /><main className="min-h-screen relative"><CaseResolution /></main></div>
+          } />
           <Route path="/cases/:slug" element={<CaseStudyRoute />} />
           <Route path="/labs" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
           <Route path="/lab" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
