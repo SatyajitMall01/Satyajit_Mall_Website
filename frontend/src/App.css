@@ -30,7 +30,7 @@
 
 .redacted-word:hover {
   background-color: transparent;
-  color: #F4ECD8;
+  color: #E5E7EB;
 }
 
 /* Redacted text effect — light card backgrounds (Informants) */
@@ -132,7 +132,7 @@
 /* Selection color */
 ::selection {
   background: rgba(178, 34, 34, 0.4);
-  color: #F4ECD8;
+  color: #E5E7EB;
 }
 
 /* Smooth scrolling */

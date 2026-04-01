@@ -72,11 +72,11 @@ const HomePage = () => {
               <FileText
                 size={14}
                 strokeWidth={1.5}
-                className="text-[#B22222]"
+                className="text-[#dc2626]"
               />
               <span
-                className="text-[10px] text-[#F4ECD8]/50 tracking-[0.35em] uppercase"
-                style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+                className="text-[10px] text-[#D1D5DB] tracking-[0.35em] uppercase"
+                style={{ fontFamily: "'Courier New', Courier, monospace" }}
               >
                 The Forensic Ledger
               </span>
@@ -84,16 +84,16 @@ const HomePage = () => {
             <Separator className="bg-[#1A1A1A] mb-5" />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <p
-                className="text-[9px] text-[#F4ECD8]/40 tracking-[0.25em] uppercase"
-                style={{ fontFamily: "'Special Elite', cursive" }}
+                className="text-[9px] text-[#9CA3AF] tracking-[0.25em] uppercase"
+                style={{ fontFamily: "'Courier New', Courier, monospace" }}
               >
                 &copy; 2025 Satyajit Mall. All cases classified.
               </p>
               <p
-                className="text-[9px] text-[#F4ECD8]/30 tracking-[0.2em] uppercase"
-                style={{ fontFamily: "'Special Elite', cursive" }}
+                className="text-[9px] text-[#6B7280] tracking-[0.2em] uppercase"
+                style={{ fontFamily: "'Courier New', Courier, monospace" }}
               >
-                Built with forensic precision
+                Built with architectural precision
               </p>
             </div>
           </div>

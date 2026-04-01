@@ -56,13 +56,13 @@ const LedgerEdge = () => {
         onMouseLeave={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(178,34,34,0.28)'; }}
       >
         {isOpen
-          ? <X size={13} strokeWidth={2} color="rgba(244,236,216,0.85)" />
+          ? <X size={13} strokeWidth={2} color="#E5E7EB" />
           : <Menu size={14} strokeWidth={1.5} color="rgba(220,38,38,0.9)" />
         }
         {!isOpen && (
           <span style={{
             fontFamily: TELE, fontSize: 9,
-            color: 'rgba(244,236,216,0.65)', letterSpacing: '0.2em',
+            color: '#D1D5DB', letterSpacing: '0.2em',
             textTransform: 'uppercase', whiteSpace: 'nowrap',
           }}>
             MENU
@@ -100,7 +100,7 @@ const LedgerEdge = () => {
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 12, fontWeight: 400,
-            color: 'rgba(244,236,216,0.55)', letterSpacing: '0.04em',
+            color: '#D1D5DB', letterSpacing: '0.04em',
             margin: 0,
           }}>
             Satyajit Mall — Product Manager
@@ -133,7 +133,7 @@ const LedgerEdge = () => {
         }}>
           <p style={{
             fontFamily: TELE, fontSize: 9,
-            color: 'rgba(244,236,216,0.45)', letterSpacing: '0.22em',
+            color: '#9CA3AF', letterSpacing: '0.22em',
             textTransform: 'uppercase', margin: '0 0 4px',
           }}>
             CLASSIFICATION
@@ -147,7 +147,7 @@ const LedgerEdge = () => {
           </p>
           <p style={{
             fontFamily: SWISS, fontSize: 10,
-            color: 'rgba(244,236,216,0.35)',
+            color: '#6B7280',
             margin: 0,
           }}>
             &copy; 2025 S. Mall
@@ -189,7 +189,7 @@ const NavLink = ({ to, label, index, icon, onClose, isHome }) => {
       }}
     >
       {icon ? (
-        <span style={{ color: hov ? 'rgba(244,236,216,0.8)' : '#D1D5DB', flexShrink: 0 }}>
+        <span style={{ color: hov ? '#FFFFFF' : '#D1D5DB', flexShrink: 0 }}>
           {icon}
         </span>
       ) : (

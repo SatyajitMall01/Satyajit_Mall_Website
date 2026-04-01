@@ -126,15 +126,15 @@ const Informants = () => {
       >
         <span
           className="block mb-3 text-[9px] tracking-[0.5em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(196,98,45,0.75)' }}
+          style={{ fontFamily: TELE, color: '#dc2626' }}
         >
           Peer Telemetry
         </span>
 
         <div className="overflow-hidden">
           <motion.h2
-            className="text-[24px] md:text-[30px] text-[#F4ECD8] tracking-[0.03em]"
-            style={{ fontFamily: "'Julius Sans One', sans-serif" }}
+            className="text-[24px] md:text-[30px] text-[#FFFFFF] tracking-[0.03em]"
+            style={{ fontFamily: SWISS }}
             initial={{ y: '100%' }}
             whileInView={{ y: '0%' }}
             viewport={{ once: true, margin: '-80px' }}
@@ -146,16 +146,16 @@ const Informants = () => {
 
         <motion.p
           className="mt-2.5 text-[9px] tracking-[0.3em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.5)' }}
+          style={{ fontFamily: TELE, color: '#D1D5DB' }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, delay: 0.35 }}
         >
-          Verified Endorsements &mdash; Hover to Decrypt
+          Verified Endorsements &mdash; Select to Read
         </motion.p>
 
-        <div className="w-12 h-px mt-4" style={{ backgroundColor: '#C4622D' }} />
+        <div className="w-12 h-px mt-4" style={{ backgroundColor: '#dc2626' }} />
       </motion.div>
 
       {/* ── Accordion: entrance wrapper ── */}
@@ -246,7 +246,7 @@ const Informants = () => {
                         <span
                           style={{
                             fontFamily: TELE, fontSize: 6.5,
-                            color: 'rgba(196,98,45,0.7)',
+                            color: '#dc2626',
                             letterSpacing: '0.18em',
                             writingMode: 'vertical-rl',
                             transform: 'rotate(180deg)',
@@ -259,7 +259,7 @@ const Informants = () => {
 
                       {/* Center crosshair */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <XHair size={18} color="rgba(214,205,184,0.1)" />
+                        <XHair size={18} color="rgba(220,38,38,0.25)" />
                       </div>
 
                       {/* Name — bottom, vertical */}
@@ -267,7 +267,7 @@ const Informants = () => {
                         <span
                           style={{
                             fontFamily: SWISS, fontSize: 8.5, fontWeight: 500,
-                            color: 'rgba(214,205,184,0.65)',
+                            color: '#E5E7EB',
                             letterSpacing: '0.32em',
                             writingMode: 'vertical-rl',
                             transform: 'rotate(180deg)',
@@ -280,10 +280,10 @@ const Informants = () => {
                       </div>
 
                       {/* Corner registration marks */}
-                      <div className="absolute top-3 left-3 w-3 h-3 border-t border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                      <div className="absolute top-3 right-3 w-3 h-3 border-t border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                      <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
-                      <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r pointer-events-none" style={{ borderColor: 'rgba(214,205,184,0.1)' }} />
+                      <div className="absolute top-3 left-3 w-3 h-3 border-t border-l pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.2)' }} />
+                      <div className="absolute top-3 right-3 w-3 h-3 border-t border-r pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.2)' }} />
+                      <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.2)' }} />
+                      <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.2)' }} />
                     </motion.div>
 
                     {/* ── ACTIVE: classified acetate decryption ──
@@ -298,10 +298,10 @@ const Informants = () => {
                       }}
                     >
                       {/* Viewfinder brackets */}
-                      <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                      <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                      <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
-                      <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(196,98,45,0.7)' }} />
+                      <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+                      <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+                      <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+                      <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 pointer-events-none" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
 
                       {/* Identity block — slides down on activation */}
                       <motion.div
@@ -310,11 +310,11 @@ const Informants = () => {
                         transition={{ duration: 0.38, delay: isActive ? 0.1 : 0, ease: EXPO_OUT }}
                       >
                         <div className="flex items-center gap-2 mb-3">
-                          <XHair size={10} color="rgba(196,98,45,0.7)" />
+                          <XHair size={10} color="rgba(220,38,38,0.5)" />
                           <span
                             style={{
                               fontFamily: TELE, fontSize: 7.5,
-                              color: 'rgba(196,98,45,0.8)',
+                              color: '#EF4444',
                               letterSpacing: '0.28em',
                               textTransform: 'uppercase',
                             }}
@@ -325,7 +325,7 @@ const Informants = () => {
                         <p
                           style={{
                             fontFamily: SWISS, fontSize: 14, fontWeight: 600,
-                            color: 'rgba(214,205,184,0.92)',
+                            color: '#FFFFFF',
                             letterSpacing: '0.1em',
                             textTransform: 'uppercase',
                             lineHeight: 1.2,
@@ -336,7 +336,7 @@ const Informants = () => {
                         <p
                           style={{
                             fontFamily: SWISS, fontSize: 11, fontWeight: 500,
-                            color: 'rgba(214,205,184,0.6)',
+                            color: '#D1D5DB',
                             letterSpacing: '0.05em',
                             marginTop: 3,
                           }}
@@ -346,7 +346,7 @@ const Informants = () => {
                         <p
                           style={{
                             fontFamily: TELE, fontSize: 9,
-                            color: 'rgba(214,205,184,0.55)',
+                            color: '#D1D5DB',
                             letterSpacing: '0.2em',
                             textTransform: 'uppercase',
                             marginTop: 5,
@@ -362,9 +362,9 @@ const Informants = () => {
                         animate={isActive ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ duration: 0.3, delay: isActive ? 0.15 : 0 }}
                       >
-                        <div style={{ width: 28, height: 1, backgroundColor: '#C4622D', marginBottom: 18 }} />
+                        <div style={{ width: 28, height: 1, backgroundColor: '#dc2626', marginBottom: 18 }} />
 
-                        <p style={{ fontSize: 12.5, color: 'rgba(214,205,184,0.82)', lineHeight: 1.9, letterSpacing: '0.015em' }}>
+                        <p style={{ fontSize: 12.5, color: '#E5E7EB', lineHeight: 1.9, letterSpacing: '0.015em' }}>
                           &ldquo;<TypewriterText text={card.quote} active={isActive} />&rdquo;
                         </p>
 
@@ -375,7 +375,7 @@ const Informants = () => {
                             borderTop: '1px solid rgba(255,255,255,0.06)',
                           }}
                         >
-                          <span style={{ fontFamily: TELE, fontSize: 7, color: 'rgba(214,205,184,0.4)', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
+                          <span style={{ fontFamily: TELE, fontSize: 7, color: '#9CA3AF', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
                             {card.ref}
                           </span>
                           <span
@@ -398,7 +398,7 @@ const Informants = () => {
                       className="absolute bottom-0 left-0 right-0 z-[6]"
                       animate={{ opacity: isActive ? 1 : 0, scaleX: isActive ? 1 : 0 }}
                       transition={{ duration: 0.5, ease: EXPO_OUT }}
-                      style={{ height: 1, backgroundColor: '#C4622D', transformOrigin: 'left' }}
+                      style={{ height: 1, backgroundColor: '#dc2626', transformOrigin: 'left' }}
                     />
                   </motion.div>
                 );
@@ -430,10 +430,10 @@ const Informants = () => {
               }}
             >
               {isHighlight && (
-                <div className="absolute inset-0" style={{ backgroundColor: '#C4622D' }} />
+                <div className="absolute inset-0" style={{ backgroundColor: '#dc2626' }} />
               )}
               {inWindow && !isHighlight && (
-                <div className="absolute inset-0" style={{ backgroundColor: 'rgba(214,205,184,0.15)' }} />
+                <div className="absolute inset-0" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }} />
               )}
             </button>
           );
@@ -442,7 +442,7 @@ const Informants = () => {
         <span
           style={{
             fontFamily: TELE, fontSize: 7,
-            color: 'rgba(214,205,184,0.4)',
+            color: '#9CA3AF',
             letterSpacing: '0.4em', textTransform: 'uppercase',
             marginLeft: 10,
           }}
@@ -456,7 +456,7 @@ const Informants = () => {
         <Separator className="bg-[#1E2330]" />
         <p
           className="mt-4 text-[7.5px] tracking-[0.4em] uppercase"
-          style={{ fontFamily: TELE, color: 'rgba(214,205,184,0.3)' }}
+          style={{ fontFamily: TELE, color: '#9CA3AF' }}
         >
           End of Records &mdash; All records verified
         </p>

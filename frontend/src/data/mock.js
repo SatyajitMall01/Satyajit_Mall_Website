@@ -83,7 +83,7 @@ export const informants = [
     initials: 'ML',
     caseRef: 'REF-0091A',
     cardType: 'wide',
-    bg: '#F4ECD8',
+    bg: '#E5E7EB',
   },
   {
     id: 'witness-detective',
@@ -105,7 +105,7 @@ export const informants = [
     initials: 'LW',
     caseRef: 'REF-0267C',
     cardType: 'standard',
-    bg: '#F4ECD8',
+    bg: '#E5E7EB',
   },
 ];
 

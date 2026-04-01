@@ -24,7 +24,7 @@ const HeaderBtn = ({ onClick, title, children, red }) => (
       width: 20, height: 20,
       background: 'transparent',
       border: `1px solid ${red ? 'rgba(178,34,34,0.45)' : 'rgba(255,255,255,0.09)'}`,
-      color: red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.6)',
+      color: red ? '#dc2626' : '#D1D5DB',
       fontFamily: SWISS, fontSize: 12,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       cursor: 'pointer', lineHeight: 1, flexShrink: 0,
@@ -32,11 +32,11 @@ const HeaderBtn = ({ onClick, title, children, red }) => (
     }}
     onMouseEnter={e => {
       e.currentTarget.style.borderColor = red ? 'rgba(178,34,34,0.9)' : 'rgba(255,255,255,0.3)';
-      e.currentTarget.style.color       = red ? '#B22222' : 'rgba(214,205,184,0.9)';
+      e.currentTarget.style.color       = red ? '#dc2626' : '#FFFFFF';
     }}
     onMouseLeave={e => {
       e.currentTarget.style.borderColor = red ? 'rgba(178,34,34,0.45)' : 'rgba(255,255,255,0.09)';
-      e.currentTarget.style.color       = red ? 'rgba(178,34,34,0.75)' : 'rgba(214,205,184,0.6)';
+      e.currentTarget.style.color       = red ? '#dc2626' : '#D1D5DB';
     }}
   >
     {children}
@@ -165,7 +165,7 @@ const ActionAgent = () => {
           title={isOpen ? 'Close Comms' : 'Open Secure Comms'}
           style={{
             width: 52, height: 52,
-            backgroundColor: isOpen ? '#8B1A1A' : '#B22222',
+            backgroundColor: isOpen ? '#8B1A1A' : '#dc2626',
             border: '1px solid rgba(178,34,34,0.55)',
             borderRadius: '50%',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -183,7 +183,7 @@ const ActionAgent = () => {
               style={{
                 position: 'absolute', inset: 0,
                 borderRadius: '50%',
-                backgroundColor: '#B22222',
+                backgroundColor: '#dc2626',
                 opacity: 0.25,
               }}
             />
@@ -247,26 +247,26 @@ const ActionAgent = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span
                   className="animate-pulse"
-                  style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#B22222', display: 'inline-block', flexShrink: 0 }}
+                  style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#dc2626', display: 'inline-block', flexShrink: 0 }}
                 />
                 <span
                   style={{
                     fontFamily: SWISS, fontSize: 8.5,
-                    color: 'rgba(214,205,184,0.65)',
+                    color: '#D1D5DB',
                     letterSpacing: '0.32em', textTransform: 'uppercase',
                   }}
                 >
-                  SECURE COMMS LINK
+                  Chat
                 </span>
                 <span
                   style={{
                     fontFamily: SWISS, fontSize: 7.5,
-                    color: 'rgba(178,34,34,0.6)',
+                    color: '#B91C1C',
                     letterSpacing: '0.2em',
                     marginLeft: 4,
                   }}
                 >
-                  // DIGITAL TWIN ACTIVE
+                  // AI Assistant
                 </span>
               </div>
 
@@ -301,14 +301,14 @@ const ActionAgent = () => {
             >
               {/* Boot sequence — shown until first message */}
               {messages.length === 0 && (
-                <div style={{ fontFamily: SWISS, fontSize: 10, lineHeight: 2.1, color: 'rgba(61,122,88,0.65)', letterSpacing: '0.03em' }}>
+                <div style={{ fontFamily: SWISS, fontSize: 10, lineHeight: 2.1, color: '#15803D', letterSpacing: '0.03em' }}>
                   <span style={{ color: 'rgba(178,34,34,0.55)' }}>SYS &gt;</span>
                   {' '}CONN ESTABLISHED &mdash; SESSION {sessionId?.slice(0, 8).toUpperCase() ?? '--------'}
                   <br />
                   <span style={{ color: 'rgba(178,34,34,0.55)' }}>SYS &gt;</span>
                   {' '}DIGITAL TWIN LOADED &mdash; RAG CONTEXT ARMED
                   <br />
-                  <span style={{ color: 'rgba(214,205,184,0.45)' }}>
+                  <span style={{ color: '#9CA3AF' }}>
                     // Interrogation channel is live.
                     <br />
                     // Ask about Satyajit&rsquo;s product decisions, architecture, or case files.
@@ -332,7 +332,7 @@ const ActionAgent = () => {
                       <p
                         style={{
                           fontFamily: SWISS, fontSize: 11,
-                          color: msg.error ? 'rgba(178,34,34,0.7)' : 'rgba(61,122,88,0.92)',
+                          color: msg.error ? 'rgba(178,34,34,0.7)' : '#22C55E',
                           lineHeight: 1.9, letterSpacing: '0.015em', margin: 0,
                         }}
                       >
@@ -353,7 +353,7 @@ const ActionAgent = () => {
                             <p
                               style={{
                                 fontFamily: SWISS, fontSize: 7.5, margin: '0 0 4px',
-                                color: 'rgba(214,205,184,0.4)', letterSpacing: '0.28em', textTransform: 'uppercase',
+                                color: '#9CA3AF', letterSpacing: '0.28em', textTransform: 'uppercase',
                               }}
                             >
                               // {msg.chunks} CHUNK{msg.chunks !== 1 ? 'S' : ''} REFERENCED
@@ -378,12 +378,12 @@ const ActionAgent = () => {
                     <p
                       style={{
                         fontFamily: SWISS, fontSize: 11,
-                        color: 'rgba(214,205,184,0.75)',
+                        color: '#E5E7EB',
                         lineHeight: 1.75, letterSpacing: '0.02em',
                         margin: 0, textAlign: 'right', maxWidth: '90%',
                       }}
                     >
-                      <span style={{ color: 'rgba(214,205,184,0.5)', marginRight: 6 }}>USR:</span>
+                      <span style={{ color: '#D1D5DB', marginRight: 6 }}>You:</span>
                       {msg.text}
                     </p>
                   )}
@@ -395,12 +395,12 @@ const ActionAgent = () => {
                 <div
                   style={{
                     fontFamily: SWISS, fontSize: 11,
-                    color: 'rgba(61,122,88,0.75)',
+                    color: '#16A34A',
                     letterSpacing: '0.04em', lineHeight: 1.8,
                   }}
                 >
                   <span style={{ color: 'rgba(178,34,34,0.65)', marginRight: 7 }}>&gt;</span>
-                  DECRYPTING TRANSMISSION...{' '}
+                  Thinking...{' '}
                   <BlinkingCursor />
                 </div>
               )}
@@ -423,7 +423,7 @@ const ActionAgent = () => {
               <span
                 style={{
                   fontFamily: SWISS, fontSize: 11,
-                  color: 'rgba(178,34,34,0.75)', flexShrink: 0,
+                  color: '#dc2626', flexShrink: 0,
                 }}
               >
                 &gt;_
@@ -441,9 +441,9 @@ const ActionAgent = () => {
                   outline: 'none',
                   fontFamily: SWISS,
                   fontSize: 10.5,
-                  color: 'rgba(214,205,184,0.82)',
+                  color: '#E5E7EB',
                   letterSpacing: '0.04em',
-                  caretColor: '#B22222',
+                  caretColor: '#dc2626',
                 }}
               />
               <button
@@ -484,7 +484,7 @@ const ActionAgent = () => {
               <span
                 style={{
                   fontFamily: SWISS, fontSize: 6.5,
-                  color: 'rgba(214,205,184,0.3)',
+                  color: '#6B7280',
                   letterSpacing: '0.28em', textTransform: 'uppercase',
                 }}
               >

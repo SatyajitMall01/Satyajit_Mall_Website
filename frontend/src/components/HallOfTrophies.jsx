@@ -87,13 +87,13 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
             <div>
               <div className="flex items-center justify-between mb-5">
                 <span
-                  className="text-[9px] text-[#F4ECD8]/50 tracking-[0.35em] uppercase"
+                  className="text-[9px] text-[#D1D5DB] tracking-[0.35em] uppercase"
                   style={{ fontFamily: SWISS }}
                 >
                   {card.caseNumber}
                 </span>
                 <span
-                  className="text-[8px] text-[#B22222]/70 tracking-[0.2em] uppercase"
+                  className="text-[8px] text-[#dc2626] tracking-[0.2em] uppercase"
                   style={{ fontFamily: SWISS }}
                 >
                   Closed &mdash; Solved
@@ -101,14 +101,14 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
               </div>
 
               <h3
-                className="text-[15px] text-[#F4ECD8]/65 tracking-[0.15em] uppercase mb-2"
+                className="text-[15px] text-[#D1D5DB] tracking-[0.15em] uppercase mb-2"
                 style={{ fontFamily: SWISS }}
               >
                 {card.displayTitle}
               </h3>
 
               <h2
-                className="text-[22px] md:text-[24px] text-[#F4ECD8] tracking-[0.02em] leading-snug"
+                className="text-[22px] md:text-[24px] text-[#FFFFFF] tracking-[0.02em] leading-snug"
                 style={{ fontFamily: SWISS }}
               >
                 {card.baseTitle}
@@ -120,7 +120,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                 {card.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[8px] text-[#F4ECD8]/45 border border-[#333] px-2.5 py-1 tracking-[0.2em] uppercase"
+                    className="text-[8px] text-[#FFFFFF]/45 border border-[#333] px-2.5 py-1 tracking-[0.2em] uppercase"
                     style={{ fontFamily: SWISS }}
                   >
                     {tag}
@@ -128,12 +128,12 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                <Search size={11} strokeWidth={1.5} className="text-[#F4ECD8]/40" />
+                <Search size={11} strokeWidth={1.5} className="text-[#FFFFFF]/40" />
                 <span
-                  className="text-[8px] text-[#F4ECD8]/40 tracking-[0.3em] uppercase"
+                  className="text-[8px] text-[#FFFFFF]/40 tracking-[0.3em] uppercase"
                   style={{ fontFamily: SWISS }}
                 >
-                  Hover to Examine
+                  View Case Study
                 </span>
               </div>
             </div>
@@ -150,9 +150,9 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
           >
             <div className="mb-5">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 bg-[#B22222]" />
+                <div className="w-2 h-2 bg-[#dc2626]" />
                 <span
-                  className="text-[9px] text-[#B22222] tracking-[0.35em] uppercase"
+                  className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
                   style={{ fontFamily: SWISS }}
                 >
                   Key Insight
@@ -162,14 +162,14 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
             </div>
 
             <h3
-              className="text-[18px] text-[#F4ECD8] tracking-[0.02em] leading-snug mb-4"
+              className="text-[18px] text-[#FFFFFF] tracking-[0.02em] leading-snug mb-4"
               style={{ fontFamily: SWISS }}
             >
               {card.baseTitle}
             </h3>
 
             <p
-              className="text-[12px] text-[#F4ECD8]/60 leading-[2] tracking-[0.02em]"
+              className="text-[12px] text-[#FFFFFF]/60 leading-[2] tracking-[0.02em]"
               style={{ fontFamily: SWISS }}
             >
               &ldquo;{card.forensicInsight}&rdquo;
@@ -179,7 +179,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
               {card.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[8px] text-[#B22222]/60 border border-[#B22222]/30 px-2.5 py-1 tracking-[0.2em] uppercase"
+                  className="text-[8px] text-[#dc2626]/60 border border-[#dc2626]/30 px-2.5 py-1 tracking-[0.2em] uppercase"
                   style={{ fontFamily: SWISS }}
                 >
                   {tag}
@@ -275,7 +275,7 @@ const HallOfTrophies = () => {
         {/* ── Section header — mask reveal first, before cards stagger ── */}
         <div className="px-8 md:px-12 mb-14">
           <motion.span
-            className="text-[9px] text-[#F4ECD8]/50 tracking-[0.5em] uppercase block mb-3"
+            className="text-[9px] text-[#D1D5DB] tracking-[0.5em] uppercase block mb-3"
             style={{ fontFamily: SWISS }}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -287,7 +287,7 @@ const HallOfTrophies = () => {
 
           <div className="overflow-hidden">
             <motion.h2
-              className="text-[24px] md:text-[30px] text-[#F4ECD8] tracking-[0.03em]"
+              className="text-[24px] md:text-[30px] text-[#FFFFFF] tracking-[0.03em]"
               style={{ fontFamily: SWISS }}
               initial={{ y: '100%' }}
               whileInView={{ y: '0%' }}
@@ -298,7 +298,7 @@ const HallOfTrophies = () => {
             </motion.h2>
           </div>
 
-          <div className="w-12 h-[1px] bg-[#B22222] mt-4" />
+          <div className="w-12 h-[1px] bg-[#dc2626] mt-4" />
         </div>
 
         {/* ── Carousel — orchestrated "Evidence Drop" stagger ──
@@ -334,7 +334,7 @@ const HallOfTrophies = () => {
           <div>
             <Separator className="bg-[#2A2A2A] mb-4" />
             <p
-              className="text-[8px] text-[#F4ECD8]/30 tracking-[0.4em] uppercase"
+              className="text-[8px] text-[#FFFFFF]/30 tracking-[0.4em] uppercase"
               style={{ fontFamily: SWISS }}
             >
               Evidence carousel &mdash; All cases documented &amp; sealed

@@ -58,7 +58,7 @@ const StyledHeadline = () => {
         transition={{ duration: 1.0, ease: CINEMATIC_EASE, delay: 0.2 }}
       >
         <span className="text-white">{parts[0]}</span>
-        <span className="text-[#F4ECD8]">{highlightedPhrase}</span>
+        <span className="text-[#FFFFFF]">{highlightedPhrase}</span>
         <span className="text-white">{parts[1]}</span>
       </motion.h1>
     </div>
@@ -78,7 +78,7 @@ const JurisdictionsBar = () => (
 
       {/* Label — first ship out of the fog */}
       <motion.span
-        className="text-[9px] text-[#F4ECD8]/50 tracking-[0.4em] uppercase flex-shrink-0"
+        className="text-[9px] text-[#FFFFFF]/50 tracking-[0.4em] uppercase flex-shrink-0"
         style={{ fontFamily: SWISS }}
         variants={labelVariants}
       >
@@ -161,9 +161,9 @@ const ColdOpen = () => {
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, ease: 'linear', delay: 0.1 }}
           >
-            <FileSearch size={13} strokeWidth={1.5} className="text-[#B22222]" />
+            <FileSearch size={13} strokeWidth={1.5} className="text-[#dc2626]" />
             <span
-              className="text-[9px] text-[#F4ECD8]/50 tracking-[0.4em] uppercase"
+              className="text-[9px] text-[#FFFFFF]/50 tracking-[0.4em] uppercase"
               style={{ fontFamily: SWISS }}
             >
               Active File #001
@@ -200,7 +200,7 @@ const ColdOpen = () => {
                 document.querySelector('#evidence')?.scrollIntoView({ behavior: 'smooth' });
                 window.dispatchEvent(new CustomEvent('open-action-agent'));
               }}
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#B22222] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
+              className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#dc2626] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
               style={{
                 fontFamily: SWISS,
                 border: 'none',
@@ -212,7 +212,7 @@ const ColdOpen = () => {
                 e.currentTarget.style.boxShadow = '4px 4px 0px #111';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#B22222';
+                e.currentTarget.style.backgroundColor = '#dc2626';
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
@@ -236,7 +236,7 @@ const ColdOpen = () => {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.boxShadow = '4px 4px 0px #333';
-                e.currentTarget.style.borderColor = '#F4ECD8';
+                e.currentTarget.style.borderColor = '#E5E7EB';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = 'none';
