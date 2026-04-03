@@ -12,10 +12,16 @@ const CASES_DATA = [
     id: '01', slug: 'the-universal-gtm-identity-registry',
     codename: 'OPERATION: MILES ONE',
     title: 'The Universal GTM Identity Registry',
-    metrics: ['\u20B920 Cr+ Revenue', '40K+ Unified Learners'],
+    metrics: ['₹20 Cr+ Revenue', '40K+ Unified Learners'],
     description: 'Engineered a Universal Identity Registry at the SSO entry-gate, consolidating fragmented funnels into a single deterministic pipeline — eliminating duplicate acquisition costs.',
-    accent: '#dc2626',
-    gradient: 'linear-gradient(135deg, #1a0a0a 0%, #2a1218 30%, #1a0f14 60%, #0d0a0f 100%)',
+    accent: '#6366f1',
+    gradient: 'linear-gradient(135deg, #0a0a1a 0%, #12182a 30%, #0f1424 60%, #0a0d1a 100%)',
+    baseImage: '/Satyajit Website Assets/Miles One/Miles One.png',
+    floatingElements: [
+      { id: 'f1', text: 'PostgreSQL Backbone', top: '12%', left: '-8%', delay: 1.5 },
+      { id: 'f2', text: 'n8n Workflow', top: '65%', right: '-10%', delay: 1.7 },
+      { id: 'f3', text: 'Global UUID', top: '78%', left: '3%', delay: 1.9 },
+    ],
   },
   {
     id: '02', slug: 'behavioral-ott-architecture',
@@ -175,117 +181,223 @@ const CasesPage = () => {
       <div className="relative z-10" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 
-          {/* ── Left: Sticky Image Visualizer ── */}
+          {/* ── Left: Sticky Image Visualizer with 3D Perspective ── */}
           <div className="hidden md:block">
             <div className="sticky top-0 h-screen flex items-center justify-center p-6">
-              <div style={{ position: 'relative', width: '100%', maxWidth: 480, aspectRatio: '3/4' }}>
+              <div style={{ perspective: '1000px', width: '100%', maxWidth: 480, aspectRatio: '3/4', position: 'relative' }}>
                 {CASES_DATA.map((c, i) => {
                   const s = getImageStyle(i);
+                  const isActive = i === activeIndex;
+                  const has3D = !!c.floatingElements;
+
                   return (
                     <motion.div
                       key={c.id}
-                      animate={{ scale: s.scale, y: s.y, opacity: s.opacity }}
-                      transition={{ type: 'spring', stiffness: 80, damping: 20, mass: 1 }}
+                      animate={
+                        isActive && has3D
+                          ? {
+                              scale: 1,
+                              y: 0,
+                              opacity: 1,
+                              rotateX: [0, 0, 5],
+                              rotateY: [0, 0, -10],
+                            }
+                          : isActive
+                            ? { scale: 1, y: 0, opacity: 1, rotateX: 0, rotateY: 0 }
+                            : { scale: s.scale, y: s.y, opacity: s.opacity, rotateX: 0, rotateY: 0 }
+                      }
+                      transition={
+                        isActive && has3D
+                          ? { duration: 2.5, times: [0, 0.6, 1], ease: 'easeInOut' }
+                          : { type: 'spring', stiffness: 80, damping: 20, mass: 1 }
+                      }
                       style={{
                         position: 'absolute', inset: 0,
                         zIndex: s.zIndex,
                         borderRadius: 18,
-                        overflow: 'hidden',
-                        background: '#0A0A0A',
-                        border: `1px solid ${i === activeIndex ? c.accent + '30' : 'rgba(55,65,81,0.3)'}`,
-                        boxShadow: i === activeIndex
-                          ? `0 30px 80px rgba(0,0,0,0.7), 0 0 120px ${c.accent}10`
-                          : '0 10px 30px rgba(0,0,0,0.4)',
+                        overflow: 'visible',
+                        transformStyle: 'preserve-3d',
                       }}
                     >
+                      {/* Dynamic Ambient Glow — blurred image behind card */}
+                      {c.baseImage && (
+                        <div style={{
+                          position: 'absolute', inset: 0,
+                          transform: 'scale(1.05)',
+                          zIndex: -1,
+                          borderRadius: 24,
+                          overflow: 'hidden',
+                          opacity: isActive ? 0.4 : 0,
+                          transition: 'opacity 0.8s ease',
+                          filter: 'blur(48px)',
+                          pointerEvents: 'none',
+                        }}>
+                          <img
+                            src={c.baseImage}
+                            alt=""
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Card body */}
                       <div style={{
                         width: '100%', height: '100%',
-                        background: c.gradient,
-                        display: 'flex', flexDirection: 'column',
-                        alignItems: 'center', justifyContent: 'center',
-                        position: 'relative',
+                        borderRadius: 18,
+                        overflow: 'hidden',
+                        background: '#0A0A0A',
+                        border: `1px solid ${isActive ? c.accent + '30' : 'rgba(55,65,81,0.3)'}`,
+                        boxShadow: isActive
+                          ? `0 30px 80px rgba(0,0,0,0.7), 0 0 120px ${c.accent}10`
+                          : '0 10px 30px rgba(0,0,0,0.4)',
                       }}>
-                        {/* Large case number watermark */}
-                        <span style={{
-                          fontFamily: SWISS, fontSize: 180, fontWeight: 900,
-                          color: 'rgba(255,255,255,0.025)', lineHeight: 1,
-                          position: 'absolute', top: '50%', left: '50%',
-                          transform: 'translate(-50%,-50%)',
-                        }}>
-                          {c.id}
-                        </span>
-
-                        {/* Accent glow orb */}
                         <div style={{
-                          position: 'absolute', top: '30%', left: '50%',
-                          transform: 'translate(-50%,-50%)',
-                          width: 200, height: 200, borderRadius: '50%',
-                          background: `radial-gradient(circle, ${c.accent}12 0%, transparent 70%)`,
-                          filter: 'blur(40px)',
-                          pointerEvents: 'none',
-                        }} />
+                          width: '100%', height: '100%',
+                          background: c.baseImage ? 'transparent' : c.gradient,
+                          display: 'flex', flexDirection: 'column',
+                          alignItems: 'center', justifyContent: 'center',
+                          position: 'relative',
+                        }}>
+                          {/* Background image — full visibility, no overlay */}
+                          {c.baseImage && (
+                            <img
+                              src={c.baseImage}
+                              alt={c.title}
+                              style={{
+                                position: 'absolute', inset: 0,
+                                width: '100%', height: '100%',
+                                objectFit: 'cover',
+                                pointerEvents: 'none',
+                              }}
+                            />
+                          )}
 
-                        {/* Codename + title */}
-                        <span style={{
-                          fontFamily: TELE, fontSize: 11, fontWeight: 600,
-                          color: c.accent, letterSpacing: '0.3em',
-                          textTransform: 'uppercase', position: 'relative', zIndex: 2,
-                        }}>
-                          {c.codename}
-                        </span>
-                        <span style={{
-                          fontFamily: SWISS, fontSize: 24, fontWeight: 700,
-                          color: '#FFFFFF', marginTop: 16, textAlign: 'center',
-                          position: 'relative', zIndex: 2, padding: '0 32px',
-                          lineHeight: 1.2,
-                        }}>
-                          {c.title}
-                        </span>
+                          {/* Large case number watermark */}
+                          <span style={{
+                            fontFamily: SWISS, fontSize: 180, fontWeight: 900,
+                            color: 'rgba(255,255,255,0.025)', lineHeight: 1,
+                            position: 'absolute', top: '50%', left: '50%',
+                            transform: 'translate(-50%,-50%)',
+                          }}>
+                            {c.id}
+                          </span>
 
-                        {/* Metrics on card */}
-                        <div style={{
-                          display: 'flex', gap: 8, marginTop: 24,
-                          position: 'relative', zIndex: 2,
-                        }}>
-                          {c.metrics.map(m => (
-                            <span key={m} style={{
-                              fontFamily: TELE, fontSize: 10,
-                              color: '#E5E7EB', letterSpacing: '0.05em',
-                              border: `1px solid ${c.accent}30`,
-                              padding: '5px 12px', borderRadius: 9999,
-                            }}>
-                              {m}
-                            </span>
-                          ))}
+                          {/* Accent glow orb */}
+                          <div style={{
+                            position: 'absolute', top: '30%', left: '50%',
+                            transform: 'translate(-50%,-50%)',
+                            width: 200, height: 200, borderRadius: '50%',
+                            background: `radial-gradient(circle, ${c.accent}12 0%, transparent 70%)`,
+                            filter: 'blur(40px)',
+                            pointerEvents: 'none',
+                          }} />
+
+                          {/* Codename + title */}
+                          <span style={{
+                            fontFamily: TELE, fontSize: 11, fontWeight: 600,
+                            color: c.accent, letterSpacing: '0.3em',
+                            textTransform: 'uppercase', position: 'relative', zIndex: 2,
+                          }}>
+                            {c.codename}
+                          </span>
+                          <span style={{
+                            fontFamily: SWISS, fontSize: 24, fontWeight: 700,
+                            color: '#FFFFFF', marginTop: 16, textAlign: 'center',
+                            position: 'relative', zIndex: 2, padding: '0 32px',
+                            lineHeight: 1.2,
+                          }}>
+                            {c.title}
+                          </span>
+
+                          {/* Metrics on card */}
+                          <div style={{
+                            display: 'flex', gap: 8, marginTop: 24,
+                            position: 'relative', zIndex: 2,
+                          }}>
+                            {c.metrics.map(m => (
+                              <span key={m} style={{
+                                fontFamily: TELE, fontSize: 10,
+                                color: '#E5E7EB', letterSpacing: '0.05em',
+                                border: `1px solid ${c.accent}30`,
+                                padding: '5px 12px', borderRadius: 9999,
+                              }}>
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Corner brackets */}
+                          <div className="absolute top-5 left-5 w-5 h-5 border-t border-l" style={{ borderColor: c.accent + '35' }} />
+                          <div className="absolute top-5 right-5 w-5 h-5 border-t border-r" style={{ borderColor: c.accent + '35' }} />
+                          <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l" style={{ borderColor: c.accent + '35' }} />
+                          <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r" style={{ borderColor: c.accent + '35' }} />
+
+                          {/* Bottom serial */}
+                          <span style={{
+                            position: 'absolute', bottom: 20, left: 0, right: 0,
+                            textAlign: 'center',
+                            fontFamily: TELE, fontSize: 9,
+                            color: '#D1D5DB', letterSpacing: '0.35em',
+                            textTransform: 'uppercase',
+                          }}>
+                            Case File #{c.id}
+                          </span>
+
+                          {/* Clickable overlay */}
+                          <Link
+                            to={`/cases/${c.slug}`}
+                            style={{
+                              position: 'absolute', inset: 0, zIndex: 5,
+                              cursor: 'pointer',
+                            }}
+                            aria-label={`View ${c.title} case study`}
+                          />
                         </div>
-
-                        {/* Corner brackets — use project accent */}
-                        <div className="absolute top-5 left-5 w-5 h-5 border-t border-l" style={{ borderColor: c.accent + '35' }} />
-                        <div className="absolute top-5 right-5 w-5 h-5 border-t border-r" style={{ borderColor: c.accent + '35' }} />
-                        <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l" style={{ borderColor: c.accent + '35' }} />
-                        <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r" style={{ borderColor: c.accent + '35' }} />
-
-                        {/* Bottom serial */}
-                        <span style={{
-                          position: 'absolute', bottom: 20, left: 0, right: 0,
-                          textAlign: 'center',
-                          fontFamily: TELE, fontSize: 9,
-                          color: '#D1D5DB', letterSpacing: '0.35em',
-                          textTransform: 'uppercase',
-                        }}>
-                          Case File #{c.id}
-                        </span>
-
-                        {/* Clickable overlay */}
-                        <Link
-                          to={`/cases/${c.slug}`}
-                          style={{
-                            position: 'absolute', inset: 0, zIndex: 5,
-                            cursor: 'pointer',
-                          }}
-                          aria-label={`View ${c.title} case study`}
-                        />
                       </div>
+
+                      {/* ── Floating Nodes — Z-Space Pop (only for cards with floatingElements) ── */}
+                      {has3D && c.floatingElements.map(el => (
+                        <motion.div
+                          key={el.id}
+                          initial={{ opacity: 0, scale: 0.5, z: 0 }}
+                          animate={
+                            isActive
+                              ? { opacity: 1, scale: 1, z: 150 }
+                              : { opacity: 0, scale: 0.5, z: 0 }
+                          }
+                          transition={{
+                            delay: isActive ? el.delay : 0,
+                            type: 'spring', stiffness: 200, damping: 15,
+                          }}
+                          style={{
+                            position: 'absolute',
+                            top: el.top,
+                            left: el.left,
+                            right: el.right,
+                            transformStyle: 'preserve-3d',
+                            pointerEvents: 'none',
+                            zIndex: 50,
+                          }}
+                        >
+                          <div style={{
+                            padding: '10px 18px',
+                            background: 'rgba(8,8,8,0.95)',
+                            backdropFilter: 'blur(16px)',
+                            WebkitBackdropFilter: 'blur(16px)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            borderRadius: 8,
+                            boxShadow: `0 30px 60px rgba(0,0,0,0.9), 0 8px 24px rgba(0,0,0,0.6), 0 0 32px ${c.accent}20`,
+                            fontFamily: TELE,
+                            fontSize: 11,
+                            color: '#E5E7EB',
+                            letterSpacing: '0.08em',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            <span style={{ color: c.accent, marginRight: 6 }}>&#9670;</span>
+                            {el.text}
+                          </div>
+                        </motion.div>
+                      ))}
                     </motion.div>
                   );
                 })}
