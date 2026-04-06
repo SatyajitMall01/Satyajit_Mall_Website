@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity } from 'lucide-react';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
@@ -17,10 +18,10 @@ const CASES_DATA = [
     accent: '#6366f1',
     gradient: 'linear-gradient(135deg, #0a0a1a 0%, #12182a 30%, #0f1424 60%, #0a0d1a 100%)',
     baseImage: '/Satyajit Website Assets/Miles One/Miles One.png',
-    floatingElements: [
-      { id: 'f1', text: 'PostgreSQL Backbone', top: '12%', left: '-8%', delay: 1.5 },
-      { id: 'f2', text: 'n8n Workflow', top: '65%', right: '-10%', delay: 1.7 },
-      { id: 'f3', text: 'Global UUID', top: '78%', left: '3%', delay: 1.9 },
+    floaters: [
+      { id: 'f1', icon: 'Database', text: '<1ms lookup', top: '8%', left: '-6%', z: 80, delay: 0.4, anim: 'float' },
+      { id: 'f2', icon: 'GitBranch', text: '12 n8n flows', top: '42%', right: '-8%', z: 110, delay: 0.55, anim: 'spin' },
+      { id: 'f3', icon: 'Fingerprint', text: '40K+ UUIDs', top: '78%', left: '-3%', z: 140, delay: 0.7, anim: 'pulse' },
     ],
   },
   {
@@ -29,8 +30,14 @@ const CASES_DATA = [
     title: 'Behavioral OTT Architecture',
     metrics: ['30K+ ToFu Users', '2K+ Paid Subs'],
     description: 'Netflix-style micro-learning OTT engine with 10-second behavioral sync, Chapter-Aware RAG pipeline, and sub-2s AI tutoring latency.',
-    accent: '#f59e0b',
-    gradient: 'linear-gradient(135deg, #1a150a 0%, #2a1f0e 30%, #1a1508 60%, #0f0d08 100%)',
+    accent: '#3b82f6',
+    gradient: 'linear-gradient(135deg, #080c1a 0%, #0e1a2e 30%, #0a1424 60%, #070a14 100%)',
+    baseImage: '/Satyajit Website Assets/Masterclass/Miles Mastercalss.png',
+    floaters: [
+      { id: 'f1', icon: 'BrainCircuit', text: 'Sub-2s RAG', top: '8%', right: '-6%', z: 80, delay: 0.4, anim: 'pulse' },
+      { id: 'f2', icon: 'Timer', text: '10s heartbeat', top: '44%', left: '-8%', z: 110, delay: 0.55, anim: 'spin' },
+      { id: 'f3', icon: 'Activity', text: '2K+ paid', top: '80%', right: '-4%', z: 140, delay: 0.7, anim: 'float' },
+    ],
   },
   {
     id: '03', slug: 'the-attribution-recovery-engine',
@@ -102,21 +109,20 @@ const XHair = ({ size = 14, color = 'currentColor' }) => (
 const CasesPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  /* Image animation states */
+  /* Image animation states — outgoing cards fade immediately to prevent blending */
   const getImageStyle = (index) => {
     if (index === activeIndex) {
       return { scale: 1, y: 0, opacity: 1, zIndex: 10 };
     }
-    if (index < activeIndex) {
-      const diff = activeIndex - index;
-      return {
-        scale: 1 - diff * 0.05,
-        y: -(diff * 30),
-        opacity: 1 - diff * 0.2,
-        zIndex: 10 - diff,
-      };
+    if (index === activeIndex - 1) {
+      // Just-left card: shrink + fade fast
+      return { scale: 0.92, y: -40, opacity: 0, zIndex: 5 };
     }
-    return { scale: 0.88, y: 300, opacity: 0, zIndex: 0 };
+    if (index < activeIndex) {
+      return { scale: 0.85, y: -60, opacity: 0, zIndex: 0 };
+    }
+    // Below viewport — waiting to enter
+    return { scale: 0.88, y: 200, opacity: 0, zIndex: 0 };
   };
 
   return (
@@ -184,220 +190,250 @@ const CasesPage = () => {
           {/* ── Left: Sticky Image Visualizer with 3D Perspective ── */}
           <div className="hidden md:block">
             <div className="sticky top-0 h-screen flex items-center justify-center p-6">
-              <div style={{ perspective: '1000px', width: '100%', maxWidth: 480, aspectRatio: '3/4', position: 'relative' }}>
+              <div style={{ perspective: '1200px', position: 'relative', width: '100%', maxWidth: 480, aspectRatio: '3/4' }}>
                 {CASES_DATA.map((c, i) => {
                   const s = getImageStyle(i);
                   const isActive = i === activeIndex;
-                  const has3D = !!c.floatingElements;
+                  const hasImage = !!c.baseImage;
+                  const hasFloaters = !!c.floaters;
+                  const IconMap = { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity };
 
                   return (
                     <motion.div
                       key={c.id}
-                      animate={
-                        isActive && has3D
-                          ? {
-                              scale: 1,
-                              y: 0,
-                              opacity: 1,
-                              rotateX: [0, 0, 5],
-                              rotateY: [0, 0, -10],
-                            }
-                          : isActive
-                            ? { scale: 1, y: 0, opacity: 1, rotateX: 0, rotateY: 0 }
-                            : { scale: s.scale, y: s.y, opacity: s.opacity, rotateX: 0, rotateY: 0 }
-                      }
-                      transition={
-                        isActive && has3D
-                          ? { duration: 2.5, times: [0, 0.6, 1], ease: 'easeInOut' }
-                          : { type: 'spring', stiffness: 80, damping: 20, mass: 1 }
-                      }
+                      animate={{
+                        scale: isActive ? 1 : s.scale,
+                        y: isActive ? 0 : s.y,
+                        opacity: isActive ? 1 : s.opacity,
+                        rotateX: isActive && hasImage ? 5 : 0,
+                        rotateY: isActive && hasImage ? -8 : 0,
+                      }}
+                      transition={{
+                        type: 'spring', stiffness: 100, damping: 20, mass: 0.9,
+                        opacity: { duration: 0.4, ease: 'easeOut' },
+                      }}
                       style={{
                         position: 'absolute', inset: 0,
                         zIndex: s.zIndex,
-                        borderRadius: 18,
+                        borderRadius: hasImage ? 22 : 18,
                         overflow: 'visible',
                         transformStyle: 'preserve-3d',
                       }}
                     >
-                      {/* Dynamic Ambient Glow — blurred image behind card */}
-                      {c.baseImage && (
-                        <div style={{
-                          position: 'absolute', inset: 0,
-                          transform: 'scale(1.05)',
-                          zIndex: -1,
-                          borderRadius: 24,
-                          overflow: 'hidden',
-                          opacity: isActive ? 0.4 : 0,
-                          transition: 'opacity 0.8s ease',
-                          filter: 'blur(48px)',
-                          pointerEvents: 'none',
-                        }}>
-                          <img
-                            src={c.baseImage}
-                            alt=""
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Card body */}
-                      <div style={{
-                        width: '100%', height: '100%',
-                        borderRadius: 18,
-                        overflow: 'hidden',
-                        background: '#0A0A0A',
-                        border: `1px solid ${isActive ? c.accent + '30' : 'rgba(55,65,81,0.3)'}`,
-                        boxShadow: isActive
-                          ? `0 30px 80px rgba(0,0,0,0.7), 0 0 120px ${c.accent}10`
-                          : '0 10px 30px rgba(0,0,0,0.4)',
-                      }}>
-                        <div style={{
-                          width: '100%', height: '100%',
-                          background: c.baseImage ? 'transparent' : c.gradient,
-                          display: 'flex', flexDirection: 'column',
-                          alignItems: 'center', justifyContent: 'center',
-                          position: 'relative',
-                        }}>
-                          {/* Background image — full visibility, no overlay */}
-                          {c.baseImage && (
+                      {hasImage ? (
+                        /* ── 3D Image Hero Card ── */
+                        <>
+                          <div style={{
+                            width: '100%', height: '100%',
+                            position: 'relative',
+                            background: '#050505',
+                            border: `1px solid ${isActive ? c.accent + '25' : 'rgba(55,65,81,0.2)'}`,
+                            borderRadius: 22,
+                            overflow: 'hidden',
+                            boxShadow: isActive
+                              ? `0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px ${c.accent}15`
+                              : '0 10px 30px rgba(0,0,0,0.4)',
+                            transition: 'box-shadow 0.6s ease, border-color 0.6s ease',
+                          }}>
                             <img
                               src={c.baseImage}
                               alt={c.title}
                               style={{
-                                position: 'absolute', inset: 0,
                                 width: '100%', height: '100%',
                                 objectFit: 'cover',
-                                pointerEvents: 'none',
+                                display: 'block',
                               }}
                             />
-                          )}
-
-                          {/* Large case number watermark */}
-                          <span style={{
-                            fontFamily: SWISS, fontSize: 180, fontWeight: 900,
-                            color: 'rgba(255,255,255,0.025)', lineHeight: 1,
-                            position: 'absolute', top: '50%', left: '50%',
-                            transform: 'translate(-50%,-50%)',
-                          }}>
-                            {c.id}
-                          </span>
-
-                          {/* Accent glow orb */}
-                          <div style={{
-                            position: 'absolute', top: '30%', left: '50%',
-                            transform: 'translate(-50%,-50%)',
-                            width: 200, height: 200, borderRadius: '50%',
-                            background: `radial-gradient(circle, ${c.accent}12 0%, transparent 70%)`,
-                            filter: 'blur(40px)',
-                            pointerEvents: 'none',
-                          }} />
-
-                          {/* Codename + title */}
-                          <span style={{
-                            fontFamily: TELE, fontSize: 11, fontWeight: 600,
-                            color: c.accent, letterSpacing: '0.3em',
-                            textTransform: 'uppercase', position: 'relative', zIndex: 2,
-                          }}>
-                            {c.codename}
-                          </span>
-                          <span style={{
-                            fontFamily: SWISS, fontSize: 24, fontWeight: 700,
-                            color: '#FFFFFF', marginTop: 16, textAlign: 'center',
-                            position: 'relative', zIndex: 2, padding: '0 32px',
-                            lineHeight: 1.2,
-                          }}>
-                            {c.title}
-                          </span>
-
-                          {/* Metrics on card */}
-                          <div style={{
-                            display: 'flex', gap: 8, marginTop: 24,
-                            position: 'relative', zIndex: 2,
-                          }}>
-                            {c.metrics.map(m => (
-                              <span key={m} style={{
-                                fontFamily: TELE, fontSize: 10,
-                                color: '#E5E7EB', letterSpacing: '0.05em',
-                                border: `1px solid ${c.accent}30`,
-                                padding: '5px 12px', borderRadius: 9999,
-                              }}>
-                                {m}
-                              </span>
-                            ))}
+                            {/* Bottom vignette */}
+                            <div style={{
+                              position: 'absolute', inset: 0,
+                              background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5) 100%)',
+                              pointerEvents: 'none',
+                            }} />
+                            {/* Case number */}
+                            <span style={{
+                              position: 'absolute', bottom: 16, left: 20,
+                              fontFamily: TELE, fontSize: 10, fontWeight: 600,
+                              color: 'rgba(255,255,255,0.35)', letterSpacing: '0.2em',
+                            }}>
+                              {c.id} / 08
+                            </span>
+                            {/* Top accent line */}
+                            <motion.div
+                              animate={{ scaleX: isActive ? 1 : 0 }}
+                              transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+                              style={{
+                                position: 'absolute', top: 0, left: 0, right: 0,
+                                height: 2, background: c.accent, transformOrigin: 'left',
+                              }}
+                            />
+                            <Link
+                              to={`/cases/${c.slug}`}
+                              style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'pointer' }}
+                              aria-label={`View ${c.title} case study`}
+                            />
                           </div>
 
-                          {/* Corner brackets */}
-                          <div className="absolute top-5 left-5 w-5 h-5 border-t border-l" style={{ borderColor: c.accent + '35' }} />
-                          <div className="absolute top-5 right-5 w-5 h-5 border-t border-r" style={{ borderColor: c.accent + '35' }} />
-                          <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l" style={{ borderColor: c.accent + '35' }} />
-                          <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r" style={{ borderColor: c.accent + '35' }} />
+                          {/* ── Floating 3D Chips — pop out from the card surface ── */}
+                          {hasFloaters && c.floaters.map(f => {
+                            const Icon = IconMap[f.icon] || Database;
+                            // Per-icon looping animation
+                            const iconAnim = f.anim === 'float'
+                              ? { y: [0, -6, 0] }
+                              : f.anim === 'spin'
+                                ? { rotate: [0, 360] }
+                                : { scale: [1, 1.2, 1] }; // pulse
+                            const iconTransition = f.anim === 'spin'
+                              ? { duration: 8, repeat: Infinity, ease: 'linear' }
+                              : { duration: 3, repeat: Infinity, ease: 'easeInOut' };
 
-                          {/* Bottom serial */}
-                          <span style={{
-                            position: 'absolute', bottom: 20, left: 0, right: 0,
-                            textAlign: 'center',
-                            fontFamily: TELE, fontSize: 9,
-                            color: '#D1D5DB', letterSpacing: '0.35em',
-                            textTransform: 'uppercase',
+                            return (
+                              <motion.div
+                                key={f.id}
+                                initial={{ opacity: 0, scale: 0.5, z: 0 }}
+                                animate={
+                                  isActive
+                                    ? { opacity: 1, scale: 1, z: f.z }
+                                    : { opacity: 0, scale: 0.5, z: 0 }
+                                }
+                                transition={{
+                                  delay: isActive ? f.delay : 0,
+                                  type: 'spring', stiffness: 140, damping: 16,
+                                }}
+                                style={{
+                                  position: 'absolute',
+                                  top: f.top, left: f.left, right: f.right,
+                                  transformStyle: 'preserve-3d',
+                                  pointerEvents: 'none', zIndex: 50,
+                                }}
+                              >
+                                <div style={{
+                                  display: 'flex', alignItems: 'center', gap: 10,
+                                  padding: '8px 16px 8px 8px',
+                                  background: 'rgba(6,6,12,0.85)',
+                                  border: `1px solid ${c.accent}35`,
+                                  borderRadius: 999,
+                                  boxShadow: `0 20px 50px rgba(0,0,0,0.75), 0 0 30px ${c.accent}18`,
+                                  backdropFilter: 'blur(16px)',
+                                  WebkitBackdropFilter: 'blur(16px)',
+                                }}>
+                                  {/* Larger icon with its own animation */}
+                                  <motion.div
+                                    animate={isActive ? iconAnim : {}}
+                                    transition={iconTransition}
+                                    style={{
+                                      width: 36, height: 36, borderRadius: '50%',
+                                      background: `linear-gradient(135deg, ${c.accent}, ${c.accent}aa)`,
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                      flexShrink: 0,
+                                      boxShadow: `0 4px 16px ${c.accent}50`,
+                                    }}
+                                  >
+                                    <Icon size={18} color="#fff" strokeWidth={2} />
+                                  </motion.div>
+                                  <span style={{
+                                    fontFamily: SWISS, fontSize: 12, fontWeight: 600,
+                                    color: '#FFFFFF', letterSpacing: '0.02em',
+                                    whiteSpace: 'nowrap',
+                                  }}>
+                                    {f.text}
+                                  </span>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </>
+                      ) : (
+                        /* ── Gradient Card — text-based for cases without images ── */
+                        <div style={{
+                          width: '100%', height: '100%',
+                          borderRadius: 18,
+                          overflow: 'hidden',
+                          background: '#0A0A0A',
+                          border: `1px solid ${isActive ? c.accent + '30' : 'rgba(55,65,81,0.3)'}`,
+                          boxShadow: isActive
+                            ? `0 30px 80px rgba(0,0,0,0.7), 0 0 120px ${c.accent}10`
+                            : '0 10px 30px rgba(0,0,0,0.4)',
+                        }}>
+                          <div style={{
+                            width: '100%', height: '100%',
+                            background: c.gradient,
+                            display: 'flex', flexDirection: 'column',
+                            alignItems: 'center', justifyContent: 'center',
+                            position: 'relative',
                           }}>
-                            Case File #{c.id}
-                          </span>
-
-                          {/* Clickable overlay */}
-                          <Link
-                            to={`/cases/${c.slug}`}
-                            style={{
-                              position: 'absolute', inset: 0, zIndex: 5,
-                              cursor: 'pointer',
-                            }}
-                            aria-label={`View ${c.title} case study`}
-                          />
+                            {/* Watermark */}
+                            <span style={{
+                              fontFamily: SWISS, fontSize: 180, fontWeight: 900,
+                              color: 'rgba(255,255,255,0.025)', lineHeight: 1,
+                              position: 'absolute', top: '50%', left: '50%',
+                              transform: 'translate(-50%,-50%)',
+                            }}>
+                              {c.id}
+                            </span>
+                            {/* Glow orb */}
+                            <div style={{
+                              position: 'absolute', top: '30%', left: '50%',
+                              transform: 'translate(-50%,-50%)',
+                              width: 200, height: 200, borderRadius: '50%',
+                              background: `radial-gradient(circle, ${c.accent}12 0%, transparent 70%)`,
+                              filter: 'blur(40px)', pointerEvents: 'none',
+                            }} />
+                            {/* Codename */}
+                            <span style={{
+                              fontFamily: TELE, fontSize: 11, fontWeight: 600,
+                              color: c.accent, letterSpacing: '0.3em',
+                              textTransform: 'uppercase', position: 'relative', zIndex: 2,
+                            }}>
+                              {c.codename}
+                            </span>
+                            {/* Title */}
+                            <span style={{
+                              fontFamily: SWISS, fontSize: 24, fontWeight: 700,
+                              color: '#FFFFFF', marginTop: 16, textAlign: 'center',
+                              position: 'relative', zIndex: 2, padding: '0 32px',
+                              lineHeight: 1.2,
+                            }}>
+                              {c.title}
+                            </span>
+                            {/* Metrics */}
+                            <div style={{
+                              display: 'flex', gap: 8, marginTop: 24,
+                              position: 'relative', zIndex: 2,
+                            }}>
+                              {c.metrics.map(m => (
+                                <span key={m} style={{
+                                  fontFamily: TELE, fontSize: 10,
+                                  color: '#E5E7EB', letterSpacing: '0.05em',
+                                  border: `1px solid ${c.accent}30`,
+                                  padding: '5px 12px', borderRadius: 9999,
+                                }}>
+                                  {m}
+                                </span>
+                              ))}
+                            </div>
+                            {/* Corner brackets */}
+                            <div className="absolute top-5 left-5 w-5 h-5 border-t border-l" style={{ borderColor: c.accent + '35' }} />
+                            <div className="absolute top-5 right-5 w-5 h-5 border-t border-r" style={{ borderColor: c.accent + '35' }} />
+                            <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l" style={{ borderColor: c.accent + '35' }} />
+                            <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r" style={{ borderColor: c.accent + '35' }} />
+                            {/* Serial */}
+                            <span style={{
+                              position: 'absolute', bottom: 20, left: 0, right: 0,
+                              textAlign: 'center', fontFamily: TELE, fontSize: 9,
+                              color: '#D1D5DB', letterSpacing: '0.35em', textTransform: 'uppercase',
+                            }}>
+                              Case File #{c.id}
+                            </span>
+                            {/* Clickable */}
+                            <Link
+                              to={`/cases/${c.slug}`}
+                              style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'pointer' }}
+                              aria-label={`View ${c.title} case study`}
+                            />
+                          </div>
                         </div>
-                      </div>
-
-                      {/* ── Floating Nodes — Z-Space Pop (only for cards with floatingElements) ── */}
-                      {has3D && c.floatingElements.map(el => (
-                        <motion.div
-                          key={el.id}
-                          initial={{ opacity: 0, scale: 0.5, z: 0 }}
-                          animate={
-                            isActive
-                              ? { opacity: 1, scale: 1, z: 150 }
-                              : { opacity: 0, scale: 0.5, z: 0 }
-                          }
-                          transition={{
-                            delay: isActive ? el.delay : 0,
-                            type: 'spring', stiffness: 200, damping: 15,
-                          }}
-                          style={{
-                            position: 'absolute',
-                            top: el.top,
-                            left: el.left,
-                            right: el.right,
-                            transformStyle: 'preserve-3d',
-                            pointerEvents: 'none',
-                            zIndex: 50,
-                          }}
-                        >
-                          <div style={{
-                            padding: '10px 18px',
-                            background: 'rgba(8,8,8,0.95)',
-                            backdropFilter: 'blur(16px)',
-                            WebkitBackdropFilter: 'blur(16px)',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            borderRadius: 8,
-                            boxShadow: `0 30px 60px rgba(0,0,0,0.9), 0 8px 24px rgba(0,0,0,0.6), 0 0 32px ${c.accent}20`,
-                            fontFamily: TELE,
-                            fontSize: 11,
-                            color: '#E5E7EB',
-                            letterSpacing: '0.08em',
-                            whiteSpace: 'nowrap',
-                          }}>
-                            <span style={{ color: c.accent, marginRight: 6 }}>&#9670;</span>
-                            {el.text}
-                          </div>
-                        </motion.div>
-                      ))}
+                      )}
                     </motion.div>
                   );
                 })}
