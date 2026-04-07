@@ -389,12 +389,12 @@ const MetricBar = ({ value, label, sublabel, percent = 75, delay = 0 }) => {
    LIVE TERMINAL EMULATOR
    ══════════════════════════════════════════ */
 const TerminalLines = [
-  { prefix: '>', text: 'miles_one.init() — bootstrapping identity registry...', color: A },
-  { prefix: '$', text: 'SELECT uuid FROM identity WHERE phone = $1 OR fingerprint = $2', color: '#10b981' },
-  { prefix: '→', text: 'MATCH: uuid_4a8f2c — existing learner, CPA track', color: '#f59e0b' },
-  { prefix: '✓', text: 'context_token issued — GTM intent: "US CPA Strategy"', color: '#10b981' },
-  { prefix: '→', text: 'routing to alumni cross-sell pipeline...', color: '#E5E7EB' },
-  { prefix: '✓', text: 'lead enriched + pushed to CRM in 12ms', color: '#10b981' },
+  { prefix: '>', text: 'miles_one.init() — minting identity genesis block...', color: A },
+  { prefix: '$', text: 'UUID minted: uuid_4a8f2c — device fingerprint locked', color: '#10b981' },
+  { prefix: '→', text: 'Phase 1: Hook — user entered Dummy LMS sandbox', color: '#f59e0b' },
+  { prefix: '✓', text: 'AI-in-Accounting module: 50% completion detected', color: '#10b981' },
+  { prefix: '→', text: 'Phase 2: Nudge — "Book a Mentorship" webhook fired to CRM', color: '#f59e0b' },
+  { prefix: '✓', text: 'Pre-heated lead routed to sales floor in 12ms', color: '#10b981' },
 ];
 
 const LiveTerminal = () => {
@@ -530,7 +530,7 @@ const CaseMilesOne = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EXPO, delay: 0.5 }}
           >
-            Engineering a unified entry-gate architecture for high-velocity lead acquisition. 40,000+ learners unified. ₹20 Cr+ revenue unlocked.
+            Disrupting the Trust-Gap through Product-Led Growth and Deterministic Identity. ₹40 Cr+ ecosystem. 25% sales from product.
           </motion.p>
 
           {/* Scroll hint */}
@@ -593,10 +593,10 @@ const CaseMilesOne = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              Miles Education faced <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Identity Fragmentation</strong>. Leads entering through webinars, whitepapers, and events created redundant, disconnected records. The company paid for the same lead twice across different campaigns. A prospect who attended a CPA Strategy Session was treated as a cold contact when they hit the CMA page 10 minutes later.
+              Miles Education faced a systemic <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Time-to-Value Trust Deficit</strong>. Potential learners entering through traditional digital ads were forced into a manual sales 'Black Hole' — a period of high-friction where they waited for human contact to experience the product's actual value. This latency resulted in high early-stage abandonment and fragmented user data.
             </p>
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85, marginTop: 20 }}>
-              The solution: a dedicated <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Universal Identity Registry</strong> at the SSO entry-gate. Not a CRM patch. A lightweight PostgreSQL registry that separates Identity Logic from Business Logic — allowing the GTM engine to scale independently.
+              The solution: the 0-1 launch of the <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Miles One mobile app</strong> — a Trust-Validation engine designed to provide immediate, tangible value through a 'Dummy LMS' experience. By architecting a Multi-Stage Lifecycle Engine, the app transitioned users from anonymous prospects to high-intent 'Pre-heated' leads through deterministic state changes.
             </p>
           </motion.div>
         </div>
@@ -623,17 +623,17 @@ const CaseMilesOne = () => {
           </motion.p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ProtocolCard phase="01" icon="Database" title="PostgreSQL Identity Backbone"
-              body="Moved away from email lookups to multi-key deterministic mapping. The registry indexes phone numbers (normalized), device fingerprints, and OAuth IDs. When a lead hits any GTM asset, the Miles One Agent queries this registry in sub-millisecond time — fetching or creating a Global UUID that persists across their entire lifecycle."
+            <ProtocolCard phase="01" icon="Database" title="Deterministic Identity Minting"
+              body="The CRM was barred from being the primary creator of users. The exact millisecond an anonymous device interacted with Miles One, our backend minted an immutable UUID — the master key traveling downstream to the CRM, the production LMS, and marketing automation. This physically prevented Duplicate Lead Noise."
               delay={0} />
-            <ProtocolCard phase="02" icon="ShieldCheck" title="SSO Entry-Gate (Custom IdP)"
-              body="Implemented Miles One as the Identity Provider for all GTM assets. Once a user identifies on a webinar page, they're automatically recognized on the main site and OTT platform. A Context Token passes across domains, preserving GTM intent as the user moves through product funnels."
+            <ProtocolCard phase="02" icon="ShieldCheck" title="The Hook — Pre-sale Sandbox"
+              body="Access to high-value Masterclass content and AI-in-Accounting micro-lessons. This Dummy LMS provided immediate value and established institutional authority, letting users experience the pedagogy before a single word was spoken by a sales representative."
               delay={0.1} />
-            <ProtocolCard phase="03" icon="Filter" title="Source-Level Deduplication"
-              body="Rather than cleaning data in the CRM (expensive, slow), deduplication was shifted upstream to the entry gate. By the time a lead reaches the CRM, it's already clean, unique, and enriched with the registry's global history. This eliminated the data-cleaning bottleneck entirely."
+            <ProtocolCard phase="03" icon="Filter" title="The Nudge — Conversion Bridge"
+              body="Strategic high-intent friction points — specifically the 'Book a Mentorship' feature — fired deterministic webhooks into the CRM, notifying sales that a Pre-heated lead was ready for closure. Sales reps could see the exact journey the user took before the first call."
               delay={0.2} />
-            <ProtocolCard phase="04" icon="Zap" title="Synchronous Validation"
-              body="No GTM activity happens in the dark. Before a lead can submit a form, Miles One validates the identity in the background — synchronously, in real-time. This prevents the lead leakage common in systems relying on end-of-day batch processing."
+            <ProtocolCard phase="04" icon="Zap" title="The Transition — Seamless Swap"
+              body="Upon payment, the app listened for a Success webhook from the payment gateway. It seamlessly swapped the Dummy content for the full, high-production certification environment — without requiring the user to download a new app or re-authenticate."
               delay={0.3} />
           </div>
         </div>
@@ -653,14 +653,14 @@ const CaseMilesOne = () => {
           </motion.p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
-            <MetricBar value="₹20 Cr+" label="Incremental Revenue" percent={92} delay={0}
-              sublabel="Recognized returning students in GTM funnels and auto-routed them to alumni cross-sell tracks. Upsell conversion on high-ticket programs increased over 40%." />
-            <MetricBar value="40,000+" label="Unified Learners" percent={85} delay={0.15}
-              sublabel="Consolidated fragmented D2C, Event, and Content funnels into a single deterministic identity pipeline spanning the entire organization." />
-            <MetricBar value="−10%" label="Early Funnel Churn" percent={65} delay={0.3}
-              sublabel="Unified SSO login eliminated the re-authentication wall between webinar signup and LMS trial access. Momentum preserved." />
-            <MetricBar value="−25%" label="Discovery Call Time" percent={72} delay={0.45}
-              sublabel="Sales teams received leads with pre-attached identity histories, eliminating cold discovery and accelerating Speed to Lead." />
+            <MetricBar value="₹40 Cr+" label="Ecosystem Revenue" percent={92} delay={0}
+              sublabel="Managed a product ecosystem supporting over ₹40 Cr+ in annual revenue, with 25% of all sales attributed directly to the Miles One app." />
+            <MetricBar value="45%" label="Downstream Influence" percent={85} delay={0.15}
+              sublabel="Contributed as a major downstream push for 45% of all converted leads company-wide through behavioral webhooks and pre-heated lead routing." />
+            <MetricBar value="−10%" label="Day 0-7 Churn" percent={65} delay={0.3}
+              sublabel="Reduced early-stage churn by 10% via an instant-value onboarding flow that eliminated the Time-to-Value Trust Deficit." />
+            <MetricBar value="25%" label="Product-Led Sales" percent={72} delay={0.45}
+              sublabel="One quarter of all sales attributed directly to the app. Sales reps received leads with pre-attached identity histories, enabling data-backed counseling." />
           </div>
         </div>
       </section>

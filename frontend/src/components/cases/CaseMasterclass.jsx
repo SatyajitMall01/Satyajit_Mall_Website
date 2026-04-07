@@ -329,7 +329,7 @@ const TimelineCard = ({ tag, title, body, index, align }) => {
 /* ══════════════════════════════════════════
    METRIC CARD with sparkline
    ══════════════════════════════════════════ */
-const MetricCard = ({ value, suffix, label, sparkData, delay = 0 }) => {
+const MetricCard = ({ value, suffix, label, sublabel, sparkData, delay = 0 }) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -376,6 +376,15 @@ const MetricCard = ({ value, suffix, label, sparkData, delay = 0 }) => {
       }}>
         {label}
       </span>
+
+      {sublabel && (
+        <p style={{
+          fontFamily: SWISS, fontSize: 13, fontWeight: 300,
+          color: '#9CA3AF', lineHeight: 1.7, marginTop: 10,
+        }}>
+          {sublabel}
+        </p>
+      )}
 
       {/* Hover glow */}
       <motion.div
@@ -508,35 +517,35 @@ const CaseMasterclass = () => {
   const timelineEntries = [
     {
       side: 'left',
-      tag: '10s Behavioral Sync',
-      title: '10-Second Behavioral Telemetry',
-      body: 'The local video player (React/Video.js) pings a specialized endpoint every 10 seconds with User_UUID, Video_ID, Current_Timestamp, and Playback_Rate. Data streams into a Redis buffer before persisting to a PostgreSQL Consumption Ledger.',
+      tag: 'Netflix OTT UX',
+      title: 'Netflix OTT UX',
+      body: 'Abandoned the Digital Textbook feel in favor of a dark-mode, high-production OTT aesthetic. Prioritized Content Discovery over Course Completion, using immersive 45-minute bingeable modules. This UX shift directly resulted in a 25% engagement increase.',
     },
     {
       side: 'right',
-      tag: 'Chapter-Aware RAG',
-      title: 'Chapter-Aware RAG Pipeline',
-      body: 'All videos transcribed and indexed into Semantic Chapters. When a user asks the AI assistant a question, the system prioritizes the Context Window based on their current 10-second timestamp. Using n8n and LangChain, the most relevant text chunks are retrieved.',
+      tag: 'UUID Passport (SSO Bridge)',
+      title: 'UUID Passport (SSO Bridge)',
+      body: 'The Miles One SSO acted as the universal Identity Registry. The immutable UUID was minted at the first Miles One interaction — this Passport allowed users to move between Masterclass, the Production LMS, and Corporate Partner portals without ID Fragmentation.',
     },
     {
       side: 'left',
-      tag: 'Token Optimization',
-      title: 'Token Cost Optimization',
-      body: 'Common questions at specific timestamps cached using Redis. Basic navigational queries handled client-side. LLM reserved for complex conceptual explanations. Achieved 1.8s median AI response time.',
+      tag: 'Behavioral Telemetry',
+      title: 'Behavioral Telemetry',
+      body: 'Every 10-second heartbeat of video consumption was tied back to the original lead source, providing 100% visibility into the user\'s transition from Guest to Paid Subscriber. Engagement peaks in specific modules triggered automated Advanced Content nudges.',
     },
     {
       side: 'right',
-      tag: 'Revenue Bridge',
-      title: 'Freemium-to-Premium Bridge',
-      body: 'Users completing >70% tagged as "High-Intent" in Miles One Registry. Automatically enrolled in personalized WhatsApp drip campaigns offering limited-time scholarships for the full CPA program.',
+      tag: 'Renewal Intelligence',
+      title: 'Renewal Intelligence',
+      body: '40% renewal rate driven by precision telemetry. Tracked active usage windows — if a user\'s interaction with AI-in-Accounting modules peaked in Month 10, the system auto-triggered renewal nudges. Focused on High-Value Interactions like Mentorship Booking clicks.',
     },
   ];
 
   const metrics = [
-    { value: '30000', suffix: '+', label: 'ToFu Users Acquired', sparkData: [2, 8, 12, 18, 22, 26, 30] },
-    { value: '2000', suffix: '+', label: 'Paid Subscriptions', sparkData: [1, 3, 5, 8, 12, 16, 20] },
-    { value: '15', suffix: '%', label: 'CPA Conversion Lift', sparkData: [3, 5, 7, 9, 11, 13, 15] },
-    { value: '1.8', suffix: 's', label: 'Median AI Response', sparkData: [4.2, 3.8, 3.1, 2.6, 2.2, 1.9, 1.8] },
+    { value: '30000', suffix: '+', label: 'Platform Users', sublabel: 'Successfully onboarded 30,000+ users onto the OTT platform with a Netflix-style content discovery experience.', sparkData: [2, 8, 12, 18, 22, 26, 30] },
+    { value: '2000', suffix: '+', label: 'Paid Subscriptions', sublabel: 'Converted free users to paid subscribers through the Commitment Filter — a subscription model aligned with US market psychology and B2B fiscal cycles.', sparkData: [1, 3, 5, 8, 12, 16, 20] },
+    { value: '25', suffix: '%', label: 'Content Engagement', sublabel: 'Dark-mode OTT aesthetic and bingeable 45-minute modules drove a 25% engagement increase over traditional academic platforms.', sparkData: [5, 8, 11, 14, 17, 21, 25] },
+    { value: '40', suffix: '%', label: 'Renewal Rate', sublabel: 'Precision telemetry and High-Value Interaction tracking drove a 40% renewal rate, proving the platform\'s utility as a recurring career asset.', sparkData: [10, 15, 20, 25, 30, 35, 40] },
   ];
 
   return (
@@ -609,7 +618,7 @@ const CaseMasterclass = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EXPO, delay: 0.5 }}
           >
-            Engineering High-Intent Funnels through AI-Driven Content Consumption
+            Architecting a Netflix-of-Education OTT Layer to solve the Commitment Gap. 30K+ users, 2K+ paid subscriptions, 40% renewal rate.
           </motion.p>
 
           {/* Scroll hint */}
@@ -676,10 +685,10 @@ const CaseMasterclass = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              In a saturated EdTech market, traditional lead magnets suffer from <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"Engagement Decay"</strong> — users download a PDF but never consume it. To bridge the gap between "passive viewer" and "active student," we bypassed rigid LMS platforms to architect <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Miles Masterclass</strong>: a bespoke, Netflix-style micro-learning OTT engine.
+              Miles Education shifted from a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>'Lifetime Access'</strong> model to a Strategic Subscription Engine. Miles Masterclass was engineered as a high-production, bite-sized OTT platform designed to bridge the <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Trust-Gap</strong>. By implementing a subscription-based 'Commitment Filter,' the platform moved from stagnant lead databases toward a high-intent, recurring revenue ecosystem.
             </p>
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85, marginTop: 20 }}>
-              By capturing behavioral video data at <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>10-second intervals</strong> and feeding it into a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Chapter-Aware RAG pipeline</strong>, we delivered context-aware, real-time AI tutoring that validated learner intent and directly fed the core revenue pipeline.
+              We abandoned the <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>'Digital Textbook'</strong> feel of traditional LMS platforms in favor of a dark-mode, high-production OTT aesthetic. Prioritized <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>'Content Discovery'</strong> over 'Course Completion,' using immersive, 45-minute bingeable modules to reduce academic fatigue. The Miles One SSO acted as the universal Identity Registry — the UUID Passport allowing users to move between Masterclass, the Production LMS, and Corporate Partner portals without ID Fragmentation.
             </p>
           </motion.div>
         </div>
@@ -695,7 +704,7 @@ const CaseMasterclass = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            [ The Telemetry Timeline ]
+            [ The Behavioral Qualification Engine ]
           </motion.p>
 
           <div className="relative">
@@ -734,6 +743,7 @@ const CaseMasterclass = () => {
                 value={m.value}
                 suffix={m.suffix}
                 label={m.label}
+                sublabel={m.sublabel}
                 sparkData={m.sparkData}
                 delay={i * 0.12}
               />
