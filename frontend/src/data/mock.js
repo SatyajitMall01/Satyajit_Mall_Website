@@ -1,20 +1,20 @@
 export const evidenceCards = [
   {
     id: 'case-001', caseNumber: 'CASE #001',
-    displayTitle: 'The Universal GTM Identity Registry',
-    baseTitle: '\u20B920 Cr+ Revenue Engine',
+    displayTitle: 'Identity Genesis & Trust Architecture',
+    baseTitle: '₹40 Cr+ PLG Engine',
     slug: 'the-universal-gtm-identity-registry',
-    forensicInsight: 'Engineered a Universal Identity Registry at the SSO entry-gate, consolidating fragmented funnels into a single deterministic pipeline.',
-    tags: ['Identity', 'SSO', 'PostgreSQL'],
+    forensicInsight: 'Disrupted the Trust-Gap through Product-Led Growth. Miles One app mints deterministic UUIDs at first touch, converting anonymous devices into Pre-heated leads via a Dummy LMS sandbox.',
+    tags: ['PLG', 'Identity', 'Trust Engine'],
     rotate: '-2deg', patternType: 'grid',
   },
   {
     id: 'case-002', caseNumber: 'CASE #002',
-    displayTitle: 'Behavioral OTT Architecture',
-    baseTitle: 'Miles Masterclass Engine',
+    displayTitle: 'Behavioral Qualification Engine',
+    baseTitle: 'Netflix-of-Education OTT',
     slug: 'behavioral-ott-architecture',
-    forensicInsight: 'Chapter-Aware RAG pipeline with 10-second behavioral sync. Sub-2s AI tutoring converting passive viewers into paying subscribers.',
-    tags: ['OTT', 'RAG', 'Redis'],
+    forensicInsight: 'Strategic Subscription Engine with Netflix OTT UX. UUID Passport bridges Masterclass, Production LMS, and B2B portals. 40% renewal rate driven by behavioral telemetry.',
+    tags: ['OTT', 'Subscription', 'Telemetry'],
     rotate: '1.2deg', patternType: 'diagonal',
   },
   {
