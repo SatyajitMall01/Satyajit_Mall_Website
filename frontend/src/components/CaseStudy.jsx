@@ -19,8 +19,8 @@ const ALL_CASES = {
   'the-universal-gtm-identity-registry': {
     id: '01',
     codename: 'OPERATION: MILES ONE',
-    title: 'The Universal GTM Identity Registry',
-    subtitle: 'Engineering a Unified Entry-Gate Architecture for High-Velocity Lead Acquisition',
+    title: 'The Identity Genesis & Trust Architecture',
+    subtitle: 'Disrupting the Trust-Gap through Product-Led Growth and Deterministic Identity',
     accent: '#dc2626',
     gradient: 'linear-gradient(135deg, #1a0a0a 0%, #2a1218 30%, #1a0f14 60%, #0d0a0f 100%)',
     heroCollage: [

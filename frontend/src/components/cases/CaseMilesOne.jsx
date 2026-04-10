@@ -509,7 +509,7 @@ const CaseMilesOne = () => {
               animate={{ y: '0%' }}
               transition={{ duration: 1, ease: EXPO, delay: 0.2 }}
             >
-              The Universal GTM
+              The Identity Genesis
             </motion.h1>
           </div>
           <div className="overflow-hidden">
@@ -519,7 +519,7 @@ const CaseMilesOne = () => {
               animate={{ y: '0%' }}
               transition={{ duration: 1, ease: EXPO, delay: 0.35 }}
             >
-              Identity Registry
+              &amp; Trust Architecture
             </motion.h1>
           </div>
 
@@ -561,7 +561,7 @@ const CaseMilesOne = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: EXPO, delay: 0.3 }}
         >
-          <p style={{ fontFamily: TELE, fontSize: 9, color: '#9CA3AF', letterSpacing: '0.3em', textTransform: 'uppercase', textAlign: 'center', marginBottom: 16 }}>
+          <p style={{ fontFamily: TELE, fontSize: 10, color: '#D1D5DB', letterSpacing: '0.3em', textTransform: 'uppercase', textAlign: 'center', marginBottom: 16 }}>
             Interactive Architecture &middot; Hover nodes to trace data flow
           </p>
           <NodeNetwork />
