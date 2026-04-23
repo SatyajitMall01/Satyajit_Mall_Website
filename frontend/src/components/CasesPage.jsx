@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity } from 'lucide-react';
@@ -104,9 +104,374 @@ const XHair = ({ size = 14, color = 'currentColor' }) => (
 );
 
 /* ═══════════════════════════════════════════
+   MOBILE CASES VIEW — Sticky top-image + stacked cards
+   ═══════════════════════════════════════════ */
+const MobileCasesView = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const cardRefs = useRef([]);
+
+  // Tuning controls (default + URL/localStorage persisted)
+  const isTuneMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tune') === '1';
+  const readTune = (key, fallback) => {
+    if (typeof window === 'undefined') return fallback;
+    const v = localStorage.getItem(`cases_tune_${key}`);
+    return v ? Number(v) : fallback;
+  };
+  const [tune, setTune] = useState({
+    imageHeightVh: readTune('imageHeightVh', 40),
+    paddingX: readTune('paddingX', 20),
+    titleScale: readTune('titleScale', 100),
+    overlap: readTune('overlap', 32),
+    cardGap: readTune('cardGap', 20),
+  });
+  const updateTune = (key, value) => {
+    setTune(prev => ({ ...prev, [key]: value }));
+    if (typeof window !== 'undefined') localStorage.setItem(`cases_tune_${key}`, String(value));
+  };
+
+  // IntersectionObserver → update active card for sticky image crossfade
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const idx = Number(e.target.dataset.idx);
+            if (!Number.isNaN(idx)) setActiveIndex(idx);
+          }
+        });
+      },
+      { rootMargin: '-50% 0px -40% 0px', threshold: 0 }
+    );
+    cardRefs.current.forEach(el => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  const active = CASES_DATA[activeIndex];
+
+  return (
+    <div style={{ background: '#050505', position: 'relative', minHeight: '100vh' }}>
+      {/* ═══ STICKY HERO — crossfades between active cases ═══ */}
+      <div
+        style={{
+          position: 'sticky', top: 0, left: 0, right: 0,
+          height: `${tune.imageHeightVh}vh`,
+          zIndex: 1,
+          overflow: 'hidden',
+          background: '#050505',
+        }}
+      >
+        {CASES_DATA.map((c, i) => (
+          <motion.div
+            key={c.id}
+            animate={{ opacity: i === activeIndex ? 1 : 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute', inset: 0,
+              background: c.gradient,
+            }}
+          >
+            {c.baseImage && (
+              <img
+                src={c.baseImage}
+                alt={c.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            )}
+            {/* Bottom scrim → blends into cards below */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: `linear-gradient(to bottom, transparent 30%, rgba(5,5,5,0.4) 70%, #050505 100%)`,
+            }} />
+            {/* Top-left: codename badge */}
+            <div style={{
+              position: 'absolute', top: 20, left: tune.paddingX,
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.accent, boxShadow: `0 0 8px ${c.accent}` }} />
+              <span style={{
+                fontFamily: TELE, fontSize: 10, fontWeight: 600,
+                color: c.accent, letterSpacing: '0.3em', textTransform: 'uppercase',
+              }}>
+                {c.codename.replace('OPERATION: ', 'OP · ')}
+              </span>
+            </div>
+            {/* Top-right: case number */}
+            <span style={{
+              position: 'absolute', top: 20, right: tune.paddingX,
+              fontFamily: TELE, fontSize: 10, fontWeight: 700,
+              color: 'rgba(255,255,255,0.6)', letterSpacing: '0.2em',
+            }}>
+              {c.id} / 08
+            </span>
+            {/* Top accent line */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0,
+              height: 2, background: c.accent,
+            }} />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ═══ PAGE HEADER — pinned above cards ═══ */}
+      <div style={{
+        position: 'relative', zIndex: 2,
+        padding: `32px ${tune.paddingX}px 16px`,
+        marginTop: -tune.overlap,
+        background: 'linear-gradient(to bottom, transparent, #050505 60%)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div style={{ width: 20, height: 1, background: 'rgba(220,38,38,0.5)' }} />
+          <span style={{
+            fontFamily: TELE, fontSize: 9, fontWeight: 600,
+            color: 'rgba(220,38,38,0.8)', letterSpacing: '0.35em', textTransform: 'uppercase',
+          }}>
+            Case Archives
+          </span>
+        </div>
+        <h1 style={{
+          fontFamily: SWISS, fontSize: `${28 * tune.titleScale / 100}px`, fontWeight: 700,
+          color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.05, margin: 0,
+        }}>
+          The Cases
+        </h1>
+        <p style={{
+          fontFamily: TELE, fontSize: 10,
+          color: '#9CA3AF', letterSpacing: '0.2em',
+          textTransform: 'uppercase', marginTop: 8,
+        }}>
+          {String(activeIndex + 1).padStart(2, '0')} of {String(CASES_DATA.length).padStart(2, '0')} &middot; {active.metrics[0]}
+        </p>
+      </div>
+
+      {/* ═══ SCROLLING CARD STACK ═══ */}
+      <div style={{
+        position: 'relative', zIndex: 2,
+        display: 'flex', flexDirection: 'column', gap: tune.cardGap,
+        padding: `8px ${tune.paddingX}px 40px`,
+      }}>
+        {CASES_DATA.map((c, i) => (
+          <motion.div
+            key={c.id}
+            ref={el => (cardRefs.current[i] = el)}
+            data-idx={i}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: '-20% 0px -20% 0px' }}
+            transition={{ duration: 0.6, ease: EXPO_OUT }}
+          >
+            <Link
+              to={`/cases/${c.slug}`}
+              style={{ textDecoration: 'none', display: 'block' }}
+            >
+              <div
+                className="case-card-tap"
+                style={{
+                  background: 'rgba(10,10,14,0.92)',
+                  border: `1px solid ${i === activeIndex ? c.accent + '50' : 'rgba(55,65,81,0.35)'}`,
+                  borderRadius: 14,
+                  padding: '20px 18px',
+                  transition: 'border-color 0.4s ease, transform 0.15s ease',
+                  boxShadow: i === activeIndex ? `0 8px 32px ${c.accent}15, 0 1px 0 ${c.accent}20 inset` : '0 4px 16px rgba(0,0,0,0.3)',
+                }}
+              >
+                {/* Codename strip */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <XHair size={8} color={c.accent} />
+                  <span style={{
+                    fontFamily: TELE, fontSize: 9, fontWeight: 600,
+                    color: c.accent, letterSpacing: '0.3em', textTransform: 'uppercase',
+                  }}>
+                    {c.codename.replace('OPERATION: ', '')}
+                  </span>
+                </div>
+                {/* Title */}
+                <h2 style={{
+                  fontFamily: SWISS, fontSize: `${20 * tune.titleScale / 100}px`, fontWeight: 700,
+                  color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.2,
+                  margin: '0 0 14px',
+                }}>
+                  {c.title}
+                </h2>
+                {/* Metrics — horizontally swipeable row */}
+                <div
+                  style={{
+                    display: 'flex', gap: 8,
+                    overflowX: 'auto', paddingBottom: 4,
+                    scrollbarWidth: 'none', msOverflowStyle: 'none',
+                    marginBottom: 14,
+                  }}
+                  className="hide-scrollbar"
+                >
+                  {c.metrics.map(m => (
+                    <span key={m} style={{
+                      flexShrink: 0,
+                      fontFamily: TELE, fontSize: 10, fontWeight: 500,
+                      color: '#F3F4F6', letterSpacing: '0.05em',
+                      border: `1px solid ${c.accent}40`,
+                      background: `${c.accent}10`,
+                      padding: '6px 12px', borderRadius: 9999,
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {m}
+                    </span>
+                  ))}
+                </div>
+                {/* Description — truncated */}
+                <p style={{
+                  fontFamily: SWISS, fontSize: 14, fontWeight: 300,
+                  color: '#D1D5DB', lineHeight: 1.6,
+                  margin: '0 0 16px',
+                }}>
+                  {c.description}
+                </p>
+                {/* CTA row */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  paddingTop: 12, borderTop: 'rgba(255,255,255,0.06) 1px solid',
+                }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    fontFamily: TELE, fontSize: 10, fontWeight: 600,
+                    color: c.accent, letterSpacing: '0.18em', textTransform: 'uppercase',
+                    height: 44, /* 44px touch target */
+                  }}>
+                    View Full Case &rarr;
+                  </span>
+                  <span style={{
+                    fontFamily: TELE, fontSize: 9,
+                    color: '#6B7280', letterSpacing: '0.2em',
+                  }}>
+                    {String(i + 1).padStart(2, '0')} / {String(CASES_DATA.length).padStart(2, '0')}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ═══ BOTTOM CTA ═══ */}
+      <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: `40px ${tune.paddingX}px 80px` }}>
+        <p style={{
+          fontFamily: TELE, fontSize: 9, fontWeight: 600,
+          color: '#9CA3AF', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 16,
+        }}>
+          More cases in progress
+        </p>
+        <a href="/dossier" style={{
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          fontFamily: TELE, fontSize: 11, fontWeight: 600,
+          color: '#dc2626', letterSpacing: '0.18em', textTransform: 'uppercase',
+          height: 48, padding: '0 24px',
+          border: '1px solid rgba(220,38,38,0.4)', borderRadius: 6,
+          background: 'rgba(220,38,38,0.08)', textDecoration: 'none',
+          width: '100%', maxWidth: 320, margin: '0 auto',
+        }}>
+          <XHair size={10} color="#dc2626" />
+          View Full Dossier
+        </a>
+      </div>
+
+      {/* ═══ TUNING PANEL — ?tune=1 only ═══ */}
+      {isTuneMode && <TuningPanel tune={tune} onChange={updateTune} />}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
+   TUNING PANEL — live sliders for mobile layout
+   ═══════════════════════════════════════════ */
+const TuningPanel = ({ tune, onChange }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const sliders = [
+    { key: 'imageHeightVh', label: 'Hero Image (vh)', min: 25, max: 65, step: 1, unit: 'vh' },
+    { key: 'overlap', label: 'Image/Card Overlap', min: 0, max: 80, step: 2, unit: 'px' },
+    { key: 'paddingX', label: 'Horizontal Padding', min: 8, max: 40, step: 2, unit: 'px' },
+    { key: 'titleScale', label: 'Text Scale', min: 80, max: 140, step: 2, unit: '%' },
+    { key: 'cardGap', label: 'Card Gap', min: 8, max: 48, step: 2, unit: 'px' },
+  ];
+  return (
+    <div style={{
+      position: 'fixed', bottom: 16, left: 16, right: 16,
+      zIndex: 9999,
+      background: 'rgba(5,5,10,0.96)',
+      border: '1px solid rgba(220,38,38,0.45)',
+      borderRadius: 12,
+      padding: collapsed ? '10px 14px' : '14px 16px 18px',
+      backdropFilter: 'blur(20px)',
+      boxShadow: '0 12px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(220,38,38,0.15)',
+      maxWidth: 460, margin: '0 auto',
+      fontFamily: TELE, fontSize: 10,
+      color: '#E5E7EB',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: collapsed ? 0 : 12,
+      }}>
+        <span style={{
+          fontFamily: TELE, fontSize: 9, fontWeight: 700,
+          color: '#dc2626', letterSpacing: '0.35em', textTransform: 'uppercase',
+        }}>
+          ▸ Mobile Tuning
+        </span>
+        <button
+          onClick={() => setCollapsed(c => !c)}
+          style={{
+            background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
+            color: '#D1D5DB', fontFamily: TELE, fontSize: 9,
+            padding: '4px 10px', borderRadius: 4, cursor: 'pointer',
+            letterSpacing: '0.15em',
+          }}
+        >
+          {collapsed ? 'EXPAND' : 'HIDE'}
+        </button>
+      </div>
+      {!collapsed && sliders.map(s => (
+        <div key={s.key} style={{ marginBottom: 10 }}>
+          <div style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            marginBottom: 4,
+          }}>
+            <label style={{ color: '#9CA3AF', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 9 }}>
+              {s.label}
+            </label>
+            <span style={{ color: '#dc2626', fontWeight: 600 }}>
+              {tune[s.key]}{s.unit}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={s.min} max={s.max} step={s.step}
+            value={tune[s.key]}
+            onChange={e => onChange(s.key, Number(e.target.value))}
+            style={{ width: '100%', accentColor: '#dc2626' }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
    CASES PAGE — Sticky Stacked Scroll + Snap
    ═══════════════════════════════════════════ */
 const CasesPage = () => {
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  if (isMobile) return <MobileCasesView />;
+
+  return <DesktopCasesView />;
+};
+
+const DesktopCasesView = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   /* Image animation states — outgoing cards fade immediately to prevent blending */
