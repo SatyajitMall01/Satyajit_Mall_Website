@@ -132,7 +132,7 @@ const AudioWaveform = () => {
           transition={{ duration: 1.5, repeat: Infinity }}
         />
         <span style={{ fontFamily: TELE, fontSize: 10, color: A, letterSpacing: '0.3em', textTransform: 'uppercase' }}>
-          Voice Active &middot; Qualifying Lead
+          Cerebro Active &middot; Qualifying Lead
         </span>
       </motion.div>
     </div>
@@ -294,12 +294,12 @@ const GoalTree = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
 
   const nodes = [
-    { x: 250, y: 30, label: 'Inbound Lead', sub: '5,000+ daily' },
-    { x: 120, y: 100, label: 'Intent Verify', sub: 'NLU + Tone' },
-    { x: 380, y: 100, label: 'Eligibility', sub: 'Criteria match' },
-    { x: 120, y: 170, label: 'Financial Ready', sub: 'Budget check' },
-    { x: 380, y: 170, label: 'Booking Slot', sub: 'Calendar sync' },
-    { x: 250, y: 240, label: 'Sales Handoff', sub: 'Warm transfer' },
+    { x: 250, y: 30, label: 'Outbound Call', sub: 'Cerebro initiates' },
+    { x: 120, y: 100, label: 'Identity Handshake', sub: 'UIR lookup < 800ms' },
+    { x: 380, y: 100, label: 'Context Injection', sub: 'Vertex AI prompt' },
+    { x: 120, y: 170, label: 'RAG Knowledge', sub: 'Vectorized base' },
+    { x: 380, y: 170, label: 'Intent Scoring', sub: 'Redis state lock' },
+    { x: 250, y: 240, label: 'Sales Handoff', sub: 'Pre-qualified transfer' },
   ];
 
   const edges = [
@@ -318,7 +318,7 @@ const GoalTree = () => {
         letterSpacing: '0.3em', textTransform: 'uppercase',
         textAlign: 'center', marginBottom: 16,
       }}>
-        Goal-Tree Qualification Flow
+        Cerebro Modular Intelligence Flow
       </p>
 
       <svg viewBox="0 0 500 280" className="w-full" style={{ maxWidth: 600, margin: '0 auto', display: 'block' }}>
@@ -530,23 +530,23 @@ const CaseSuperbot = () => {
   const flowSteps = [
     {
       step: '01',
-      title: 'Real-Time Memory Retrieval',
-      body: 'n8n fetches the lead profile from Miles One UIR including Masterclass video progress, attribution source, historical interactions, and engagement score. The entire profile is hydrated in under 200ms before the call connects.',
+      title: 'Forensic Identity Handshake',
+      body: 'Upon user pick-up, Cerebro executes an instantaneous handshake with the UIR using the phone number as key. Within 800ms, the bot\'s "Brain" is injected with the user\'s history: total inquiries, last call timestamp, lead stage, and Miles One engagement metrics.',
     },
     {
       step: '02',
-      title: 'Context Injection',
-      body: 'Data fed into LLM system prompt: "You are calling Rahul, who just watched 15 min of CPA Tax module..." The bot speaks with full awareness of the lead\'s journey, creating a warm, personalized first impression.',
+      title: 'Reasoning Brain (Vertex AI)',
+      body: 'Replaced limited decision trees with LLM-based reasoning. Cerebro handles "Unhappy Paths" — where users ask non-linear questions about eligibility or career outcomes — without breaking the conversation flow. Scenario-based prompts acknowledge gaps: "I see we chatted 3 months ago about your CPA goals..."',
     },
     {
       step: '03',
-      title: 'Goal-Tree Qualification',
-      body: 'A structured decision tree: Intent Verification (genuine interest?) then Eligibility Check (qualifications match?) then Financial Readiness (budget confirmed?) then Booking (calendar slot secured). Each gate scored independently.',
+      title: 'Vectorized RAG + Token Streaming',
+      body: 'The entire Miles Education knowledge base was vectorized for authoritative, real-time answers on CPA Eligibility and AI-in-Accounting curriculum. Token streaming between Vertex AI and ElevenLabs keeps perceived latency under 1 second — the bot speaks before the full sentence is computed.',
     },
     {
       step: '04',
-      title: 'Data Feedback Loop',
-      body: 'Every call transcribed in real-time. Sentiment analyzed across the full conversation. A 2-sentence AI-generated summary pushed to CRM Lead Queue, pre-scoring the lead for human agents on the sales floor.',
+      title: 'Redis Operational Memory',
+      body: 'Redis tracks "Intents" during the call, preventing recursive loops. If a user requests a mentorship booking, the "State" is locked in the CRM instantly. Every outbound dollar is accounted for — 100% data sovereignty with raw JSON logging of all vocal interactions.',
     },
   ];
 
@@ -578,7 +578,7 @@ const CaseSuperbot = () => {
           >
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: A, boxShadow: `0 0 10px ${A}` }} />
             <span style={{ fontFamily: TELE, fontSize: 10, color: A, letterSpacing: '0.4em', textTransform: 'uppercase' }}>
-              Operation: Superbot AI
+              Operation: Cerebro
             </span>
           </motion.div>
 
@@ -593,7 +593,7 @@ const CaseSuperbot = () => {
               animate={{ y: '0%' }}
               transition={{ duration: 1, ease: EXPO, delay: 0.2 }}
             >
-              Agentic Voice
+              The Sovereignty
             </motion.h1>
           </div>
           <div className="overflow-hidden">
@@ -606,7 +606,7 @@ const CaseSuperbot = () => {
               animate={{ y: '0%' }}
               transition={{ duration: 1, ease: EXPO, delay: 0.35 }}
             >
-              Qualification
+              of Intelligence
             </motion.h1>
           </div>
 
@@ -620,7 +620,7 @@ const CaseSuperbot = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EXPO, delay: 0.5 }}
           >
-            Optimizing Sales Velocity through RAG-Driven AI Voice Assistants
+            Disrupting Outbound Qualification through Agentic Voice Architecture and Real-Time Context Retrieval
           </motion.p>
         </motion.div>
 
@@ -659,10 +659,10 @@ const CaseSuperbot = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              The sales floor was overwhelmed — <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>5,000+ leads daily</strong>, but the half-life of a lead is 5-10 minutes. Human agents spent 70% of time on Discovery and only 30% on Closing.
+              Miles Education's outbound qualification relied on a third-party Agentic Voice partner, creating a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"Black Box" dependency</strong> — limited data visibility, high latency, and no deep integration with the Universal Identity Registry (UIR). The bot couldn't "see" the user's Miles One progress, destroying the Trust Architecture.
             </p>
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85, marginTop: 20 }}>
-              <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Superbot AI</strong> was built as a first-responder: it conducts initial qualification calls, retrieves real-time lead memory via n8n, and determines <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Sales-Readiness</strong> before a human picks up the phone.
+              The strategic decision: internalize the "Brain" and the "Voice." <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Cerebro</strong> moved infrastructure from a service-level agreement to a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Technical Sovereignty model</strong> hosted entirely on GCP — transforming a simple automated dialer into a sophisticated, self-healing qualification engine.
             </p>
           </motion.div>
         </div>
@@ -716,27 +716,27 @@ const CaseSuperbot = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <MetricBlock
-              value="40" suffix="%"
-              label="Analysis Time Reduction"
-              sublabel="Superbot handles initial discovery, freeing human agents to focus exclusively on closing qualified leads."
+              value="45" suffix="%"
+              label="Middleware Cost Reduction"
+              sublabel="Eliminated third-party SIP and AI fees by owning the full stack on GCP — from a service-level agreement to Technical Sovereignty."
               delay={0}
             />
             <MetricBlock
-              value="15" suffix="%"
-              label="Qualified Leads Increase"
-              sublabel="AI pre-screening ensures only Sales-Ready leads reach the floor, dramatically improving agent hit rates."
+              value="12" suffix="min"
+              label="Resolution Window"
+              sublabel="High-intent career inquiries qualified at peak Intent Velocity within a 12-minute resolution window."
               delay={0.12}
             />
             <MetricBlock
-              value="5" suffix="%"
-              label="Sales Cycle Reduction"
-              sublabel="Faster first contact + pre-qualified context = shorter time from lead to enrollment."
+              value="60" suffix="%"
+              label="Human Burden Reduced"
+              sublabel="Core doubts resolved via Cerebro's RAG layer before human Academic Support ever engages — pre-qualifying leads for the sales floor."
               delay={0.24}
             />
             <MetricBlock
-              value="800" suffix="ms"
-              label="Turn-Around Time"
-              sublabel="Sub-800ms voice response latency. Leads experience natural, human-like conversation flow with zero awkward pauses."
+              value="100" suffix="%"
+              label="Data Sovereignty"
+              sublabel="Every vocal interaction logged as raw JSON. Total financial accountability in the ROAS/ROCS model — we own the data pipe."
               delay={0.36}
             />
           </div>

@@ -70,16 +70,16 @@ const ParticleField = () => {
    SCROLLING TERMINAL — buffer/retry logic
    ══════════════════════════════════════════ */
 const TERMINAL_LINES = [
-  { prefix: '>', text: 'engage.buffer.init() — 2000ms attribution hold...', color: A },
-  { prefix: '$', text: 'CHECKING: document.cookie for _fbp, _fbc, gclid...', color: '#f59e0b' },
-  { prefix: '!', text: 'WARN: CID not found — initiating retry loop (1/3)', color: '#ef4444' },
-  { prefix: '$', text: 'navigator.fingerprint.hash() → fp_9a3f2d...', color: '#f59e0b' },
-  { prefix: '→', text: 'CROSS-REF: Miles One Registry — IP + Fingerprint match', color: '#E5E7EB' },
-  { prefix: '✓', text: 'RECOVERED: source=Meta_CPA_Campaign_Q4, adset_id=120392', color: A },
-  { prefix: '→', text: 'PATCHING: CRM record LEAD_44821 — source updated', color: '#E5E7EB' },
-  { prefix: '✓', text: 'LINEAR + TIME_DECAY model applied — 4 touchpoints scored', color: A },
-  { prefix: '$', text: 'anti_ghost.trigger() — retroactive session scrape...', color: '#f59e0b' },
-  { prefix: '✓', text: 'ATTRIBUTION COMPLETE — CRM-Ad alignment: 100%', color: A },
+  { prefix: '>', text: 'me.campaign.mint() — generating tk=aa1afa3f...', color: A },
+  { prefix: '$', text: 'DEPLOYING: scraper across Miles web ecosystem...', color: '#f59e0b' },
+  { prefix: '→', text: 'tk= token persisted in operational memory — cross-domain hop survived', color: '#E5E7EB' },
+  { prefix: '✓', text: 'NATIVE BRIDGE: n8n mapping FB Form_ID → ME Campaign_ID', color: A },
+  { prefix: '$', text: 'API INGEST: fetching daily spend from Google, Meta, LinkedIn...', color: '#f59e0b' },
+  { prefix: '→', text: 'TAGGING: cost data → ME Campaign_ID — ROAS calc ready', color: '#E5E7EB' },
+  { prefix: '✓', text: 'ROCS ENGINE: Netcore CDP connected — WhatsApp + Email spend mapped', color: A },
+  { prefix: '$', text: 'BigQuery: U-Shaped Attribution Model applied — 4 touchpoints scored', color: '#f59e0b' },
+  { prefix: '✓', text: 'DISCOVERY: ₹5 WhatsApp blast (20% assist) closing ₹500 Google leads (40% Genesis)', color: A },
+  { prefix: '✓', text: 'CSV PURGATORY ELIMINATED — real-time financial dashboard live', color: A },
 ];
 
 const ScrollTerminal = () => {
@@ -118,7 +118,7 @@ const ScrollTerminal = () => {
         <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }} />
         <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
         <span style={{ fontFamily: TELE, fontSize: 9, color: '#9CA3AF', letterSpacing: '0.1em', marginLeft: 8 }}>
-          attribution_engine.sh
+          me_tokenized_engine.sh
         </span>
       </div>
       {/* Lines */}
@@ -158,10 +158,10 @@ const AttributionViz = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
 
   const touchpoints = [
-    { x: 60, y: 140, label: 'Meta Ad Click', weight: 0.15 },
-    { x: 160, y: 80, label: 'Webinar View', weight: 0.20 },
-    { x: 260, y: 120, label: 'Email Open', weight: 0.25 },
-    { x: 360, y: 60, label: 'Retarget Click', weight: 0.40 },
+    { x: 60, y: 140, label: 'Google Search (Genesis)', weight: 0.40 },
+    { x: 160, y: 80, label: 'Email Nudge', weight: 0.15 },
+    { x: 260, y: 120, label: 'WhatsApp Blast', weight: 0.20 },
+    { x: 360, y: 60, label: 'Retarget Click', weight: 0.25 },
   ];
 
   const purchaseX = 440;
@@ -182,7 +182,7 @@ const AttributionViz = () => {
         letterSpacing: '0.2em', textTransform: 'uppercase',
         marginBottom: 12, display: 'block', textAlign: 'center',
       }}>
-        Linear + Time-Decay Model
+        U-Shaped (Position-Based) Attribution Model
       </span>
       <svg viewBox="0 0 500 180" className="w-full" style={{ flex: 1, minHeight: 140 }}>
         <defs>
@@ -553,7 +553,7 @@ const CaseEngage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: EXPO, delay: 0.5 }}
           >
-            Resolving the "Meta Mirage" through Deterministic Lead Tagging and n8n Orchestration
+            Eliminating the "Marketing Mirage" through Tokenized Tracking and ROAS/ROCS Engineering
           </motion.p>
 
           {/* Scroll hint */}
@@ -595,10 +595,10 @@ const CaseEngage = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              Miles Education encountered a systemic failure where <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>~$12,000/month in Meta ad spend</strong> was misattributed. Due to race conditions on slow mobile networks, high-intent leads were tagged as "Organic" in the CRM.
+              Miles Education faced a critical <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"Marketing Mirage"</strong> — native platform dashboards (Meta/Google) reported high performance that never materialized as revenue in the CRM. Fragmented tracking, cross-domain "Black Holes," and "Last-Click" bias led to inefficient capital allocation. The organization was trapped in <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"CSV Purgatory"</strong> — manual audits cross-referencing spend data to guess at ROI.
             </p>
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85, marginTop: 20 }}>
-              The solution: a proprietary <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Attribution Recovery Engine</strong> with a 2-second buffer, recursive retry loops, and a custom <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Linear + Time-Decay attribution model</strong>.
+              The solution: <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Miles Engage (ME)</strong>, a proprietary Attribution & Recovery Engine. By deprecating standard UTMs in favor of a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Deterministic Tokenized Architecture (tk=)</strong> and building an n8n-driven financial API loop, the system provided real-time visibility into ROAS and <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>ROCS (Return on Communication Spend)</strong>.
             </p>
           </motion.div>
         </div>
@@ -608,9 +608,9 @@ const CaseEngage = () => {
       <section className="relative z-10" style={{ padding: '0 24px 60px' }}>
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           <MetricPill value="20" suffix="%" label="ROAS Lift" delay={0} />
-          <MetricPill value="4000" suffix="+" label="Ghost Leads Recovered" delay={0.1} />
-          <MetricPill value="12" suffix="K" label="/mo Spend Corrected" delay={0.2} />
-          <MetricPill value="100" suffix="%" label="CRM-Ad Alignment" delay={0.3} />
+          <MetricPill value="30" suffix="%" label="Ops Workload Cut" delay={0.1} />
+          <MetricPill value="15" suffix="%" label="Comms Waste Slashed" delay={0.2} />
+          <MetricPill value="100" suffix="%" label="Attribution Accuracy" delay={0.3} />
         </div>
       </section>
 
@@ -637,8 +637,8 @@ const CaseEngage = () => {
             <div className="md:col-span-2">
               <BentoCard
                 tag="Protocol 01"
-                title="The 2-Second Buffer"
-                body="Form-backend holds lead data 2000ms while client-side aggressively checks for tracking cookies and Click IDs. Patches the record before final CRM transmission. This tiny delay recovers attribution for leads on slow mobile networks where cookies load after form submit."
+                title='The tk= Token'
+                body="Deprecated fragile UTMs in favor of a Tokenized URL system. Every campaign mints a unique tk parameter (e.g., tk=aa1afa3f). A custom scraper persists the token across domain hops in operational memory, ensuring attribution survives the final JSON form submit. Native Facebook/LinkedIn forms are bridged via an n8n mapping layer."
                 delay={0.1}
               />
             </div>
@@ -649,8 +649,8 @@ const CaseEngage = () => {
             <div className="md:col-span-2">
               <BentoCard
                 tag="Protocol 02"
-                title="Recursive Retry Loop"
-                body="n8n cross-references User IP and Fingerprint against Miles One Registry for existing attribution history. If a match is found, the historical source is grafted onto the new lead. Up to 3 retry cycles before falling back to session scraping."
+                title="ROAS/ROCS Financial Loop"
+                body="ME was engineered as a financial auditing tool. Custom scripts fetch daily spend via API from Google, Meta, and LinkedIn, tagging costs to the ME Campaign ID. By connecting to Netcore CDP, ME calculates ROCS — the return on every rupee spent on WhatsApp and email communication."
                 delay={0.15}
               />
             </div>
@@ -667,14 +667,14 @@ const CaseEngage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <BentoCard
               tag="Protocol 03"
-              title="Linear + Time-Decay Model"
-              body="Every touchpoint gets equal credit (linear) weighted by proximity to purchase (time-decay). Prevents channel cannibalization by ensuring the last click doesn't steal all attribution from awareness-stage touches."
+              title="U-Shaped Attribution Model"
+              body="Deployed in BigQuery, this Position-Based model mathematically proved a ₹5 WhatsApp blast (20% assist) was closing leads from a ₹500 Google Search click (40% Genesis), enabling dynamic budget reallocation across the Omni-Channel Flywheel."
               delay={0.25}
             />
             <BentoCard
               tag="Protocol 04"
-              title="Anti-Ghost Trigger"
-              body="If a lead arrives in CRM without source, an n8n sub-workflow scrapes historical web sessions in PostgreSQL to retroactively assign attribution. Ghost leads are automatically flagged, enriched, and re-routed to the correct campaign bucket."
+              title="Intent-Based Routing"
+              body="ME evaluated the Intent Velocity of a lead based on its tk token. A Round-Robin SQL query pushed high-intent leads to the top of Sales Officers' dialers instantly. Automated auditing replaced manual 'Data Postmen' with a real-time High-Frequency Trading Desk for marketing."
               delay={0.3}
             />
           </div>
@@ -696,7 +696,7 @@ const CaseEngage = () => {
           onMouseEnter={e => { e.currentTarget.style.background = `${A}15`; e.currentTarget.style.borderColor = `${A}60`; }}
           onMouseLeave={e => { e.currentTarget.style.background = `${A}08`; e.currentTarget.style.borderColor = `${A}35`; }}
         >
-          Next: Superbot AI <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Next: Cerebro <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </Link>
         <div style={{ marginTop: 20 }}>
           <Link to="/cases" style={{ fontFamily: TELE, fontSize: 10, color: '#D1D5DB', letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none' }}>
