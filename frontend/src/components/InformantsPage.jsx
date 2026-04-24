@@ -58,9 +58,520 @@ const XHair = ({ size = 14, color = 'currentColor' }) => (
 );
 
 /* ═══════════════════════════════════════════
-   INFORMANTS PAGE — Split-Pane Vertical Carousel
+   MOBILE INFORMANTS — stacked portrait + quote + swipeable filters
+   ═══════════════════════════════════════════ */
+const MobileInformantsView = () => {
+  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [activeIndex, setActiveIndex]   = useState(0);
+  const [userPaused, setUserPaused]     = useState(false);
+  const pauseTimeout = useRef(null);
+
+  // Tuning controls
+  const isTuneMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tune') === '1';
+  const readTune = (key, fallback) => {
+    if (typeof window === 'undefined') return fallback;
+    const v = localStorage.getItem(`informants_tune_${key}`);
+    return v ? Number(v) : fallback;
+  };
+  const [tune, setTune] = useState({
+    portraitHeightVh: readTune('portraitHeightVh', 48),
+    paddingX: readTune('paddingX', 20),
+    textScale: readTune('textScale', 100),
+    thumbSize: readTune('thumbSize', 52),
+    cardGap: readTune('cardGap', 20),
+  });
+  const updateTune = (key, value) => {
+    setTune(prev => ({ ...prev, [key]: value }));
+    if (typeof window !== 'undefined') localStorage.setItem(`informants_tune_${key}`, String(value));
+  };
+
+  const filteredData = INFORMANTS_DATA.filter(item => item.tags.includes(activeFilter));
+  const active = filteredData[activeIndex] || filteredData[0];
+
+  useEffect(() => { setActiveIndex(0); }, [activeFilter]);
+
+  useEffect(() => {
+    if (userPaused || filteredData.length <= 1) return;
+    const id = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % filteredData.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, [userPaused, filteredData.length]);
+
+  const handleUserSelect = useCallback((index) => {
+    setActiveIndex(index);
+    setUserPaused(true);
+    clearTimeout(pauseTimeout.current);
+    pauseTimeout.current = setTimeout(() => setUserPaused(false), 15000);
+  }, []);
+
+  const handleFilterChange = useCallback((filter) => {
+    setActiveFilter(filter);
+    setUserPaused(true);
+    clearTimeout(pauseTimeout.current);
+    pauseTimeout.current = setTimeout(() => setUserPaused(false), 15000);
+  }, []);
+
+  useEffect(() => () => clearTimeout(pauseTimeout.current), []);
+
+  // Flat filter list for horizontal swipe (ALL + all chips with count > 0)
+  const filterChips = [
+    { label: 'ALL', value: 'ALL' },
+    ...JURISDICTIONS.filter(tag => INFORMANTS_DATA.some(i => i.tags.includes(tag))).map(v => ({ label: v, value: v })),
+    ...OPERATIONS.filter(tag => INFORMANTS_DATA.some(i => i.tags.includes(tag))).map(v => ({ label: v, value: v })),
+  ];
+
+  return (
+    <div style={{ background: '#111318', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* ── Subtle ambient ── */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 600px 400px at 50% 20%, rgba(178,34,34,0.04) 0%, transparent 100%)',
+      }} />
+
+      {/* ═══ HEADER ═══ */}
+      <div style={{ position: 'relative', zIndex: 2, padding: `48px ${tune.paddingX}px 16px`, textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+          <div style={{ width: 20, height: 1, background: 'rgba(220,38,38,0.5)' }} />
+          <span style={{
+            fontFamily: TELE, fontSize: 9, fontWeight: 600,
+            color: 'rgba(220,38,38,0.8)', letterSpacing: '0.35em', textTransform: 'uppercase',
+          }}>
+            Peer Telemetry
+          </span>
+          <div style={{ width: 20, height: 1, background: 'rgba(220,38,38,0.5)' }} />
+        </div>
+        <h1 style={{
+          fontFamily: SWISS, fontSize: `${28 * tune.textScale / 100}px`, fontWeight: 700,
+          color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.05, margin: 0,
+        }}>
+          The Informants
+        </h1>
+        <p style={{
+          fontFamily: TELE, fontSize: 10, color: '#9CA3AF',
+          letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: 10,
+        }}>
+          Verified endorsements &middot; filter by jurisdiction
+        </p>
+      </div>
+
+      {/* ═══ FILTER STRIP — horizontal swipe ═══ */}
+      <div
+        className="hide-scrollbar"
+        style={{
+          position: 'relative', zIndex: 2,
+          display: 'flex', gap: 8,
+          overflowX: 'auto',
+          padding: `14px ${tune.paddingX}px 8px`,
+          scrollSnapType: 'x proximity',
+        }}
+      >
+        {filterChips.map(chip => {
+          const isActive = activeFilter === chip.value;
+          return (
+            <button
+              key={chip.value}
+              onClick={() => handleFilterChange(chip.value)}
+              style={{
+                flexShrink: 0,
+                height: 36,
+                padding: '0 16px',
+                fontFamily: TELE, fontSize: 10, fontWeight: isActive ? 700 : 500,
+                letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: isActive ? '#FFFFFF' : '#D1D5DB',
+                background: isActive ? 'rgba(220,38,38,0.15)' : 'rgba(55,65,81,0.2)',
+                border: isActive ? '1px solid rgba(220,38,38,0.6)' : '1px solid rgba(75,85,99,0.3)',
+                borderRadius: 9999,
+                cursor: 'pointer',
+                transition: 'background 0.2s ease, border-color 0.2s ease',
+                scrollSnapAlign: 'start',
+              }}
+            >
+              {chip.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ═══ HERO PORTRAIT ═══ */}
+      <div style={{ position: 'relative', zIndex: 2, padding: `${tune.cardGap}px ${tune.paddingX}px 0` }}>
+        <div style={{
+          width: '100%', height: `${tune.portraitHeightVh}vh`,
+          borderRadius: 14, overflow: 'hidden', position: 'relative',
+          border: '1px solid rgba(55,65,81,0.4)',
+          background: '#111318',
+        }}>
+          <AnimatePresence mode="wait">
+            {active && (
+              <motion.img
+                key={active.id}
+                src={active.image}
+                alt={active.realName}
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.45, ease: EXPO_OUT }}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  objectPosition: '50% 22%',
+                }}
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Scanline */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px)',
+          }} />
+
+          {/* Bottom identity overlay */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 55%, transparent 100%)',
+            padding: '60px 20px 20px',
+          }}>
+            <AnimatePresence mode="wait">
+              {active && (
+                <motion.div
+                  key={active.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.3, ease: EXPO_OUT }}
+                >
+                  <p style={{
+                    fontFamily: SWISS, fontSize: 10, fontWeight: 700,
+                    color: '#EF4444', letterSpacing: '0.22em',
+                    textTransform: 'uppercase', margin: '0 0 5px',
+                  }}>
+                    {active.codename}
+                  </p>
+                  <p style={{
+                    fontFamily: SWISS, fontSize: 18, fontWeight: 600,
+                    color: '#FFFFFF', margin: '0 0 3px',
+                  }}>
+                    {active.realName}
+                  </p>
+                  <p style={{
+                    fontFamily: TELE, fontSize: 9,
+                    color: '#D1D5DB', letterSpacing: '0.15em',
+                    textTransform: 'uppercase', margin: 0,
+                  }}>
+                    {active.role} &middot; {active.division}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Corner brackets */}
+          <div style={{ position: 'absolute', top: 12, left: 12, width: 14, height: 14, borderTop: '1px solid rgba(220,38,38,0.4)', borderLeft: '1px solid rgba(220,38,38,0.4)' }} />
+          <div style={{ position: 'absolute', top: 12, right: 12, width: 14, height: 14, borderTop: '1px solid rgba(220,38,38,0.4)', borderRight: '1px solid rgba(220,38,38,0.4)' }} />
+        </div>
+      </div>
+
+      {/* ═══ THUMBNAIL SWIPE STRIP ═══ */}
+      <div
+        className="hide-scrollbar"
+        style={{
+          position: 'relative', zIndex: 2,
+          display: 'flex', gap: 12, alignItems: 'center',
+          overflowX: 'auto',
+          padding: `${tune.cardGap}px ${tune.paddingX}px 4px`,
+          scrollSnapType: 'x proximity',
+        }}
+      >
+        {filteredData.map((inf, i) => {
+          const isCurrent = i === activeIndex;
+          const size = isCurrent ? tune.thumbSize + 8 : tune.thumbSize;
+          return (
+            <button
+              key={inf.id}
+              onClick={() => handleUserSelect(i)}
+              className="case-card-tap"
+              style={{
+                width: size, height: size, flexShrink: 0,
+                minHeight: 44, minWidth: 44,
+                borderRadius: 9999, overflow: 'hidden',
+                border: isCurrent ? '2px solid #dc2626' : '2px solid rgba(55,65,81,0.35)',
+                padding: 0, background: 'transparent', cursor: 'pointer',
+                boxShadow: isCurrent ? '0 0 16px rgba(220,38,38,0.25)' : 'none',
+                transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+                scrollSnapAlign: 'center',
+              }}
+            >
+              <img
+                src={inf.image}
+                alt={inf.codename}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  objectPosition: '50% 25%',
+                  filter: isCurrent
+                    ? 'grayscale(0%) brightness(1) contrast(1.05)'
+                    : 'grayscale(100%) brightness(0.55) contrast(1.2)',
+                  transition: 'filter 0.4s ease',
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Progress line */}
+      <div style={{
+        position: 'relative', zIndex: 2,
+        padding: `12px ${tune.paddingX}px 0`,
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <div style={{ flex: 1, height: 2, background: 'rgba(55,65,81,0.3)', borderRadius: 1, overflow: 'hidden' }}>
+          <motion.div
+            style={{ height: '100%', background: '#dc2626' }}
+            animate={{ width: `${((activeIndex + 1) / filteredData.length) * 100}%` }}
+            transition={{ duration: 0.35, ease: EXPO_OUT }}
+          />
+        </div>
+        <span style={{ fontFamily: TELE, fontSize: 9, color: '#9CA3AF', letterSpacing: '0.25em' }}>
+          {String(activeIndex + 1).padStart(2, '0')}/{String(filteredData.length).padStart(2, '0')}
+        </span>
+      </div>
+
+      {/* ═══ QUOTE CARD ═══ */}
+      <div style={{ position: 'relative', zIndex: 2, padding: `${tune.cardGap}px ${tune.paddingX}px 0` }}>
+        <div style={{
+          position: 'relative',
+          background: 'rgba(15,15,15,0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(55,65,81,0.5)',
+          borderRadius: 14,
+          padding: '28px 22px 24px',
+          overflow: 'hidden',
+        }}>
+          {/* Watermark quote */}
+          <div style={{
+            position: 'absolute', top: -18, right: -10,
+            fontFamily: 'Georgia, serif', fontSize: 160,
+            color: 'rgba(255,255,255,0.03)', lineHeight: 0.8,
+            pointerEvents: 'none', userSelect: 'none',
+          }}>
+            &ldquo;
+          </div>
+
+          <AnimatePresence mode="wait">
+            {active && (
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4, ease: EXPO_OUT }}
+                style={{ position: 'relative', zIndex: 1 }}
+              >
+                {/* Classification */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
+                  <XHair size={9} color="rgba(220,38,38,0.6)" />
+                  <span style={{
+                    fontFamily: TELE, fontSize: 8,
+                    color: 'rgba(239,68,68,0.9)', letterSpacing: '0.3em',
+                    textTransform: 'uppercase',
+                  }}>
+                    S/N {active.id} &middot; {active.division}
+                  </span>
+                </div>
+
+                {/* Quote */}
+                <p style={{
+                  fontFamily: SWISS, fontSize: `${16 * tune.textScale / 100}px`,
+                  fontWeight: 300, color: '#F3F4F6',
+                  lineHeight: 1.65, margin: '0 0 22px',
+                }}>
+                  &ldquo;{active.quote}&rdquo;
+                </p>
+
+                {/* Separator */}
+                <div style={{ width: 32, height: 1, background: 'rgba(220,38,38,0.4)', marginBottom: 14 }} />
+
+                {/* Identity */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 42, height: 42, borderRadius: 9999, overflow: 'hidden',
+                    border: '1px solid rgba(55,65,81,0.6)', flexShrink: 0,
+                  }}>
+                    <img
+                      src={active.image}
+                      alt={active.realName}
+                      style={{
+                        width: '100%', height: '100%', objectFit: 'cover',
+                        objectPosition: '50% 25%',
+                        filter: 'grayscale(20%) contrast(1.1)',
+                      }}
+                    />
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <p style={{
+                      fontFamily: SWISS, fontSize: 15, fontWeight: 700,
+                      color: '#FFFFFF', margin: 0, letterSpacing: '0.02em',
+                    }}>
+                      {active.realName}
+                    </p>
+                    <p style={{
+                      fontFamily: TELE, fontSize: 10,
+                      color: '#dc2626', margin: '3px 0 0',
+                      letterSpacing: '0.1em', textTransform: 'uppercase',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {active.role} &middot; {active.division}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Auto-rotation progress */}
+          {!userPaused && filteredData.length > 1 && (
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0, height: 2,
+              background: 'rgba(55,65,81,0.2)',
+            }}>
+              <motion.div
+                key={`timer-${active?.id}`}
+                style={{ height: '100%', background: 'rgba(220,38,38,0.5)', transformOrigin: 'left' }}
+                initial={{ width: '0%' }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 6, ease: 'linear' }}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ═══ BOTTOM CTA ═══ */}
+      <div style={{ position: 'relative', zIndex: 2, padding: `${tune.cardGap + 12}px ${tune.paddingX}px 80px`, textAlign: 'center' }}>
+        <p style={{
+          fontFamily: TELE, fontSize: 9, fontWeight: 600,
+          color: '#9CA3AF', letterSpacing: '0.3em', textTransform: 'uppercase', margin: '0 0 14px',
+        }}>
+          Require this architecture?
+        </p>
+        <a
+          href="mailto:satyajitmall10@gmail.com"
+          className="case-card-tap"
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            fontFamily: TELE, fontSize: 11, fontWeight: 600,
+            color: '#dc2626', letterSpacing: '0.18em', textTransform: 'uppercase',
+            height: 48, padding: '0 28px',
+            border: '1px solid rgba(220,38,38,0.4)', borderRadius: 6,
+            background: 'rgba(220,38,38,0.08)', textDecoration: 'none',
+            width: '100%', maxWidth: 320,
+          }}
+        >
+          <XHair size={10} color="#dc2626" />
+          Initiate Contact
+        </a>
+        <p style={{
+          fontFamily: TELE, fontSize: 8,
+          color: '#6B7280', letterSpacing: '0.35em',
+          textTransform: 'uppercase', marginTop: 24,
+        }}>
+          End of verified records
+        </p>
+      </div>
+
+      {/* ═══ TUNING PANEL ═══ */}
+      {isTuneMode && <InformantsTuningPanel tune={tune} onChange={updateTune} />}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
+   TUNING PANEL — informants mobile sliders
+   ═══════════════════════════════════════════ */
+const InformantsTuningPanel = ({ tune, onChange }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const sliders = [
+    { key: 'portraitHeightVh', label: 'Portrait Height', min: 35, max: 70, step: 1, unit: 'vh' },
+    { key: 'paddingX', label: 'Horizontal Padding', min: 8, max: 40, step: 2, unit: 'px' },
+    { key: 'textScale', label: 'Text Scale', min: 80, max: 140, step: 2, unit: '%' },
+    { key: 'thumbSize', label: 'Thumb Size', min: 40, max: 80, step: 2, unit: 'px' },
+    { key: 'cardGap', label: 'Card Gap', min: 8, max: 48, step: 2, unit: 'px' },
+  ];
+  return (
+    <div style={{
+      position: 'fixed', bottom: 16, left: 16, right: 16,
+      zIndex: 9999,
+      background: 'rgba(5,5,10,0.96)',
+      border: '1px solid rgba(220,38,38,0.45)',
+      borderRadius: 12,
+      padding: collapsed ? '10px 14px' : '14px 16px 18px',
+      backdropFilter: 'blur(20px)',
+      boxShadow: '0 12px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(220,38,38,0.15)',
+      maxWidth: 460, margin: '0 auto',
+      fontFamily: TELE, fontSize: 10, color: '#E5E7EB',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: collapsed ? 0 : 12,
+      }}>
+        <span style={{
+          fontFamily: TELE, fontSize: 9, fontWeight: 700,
+          color: '#dc2626', letterSpacing: '0.35em', textTransform: 'uppercase',
+        }}>
+          ▸ Informants Tuning
+        </span>
+        <button
+          onClick={() => setCollapsed(c => !c)}
+          style={{
+            background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
+            color: '#D1D5DB', fontFamily: TELE, fontSize: 9,
+            padding: '4px 10px', borderRadius: 4, cursor: 'pointer',
+            letterSpacing: '0.15em',
+          }}
+        >
+          {collapsed ? 'EXPAND' : 'HIDE'}
+        </button>
+      </div>
+      {!collapsed && sliders.map(s => (
+        <div key={s.key} style={{ marginBottom: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+            <label style={{ color: '#9CA3AF', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 9 }}>
+              {s.label}
+            </label>
+            <span style={{ color: '#dc2626', fontWeight: 600 }}>
+              {tune[s.key]}{s.unit}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={s.min} max={s.max} step={s.step}
+            value={tune[s.key]}
+            onChange={e => onChange(s.key, Number(e.target.value))}
+            style={{ width: '100%', accentColor: '#dc2626' }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
+   INFORMANTS PAGE — Viewport-branched (mobile/desktop)
    ═══════════════════════════════════════════ */
 const InformantsPage = () => {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  if (isMobile) return <MobileInformantsView />;
+  return <DesktopInformantsView />;
+};
+
+const DesktopInformantsView = () => {
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [activeIndex, setActiveIndex]   = useState(0);
   const [userPaused, setUserPaused]     = useState(false);
