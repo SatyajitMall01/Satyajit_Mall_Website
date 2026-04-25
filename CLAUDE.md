@@ -45,17 +45,68 @@ Never push to main/master without going through cases2 first. Never force-push. 
 
 ---
 
-## Installed Skills (rebuild on new account)
+## Skills — Two Tiers
 
-Skills are committed to the repo under `.agents/skills/` — nothing to reinstall from disk. The `skills-lock.json` records provenance:
+There are **project-scoped** skills (in this repo) and **account-scoped** skills (in `~/.claude/`). They migrate differently.
+
+### Tier 1: Project-scoped skill (in repo — zero action on migration)
+
+| Skill | Source | Install command |
+|---|---|---|
+| `remotion-best-practices` | https://github.com/remotion-dev/skills | `npx skills add remotion-dev/skills --yes` |
+
+Lives at `.agents/skills/remotion-best-practices/` and symlinked to `.claude/skills/`. Both are committed to git. Travels with the repo — no reinstall needed unless someone deletes the folder.
+
+`skills-lock.json` records provenance and content hash for reproducibility.
+
+### Tier 2: Account-scoped skills (in `~/.claude/` — persist if device + folder are same)
+
+These are installed via **plugin marketplaces**. `~/.claude/` persists across Anthropic account switches (it's a per-user directory on disk, not per-account), so **if you stay on the same device + user home, nothing needs reinstalling**.
+
+**Three marketplaces currently configured:**
+
+| Marketplace | URL | Add command |
+|---|---|---|
+| `superpowers-dev` | https://github.com/obra/superpowers.git | `/plugin marketplace add https://github.com/obra/superpowers` |
+| `everything-claude-code` | https://github.com/affaan-m/everything-claude-code.git | `/plugin marketplace add https://github.com/affaan-m/everything-claude-code` |
+| `anthropic-agent-skills` | https://github.com/anthropics/skills.git | `/plugin marketplace add https://github.com/anthropics/skills` |
+
+**Five plugins installed across those marketplaces:**
+
+| Plugin | From marketplace | Install command |
+|---|---|---|
+| `superpowers@superpowers-dev` v4.3.1 | superpowers-dev | `/plugin install superpowers@superpowers-dev` |
+| `everything-claude-code@everything-claude-code` v1.9.0 | everything-claude-code | `/plugin install everything-claude-code@everything-claude-code` |
+| `document-skills@anthropic-agent-skills` | anthropic-agent-skills | `/plugin install document-skills@anthropic-agent-skills` |
+| `example-skills@anthropic-agent-skills` | anthropic-agent-skills | `/plugin install example-skills@anthropic-agent-skills` |
+| `claude-api@anthropic-agent-skills` | anthropic-agent-skills | `/plugin install claude-api@anthropic-agent-skills` |
+
+Together these expose ~300 named skills (visible via the Skill tool): frontend-design, refactoring-ui, motion-framer, gsap-scrolltrigger, brainstorming, systematic-debugging, tdd-workflow, security-review, continuous-learning, and many more.
+
+### If skills get wiped (fallback recovery)
+
+If `~/.claude/` is lost or you're starting on a fresh machine, restore in this order:
 
 ```bash
-# Reinstall Remotion best-practices (if you ever nuke .agents/)
+# 1. Add the three marketplaces (inside Claude Code — type these as slash commands)
+/plugin marketplace add https://github.com/obra/superpowers
+/plugin marketplace add https://github.com/affaan-m/everything-claude-code
+/plugin marketplace add https://github.com/anthropics/skills
+
+# 2. Install the five plugins (also inside Claude Code)
+/plugin install superpowers@superpowers-dev
+/plugin install everything-claude-code@everything-claude-code
+/plugin install document-skills@anthropic-agent-skills
+/plugin install example-skills@anthropic-agent-skills
+/plugin install claude-api@anthropic-agent-skills
+
+# 3. Re-add the project-level Remotion skill (terminal, from repo root)
 npx skills add remotion-dev/skills --yes
 ```
 
-**Currently installed:**
-- `remotion-best-practices` — Remotion video-creation conventions (source: `remotion-dev/skills` on GitHub)
+**Reference configs** (used to derive these commands — do not edit):
+- `~/.claude/plugins/known_marketplaces.json` — marketplace URLs
+- `~/.claude/plugins/installed_plugins.json` — plugin versions and install timestamps
 
 ---
 
