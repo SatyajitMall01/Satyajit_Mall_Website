@@ -4,22 +4,32 @@
 
 ---
 
-## Current Sprint
+## Topology
 
-**Started:** 2026-05-09
-**Goal:** Parallel mobile/desktop track restructuring
+| Chat | Worktree | Branch | Role |
+|---|---|---|---|
+| master  | `Satyajit_Mall_Website`         | `cases2`         | Orchestrator + final review |
+| mobile  | `Satyajit_Mall_Website-mobile`  | `cases2-mobile`  | Mobile-only changes |
+| desktop | `Satyajit_Mall_Website-desktop` | `cases2-desktop` | Desktop-only changes |
 
 ---
 
-## Track Status
+## Sprint Status
+
+**Started:** 2026-05-09
+
+### Master (`cases2`)
+- **Last commit:** _baton infra @ bc420cf_
+- **Current focus:** —
+- **Pending reviews:** —
 
 ### Mobile Track (`cases2-mobile`)
-- **Last commit:** `bc73a22` (CLAUDE.md skills expansion)
+- **Last commit:** —
 - **Active task:** —
 - **Blocking on:** —
 
 ### Desktop Track (`cases2-desktop`)
-- **Last commit:** `bc73a22`
+- **Last commit:** —
 - **Active task:** —
 - **Blocking on:** —
 
