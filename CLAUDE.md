@@ -385,6 +385,53 @@ Before the first non-trivial dispatch in any new session, read:
 
 ---
 
+## Design Feedback Loop (MANDATORY after every UI change)
+
+After implementing any visual/layout/component change, run this exact sequence before declaring the task complete. No exceptions.
+
+### Step-by-step
+
+```
+1. Start dev server (if not running):
+   cd frontend && npx vite --port 5173 &
+   sleep 3
+
+2. Set viewport to target (desktop default, then mobile):
+   mcp__playwright__browser_resize(1440, 900)
+   mcp__playwright__browser_navigate(<route>)
+   mcp__playwright__browser_take_screenshot(fullPage=true, filename="review-desktop.png")
+
+   mcp__playwright__browser_resize(390, 844)
+   mcp__playwright__browser_navigate(<route>)
+   mcp__playwright__browser_take_screenshot(fullPage=true, filename="review-mobile.png")
+
+3. Read both screenshots. Check for:
+   - Layout breaks (overflow, clipping, collapsed sections)
+   - Typography issues (too small, wrapping badly, z-index bleeds)
+   - Touch target size < 44px on mobile
+   - Color/contrast failures against #050505 background
+   - Framer Motion elements stuck at opacity:0 (not triggered)
+   - Console errors (check mcp__playwright__browser_console_messages)
+
+4. Report findings to user:
+   - PASS / FAIL per viewport
+   - Screenshot inline so user can see
+   - List specific issues with component name + line if found
+
+5. Kill server when done (unless user's server was already running before):
+   kill $(lsof -ti :5173)
+```
+
+### Rules
+- **Never skip this loop** — type checking does not verify visual correctness.
+- If a dev server was already running before your task, leave it running after.
+- If Playwright fails (Chrome conflict), warn user: `osascript -e 'tell application "Google Chrome" to quit'` then retry.
+- Mobile viewport = **390×844** (iPhone 14 proxy). Desktop = **1440×900**.
+- For worktree branches, use an alternate port (5174 for desktop worktree, 5175 for mobile worktree) to avoid collisions.
+- Screenshots go to the project root (Playwright default). Clean them up after review or when user confirms.
+
+---
+
 ## Common Pitfalls
 
 1. **Stale artifact references** — after updating a case study, always update `mock.js` (homepage cards) AND `CasesPage.jsx` CASES_DATA (cases page) in the same commit. The cascade update rule in memory enforces this.
