@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link, PieChart } from 'lucide-react';
+import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link as LinkIcon, PieChart } from 'lucide-react';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
@@ -566,7 +566,7 @@ const DesktopCasesView = () => {
                   const isActive = i === activeIndex;
                   const hasImage = !!c.baseImage;
                   const hasFloaters = !!c.floaters;
-                  const IconMap = { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link, PieChart };
+                  const IconMap = { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link: LinkIcon, PieChart };
 
                   return (
                     <motion.div
