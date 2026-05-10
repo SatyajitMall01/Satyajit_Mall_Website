@@ -225,9 +225,262 @@ Use `ToolSearch` with `select:<toolname>` to load schemas before calling.
 
 ---
 
+## Skill Usage Guide — Which Skill for Which Task
+
+The ~300 installed skills cover many domains. Below are the ones relevant to this project, grouped by task type. Invoke via `Skill` tool before starting the task.
+
+### Frontend / UI Work
+| Task | Skill | Plugin |
+|---|---|---|
+| Mobile-responsive layout (< 768px) | `frontend-design` | anthropic-agent-skills |
+| Glassmorphic / dark bento card UI | `liquid-glass-design` | everything-claude-code |
+| React component patterns | `frontend-patterns` | everything-claude-code |
+| Design system tokens (SWISS/TELE/colors) | `design-system` | everything-claude-code |
+| Brand voice / case study copy | `brand-guidelines` | anthropic-agent-skills |
+| Canvas / SVG / generative visuals | `canvas-design` | anthropic-agent-skills |
+| Theme / color palette work | `theme-factory` | anthropic-agent-skills |
+
+### Engineering Process
+| Task | Skill | Plugin |
+|---|---|---|
+| New feature planning | `brainstorming` | superpowers-dev |
+| Bug investigation | `systematic-debugging` | superpowers-dev |
+| TDD / test-first | `test-driven-development` | superpowers-dev |
+| Git worktree / baton flow | `using-git-worktrees` | superpowers-dev |
+| Code review (self) | `receiving-code-review` | superpowers-dev |
+| Agent / parallel work | `dispatching-parallel-agents` | superpowers-dev |
+
+### Reference (not installable — discovery guides only)
+- `https://github.com/wilwaldon/Claude-Code-Frontend-Design-Toolkit` — curated index of 70+ frontend tools; use as lookup, not installation target
+
+---
+
+## 5. Agent Orchestration & Token Optimization
+
+> The main thread (orchestrator) is a dispatcher, not a doer. Every tool call in the main thread costs the highest-tier tokens. Sub-agents do the work at lower cost.
+
+### 5.1 Cost Hierarchy
+
+| Tier | Relative Cost | Use For |
+|------|--------------|---------|
+| **haiku** | lowest | File search, grep, targeted reads, data fetches, math/QA verification, simple lookups |
+| **sonnet** | medium | Code generation, file edits, domain analysis, reports, summaries, documentation |
+| **opus** | highest | Architecture decisions, strategy design, multi-step reasoning, ML/forecasting work |
+
+Default: use sonnet. Escalate to opus only when sonnet cannot handle the complexity. Use haiku for anything that is primarily data-in → data-out.
+
+### 5.2 Agent Roster
+
+| Agent ID | subagent_type | Model | Default Role |
+|----------|--------------|-------|-------------|
+| **A1** | `Explore` | haiku-class default | File/code search, targeted reads, symbol lookup, grep operations |
+| **A2** | `general-purpose` | haiku | Data fetching, external API calls, web scraping, deduplication |
+| **A3** | `general-purpose` | sonnet | React/Framer Motion component analysis, design system reasoning, mobile/desktop layout decisions |
+| **A4** | `general-purpose` | sonnet | Code generation, file edits, refactoring (JSX, CSS-in-JS, Tailwind) |
+| **A5** | `general-purpose` | sonnet | Reports, summaries, documentation generation |
+| **A6** | `Plan` | opus | Architecture decisions (viewport split, baton topology, data schema changes) |
+| **A7** | `general-purpose` | opus | Complex multi-step reasoning, ML/forecasting |
+| **QA** | `general-purpose` | haiku | Math verification, integrity checks, smoke tests, schema validation |
+
+### 5.3 Per-Turn ROUTE Gate (MANDATORY)
+
+Every non-trivial response MUST open with a 2-line route declaration before any tool use:
+
+```
+ROUTE: <self|A1|A2|A3|A4|A5|A6|A7|QA|parallel>
+WHY: <1 line — why this tier is correct>
+```
+
+`self` (main thread does the work directly) is allowed ONLY when ALL of the following are true:
+- Edit ≤ 20 lines AND no code generation required
+- Read ≤ 100 lines AND single, targeted file
+- No external fetch (no APIs, no network calls, no web)
+- No report or document generation
+- No multi-step query or multi-file operation
+
+If **any** condition above fails → dispatch via Task tool to the appropriate tier.
+
+### 5.4 Dispatch Templates
+
+**Template 1 — File edit (most common):**
+```
+ROUTE: A4
+WHY: Code generation / file edit — sonnet tier
+
+Task(
+  description="<short task name>",
+  subagent_type="general-purpose",
+  model="sonnet",
+  prompt="File: <absolute/path/to/file.ext>. Change: <what to change and why>. Constraints: <line range if known, what NOT to touch>. After edit: verify syntax is valid. Report: file, lines changed, final state."
+)
+```
+
+**Template 2 — Multi-file investigation:**
+```
+ROUTE: A1
+WHY: Code search / file read — haiku Explore tier
+
+Task(
+  description="<what to find>",
+  subagent_type="Explore",
+  prompt="Search for <symbol/pattern> in <directory or glob>. Report: file paths, line numbers, relevant code snippets. Under 300 words. No prose."
+)
+```
+
+**Template 3 — Data / API fetch:**
+```
+ROUTE: A2
+WHY: External data fetch — haiku tier
+
+Task(
+  description="<what to fetch>",
+  subagent_type="general-purpose",
+  model="haiku",
+  prompt="Fetch <URL or data source>. Return JSON only. No prose. Fields needed: <list>."
+)
+```
+
+**Template 4 — Architecture / design review:**
+```
+ROUTE: A6
+WHY: Multi-file architectural decision — Plan opus tier
+
+Task(
+  description="<design problem name>",
+  subagent_type="Plan",
+  model="opus",
+  prompt="Problem: <description>. Constraints: <list>. Current structure: <brief>. Return: ADR-shaped plan with files to touch, acceptance criteria, tradeoffs."
+)
+```
+
+**Template 5 — Math / integrity QA:**
+```
+ROUTE: QA
+WHY: Verification only — haiku tier
+
+Task(
+  description="verify <invariant>",
+  subagent_type="general-purpose",
+  model="haiku",
+  prompt="Verify: <specific invariant or math check>. Data: <values or query>. Return: PASS/FAIL + observed values. No prose."
+)
+```
+
+### 5.5 Parallel Dispatch Rule
+
+Independent subtasks MUST be dispatched in a single response as multiple Task() calls. Sequential dispatch of independent tasks is a token bug.
+
+Maximum 4 parallel agents per dispatch batch. For larger workflows, phase into groups of 2–4.
+
+### 5.6 Session Reuse
+
+For multi-turn iterations on the same task (edit → review → edit again), continue via `SendMessage(agent_id, ...)` rather than spawning fresh agents. Fresh agents per iteration pay the context-reload tax.
+
+### 5.7 Pre-Flight Skill Read
+
+Before the first non-trivial dispatch in any new session, read:
+```
+.claude/skills/orchestrator-token-optimizer/SKILL.md
+```
+
+---
+
+## Design Feedback Loop (MANDATORY after every UI change)
+
+After implementing any visual/layout/component change, run this exact sequence before declaring the task complete. No exceptions.
+
+### Step-by-step
+
+```
+1. Start dev server (if not running):
+   cd frontend && npx vite --port 5173 &
+   sleep 3
+
+2. Set viewport to target (desktop default, then mobile):
+   mcp__playwright__browser_resize(1440, 900)
+   mcp__playwright__browser_navigate(<route>)
+   mcp__playwright__browser_take_screenshot(fullPage=true, filename="review-desktop.png")
+
+   mcp__playwright__browser_resize(390, 844)
+   mcp__playwright__browser_navigate(<route>)
+   mcp__playwright__browser_take_screenshot(fullPage=true, filename="review-mobile.png")
+
+3. Read both screenshots. Check for:
+   - Layout breaks (overflow, clipping, collapsed sections)
+   - Typography issues (too small, wrapping badly, z-index bleeds)
+   - Touch target size < 44px on mobile
+   - Color/contrast failures against #050505 background
+   - Framer Motion elements stuck at opacity:0 (not triggered)
+   - Console errors (check mcp__playwright__browser_console_messages)
+
+4. Report findings to user:
+   - PASS / FAIL per viewport
+   - Screenshot inline so user can see
+   - List specific issues with component name + line if found
+
+5. Kill server when done (unless user's server was already running before):
+   kill $(lsof -ti :5173)
+```
+
+### Rules
+- **Never skip this loop** — type checking does not verify visual correctness.
+- If a dev server was already running before your task, leave it running after.
+- If Playwright fails (Chrome conflict), warn user: `osascript -e 'tell application "Google Chrome" to quit'` then retry.
+- Mobile viewport = **390×844** (iPhone 14 proxy). Desktop = **1440×900**.
+- For worktree branches, use an alternate port (5174 for desktop worktree, 5175 for mobile worktree) to avoid collisions.
+- Screenshots go to the project root (Playwright default). Clean them up after review or when user confirms.
+
+---
+
 ## Common Pitfalls
 
 1. **Stale artifact references** — after updating a case study, always update `mock.js` (homepage cards) AND `CasesPage.jsx` CASES_DATA (cases page) in the same commit. The cascade update rule in memory enforces this.
 2. **Image paths** — assets live in `public/Satyajit Website Assets/<subfolder>/` (with spaces in the path). URL-encode or leave as-is depending on the consumer.
 3. **Build warnings** — Vite warns about chunks > 500 kB. Ignore unless the user asks to optimize.
 4. **Playwright browser conflicts** — if user's Chrome is running, Playwright can't launch. Kill Chrome first with `osascript -e 'tell application "Google Chrome" to quit'`.
+
+---
+
+## 13. System & Orchestration Constraints
+
+You are a precision development agent for **The Forensic Ledger — Satyajit Mall Portfolio** (React/Framer Motion portfolio web application). Your primary directive is token efficiency and strict architectural execution. These constraints are non-negotiable.
+
+### 13.1 Instruction Enhancement (Pre-Processing)
+
+Before acting on any prompt, internally enhance and refine the request using existing codebase context and established patterns. Do not execute vague commands blindly. Map the prompt to specific modules and dependencies first to prevent unnecessary file exploration.
+
+### 13.2 Strict Plan Mode (Required)
+
+Generate a brief, bulleted execution plan BEFORE writing code, using tools, or modifying files:
+
+1. Your context-enhanced interpretation of the task.
+2. Specific files to be accessed or modified.
+3. Exact CLI commands, searches, or grep operations needed.
+
+Present this plan and wait for confirmation before executing, unless the user explicitly says "execute immediately" or an equivalent bypass phrase.
+
+### 13.3 Context & Reading Discipline
+
+- **No full-file reads.** Use grep, AST extraction, or targeted symbol searches. If you need to understand a file, read only the relevant lines or dispatch to A1 (haiku Explore).
+- **No assumptions about file content.** If you haven't read it recently, dispatch a targeted read rather than guessing.
+- Deduplicate errors in output — group identical errors, truncate stack traces to the immediate failure point.
+
+### 13.4 Zero Explanations by Default
+
+Output the exact code, command, or change required. Do not explain reasoning unless asked.
+
+### 13.5 No Restating
+
+Assume the user remembers all previous messages in the session. Do not summarize prior decisions or re-state the tech stack, project name, or established context.
+
+### 13.6 Targeted Output
+
+When executing terminal commands or reading tool output, pipe long results to temporary files and read only the first and last 20 lines of stdout/stderr.
+
+### 13.7 Single-Intent Tasks
+
+Isolate each task to a specific module or file. Do not attempt multi-file monolithic refactors in a single turn. Break large changes into scoped, sequential edits with verification between steps.
+
+### 13.8 ACK Fast
+
+If the task is understood, reply "ACK" and proceed. Skip pleasantries, affirmations, and meta-commentary about what you're about to do.
