@@ -225,6 +225,36 @@ Use `ToolSearch` with `select:<toolname>` to load schemas before calling.
 
 ---
 
+## Skill Usage Guide — Which Skill for Which Task
+
+The ~300 installed skills cover many domains. Below are the ones relevant to this project, grouped by task type. Invoke via `Skill` tool before starting the task.
+
+### Frontend / UI Work
+| Task | Skill | Plugin |
+|---|---|---|
+| Mobile-responsive layout (< 768px) | `frontend-design` | anthropic-agent-skills |
+| Glassmorphic / dark bento card UI | `liquid-glass-design` | everything-claude-code |
+| React component patterns | `frontend-patterns` | everything-claude-code |
+| Design system tokens (SWISS/TELE/colors) | `design-system` | everything-claude-code |
+| Brand voice / case study copy | `brand-guidelines` | anthropic-agent-skills |
+| Canvas / SVG / generative visuals | `canvas-design` | anthropic-agent-skills |
+| Theme / color palette work | `theme-factory` | anthropic-agent-skills |
+
+### Engineering Process
+| Task | Skill | Plugin |
+|---|---|---|
+| New feature planning | `brainstorming` | superpowers-dev |
+| Bug investigation | `systematic-debugging` | superpowers-dev |
+| TDD / test-first | `test-driven-development` | superpowers-dev |
+| Git worktree / baton flow | `using-git-worktrees` | superpowers-dev |
+| Code review (self) | `receiving-code-review` | superpowers-dev |
+| Agent / parallel work | `dispatching-parallel-agents` | superpowers-dev |
+
+### Reference (not installable — discovery guides only)
+- `https://github.com/wilwaldon/Claude-Code-Frontend-Design-Toolkit` — curated index of 70+ frontend tools; use as lookup, not installation target
+
+---
+
 ## Common Pitfalls
 
 1. **Stale artifact references** — after updating a case study, always update `mock.js` (homepage cards) AND `CasesPage.jsx` CASES_DATA (cases page) in the same commit. The cascade update rule in memory enforces this.
