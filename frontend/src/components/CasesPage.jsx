@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity } from 'lucide-react';
+import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link, PieChart } from 'lucide-react';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
@@ -47,6 +47,11 @@ const CASES_DATA = [
     description: 'Eliminated the "Marketing Mirage" through a Deterministic Tokenized Architecture (tk=) and n8n-driven ROAS/ROCS financial loop. Killed "CSV Purgatory" with U-Shaped Attribution and real-time intent routing.',
     accent: '#10b981',
     gradient: 'linear-gradient(135deg, #0a1a14 0%, #0f2a1f 30%, #0a2018 60%, #080f0d 100%)',
+    floaters: [
+      { id: 'f1', icon: 'TrendingUp', text: '+20% ROAS',      top: '8%',  right: '-6%', z: 80,  delay: 0.4,  anim: 'float' },
+      { id: 'f2', icon: 'Link',       text: 'tk= Token',      top: '44%', left: '-8%',  z: 110, delay: 0.55, anim: 'spin'  },
+      { id: 'f3', icon: 'PieChart',   text: 'U-Shape Model',  top: '80%', right: '-4%', z: 140, delay: 0.7,  anim: 'pulse' },
+    ],
   },
   {
     id: '04', slug: 'agentic-voice-qualification',
@@ -561,7 +566,7 @@ const DesktopCasesView = () => {
                   const isActive = i === activeIndex;
                   const hasImage = !!c.baseImage;
                   const hasFloaters = !!c.floaters;
-                  const IconMap = { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity };
+                  const IconMap = { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link, PieChart };
 
                   return (
                     <motion.div
