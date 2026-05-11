@@ -279,11 +279,12 @@ const AttributionViz = () => {
           <motion.circle
             cx={purchaseX} cy={purchaseY} r={16}
             fill={`${A}20`} stroke={A} strokeWidth={2}
-            animate={{ boxShadow: [`0 0 0px ${A}`, `0 0 20px ${A}`, `0 0 0px ${A}`] }}
+            animate={{ strokeOpacity: [0.6, 1, 0.6] }}
           />
           <motion.circle
             cx={purchaseX} cy={purchaseY} r={0}
             fill="none" stroke={A} strokeWidth={0.5}
+            initial={{ r: 16, opacity: 0.5 }}
             animate={{ r: [16, 30, 40], opacity: [0.5, 0.15, 0] }}
             transition={{ duration: 3, repeat: Infinity }}
           />
