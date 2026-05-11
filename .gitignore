@@ -52,6 +52,13 @@ __pycache__/
 venv/
 .venv/
 
+# Playwright MCP artifacts
+.playwright-mcp/
+*.png
+
+# Token optimization kit (installed; reference not needed in repo)
+TOKEN_OPTIMIZATION_KIT/
+
 # Development tools
 chainlit.md
 .chainlit
