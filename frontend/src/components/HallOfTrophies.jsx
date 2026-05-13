@@ -115,7 +115,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
               </h2>
             </div>
 
-            <div>
+            <div className="hidden md:block">
               <div className="flex flex-wrap gap-2 mb-4">
                 {card.tags.map((tag) => (
                   <span
@@ -139,9 +139,47 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
             </div>
           </div>
 
-          {/* Hover Overlay */}
+          {/* Mobile: Key Insight strip — always visible, baked since no hover on touch */}
           <div
-            className="absolute inset-0 z-[3] flex flex-col justify-end p-7"
+            className="absolute bottom-0 left-0 right-0 z-[3] md:hidden p-5"
+            style={{
+              background: 'linear-gradient(to top, rgba(10,13,20,0.98) 0%, rgba(10,13,20,0.95) 70%, transparent 100%)',
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-1.5 bg-[#dc2626]" />
+              <span
+                className="text-[8px] text-[#dc2626] tracking-[0.35em] uppercase"
+                style={{ fontFamily: SWISS }}
+              >
+                Key Insight
+              </span>
+            </div>
+            <div style={{ height: 1, backgroundColor: '#1E1E1E', marginBottom: 10 }} />
+            <p
+              className="text-[11px] text-[#FFFFFF]/60 leading-[1.9] tracking-[0.02em]"
+              style={{ fontFamily: SWISS }}
+            >
+              &ldquo;{card.forensicInsight?.length > 130
+                ? card.forensicInsight.slice(0, 127) + '…'
+                : card.forensicInsight}&rdquo;
+            </p>
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {card.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[7px] text-[#dc2626]/60 border border-[#dc2626]/30 px-2 py-0.5 tracking-[0.2em] uppercase"
+                  style={{ fontFamily: SWISS }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Hover Overlay (desktop only) */}
+          <div
+            className="absolute inset-0 z-[3] hidden md:flex flex-col justify-end p-7"
             style={{
               background: 'rgba(15, 20, 25, 0.92)',
               transform: isHovered ? 'translateY(0)' : 'translateY(100%)',

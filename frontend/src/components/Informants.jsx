@@ -158,9 +158,9 @@ const Informants = () => {
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#dc2626' }} />
       </motion.div>
 
-      {/* ── Mobile: premium glass snap deck (< md) ── */}
+      {/* ── Mobile: classified dossier snap deck — mirrors desktop active state (< md) ── */}
       <motion.div
-        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-6 px-4 pb-4 -mx-8"
+        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-4 px-4 pb-4 -mx-8"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -170,25 +170,23 @@ const Informants = () => {
         {INFORMANTS.map((card) => (
           <motion.div
             key={card.id}
-            className="min-w-[85vw] h-[450px] relative rounded-2xl overflow-hidden snap-center flex-shrink-0"
-            style={{ border: '1px solid rgba(255,255,255,0.10)' }}
+            className="min-w-[85vw] h-[480px] relative flex-shrink-0 snap-center overflow-hidden"
+            style={{ backgroundColor: '#0C1018' }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6 }}
           >
-            {/* Full-bleed background portrait */}
+            {/* Portrait — identical filter/position to desktop */}
             <img
               src={card.image}
               alt={card.codename}
-              className="absolute inset-0 w-full h-full object-cover grayscale opacity-60"
+              className="absolute inset-0 w-full h-full object-cover object-[25%] pointer-events-none select-none"
+              style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
               draggable={false}
             />
 
-            {/* Gradient overlay — deep bottom fade for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
-
-            {/* Scanline texture */}
+            {/* Scanline overlay */}
             <div
               className="absolute inset-0 pointer-events-none z-[1]"
               style={{
@@ -197,57 +195,108 @@ const Informants = () => {
               }}
             />
 
-            {/* Viewfinder corners */}
-            <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 z-[2]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
-            <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 z-[2]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+            {/* Bottom vignette */}
+            <div
+              className="absolute inset-0 z-[1] pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(to top,rgba(12,16,24,0.97) 0%,rgba(12,16,24,0.22) 42%,transparent 68%)',
+              }}
+            />
 
-            {/* Serial tag — top left */}
-            <div className="absolute top-4 left-10 z-[3]">
-              <span
-                className="text-[7px] tracking-[0.35em] uppercase"
-                style={{ fontFamily: TELE, color: '#dc2626' }}
-              >
-                {card.serial}
-              </span>
-            </div>
+            {/* Blue-charcoal tint — mirrors desktop active overlay */}
+            <div
+              className="absolute inset-0 z-[2]"
+              style={{ backgroundColor: 'rgba(11,18,34,0.72)' }}
+            />
 
-            {/* Text content — anchored to bottom */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 z-[3]">
-              {/* Red rule */}
-              <div style={{ width: 28, height: 1, backgroundColor: '#dc2626', marginBottom: 14 }} />
+            {/* Viewfinder brackets — 4 corners */}
+            <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 z-[3]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+            <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 z-[3]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+            <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 z-[3]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+            <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 z-[3]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
 
-              {/* Quote — truncated to fit */}
+            {/* Identity block — top (exact desktop active-state structure) */}
+            <div className="absolute top-6 left-6 right-6 z-[4]">
+              <div className="flex items-center gap-2 mb-3">
+                <XHair size={10} color="rgba(220,38,38,0.5)" />
+                <span
+                  style={{
+                    fontFamily: TELE, fontSize: 7.5,
+                    color: '#EF4444',
+                    letterSpacing: '0.28em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {card.serial} &nbsp;&middot;&nbsp; {card.ref}
+                </span>
+              </div>
               <p
-                className="text-base text-gray-200 leading-relaxed mb-5"
-                style={{ fontFamily: SWISS }}
-              >
-                &ldquo;{card.quote.length > 160 ? card.quote.slice(0, 157) + '…' : card.quote}&rdquo;
-              </p>
-
-              {/* Identity */}
-              <p
-                className="text-sm uppercase tracking-[0.2em] text-[#dc2626]"
-                style={{ fontFamily: TELE }}
+                style={{
+                  fontFamily: SWISS, fontSize: 14, fontWeight: 600,
+                  color: '#FFFFFF',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.2,
+                }}
               >
                 {card.codename}
               </p>
-              <p className="text-[11px] text-gray-400 mt-0.5" style={{ fontFamily: SWISS }}>
-                {card.realName} &middot; {card.role}
+              <p
+                style={{
+                  fontFamily: SWISS, fontSize: 11, fontWeight: 500,
+                  color: '#D1D5DB',
+                  letterSpacing: '0.05em',
+                  marginTop: 3,
+                }}
+              >
+                {card.realName}
               </p>
+              <p
+                style={{
+                  fontFamily: TELE, fontSize: 9,
+                  color: '#D1D5DB',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  marginTop: 5,
+                }}
+              >
+                {card.role} &middot; {card.division}
+              </p>
+            </div>
 
-              {/* Verified badge */}
-              <div className="mt-3 flex items-center gap-2">
-                <span
-                  className="text-[7px] text-[#3D7A58] tracking-[0.25em] uppercase"
-                  style={{ fontFamily: TELE, border: '1px solid rgba(61,122,88,0.35)', padding: '2px 8px' }}
-                >
-                  VERIFIED
+            {/* Testimony block — bottom (exact desktop active-state structure) */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-[4]">
+              <div style={{ width: 28, height: 1, backgroundColor: '#dc2626', marginBottom: 16 }} />
+              <p
+                style={{
+                  fontSize: 12.5, color: '#E5E7EB',
+                  lineHeight: 1.9, letterSpacing: '0.015em',
+                  fontFamily: SWISS,
+                }}
+              >
+                &ldquo;{card.quote.length > 190 ? card.quote.slice(0, 187) + '…' : card.quote}&rdquo;
+              </p>
+              <div
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  marginTop: 14, paddingTop: 12,
+                  borderTop: '1px solid rgba(255,255,255,0.06)',
+                }}
+              >
+                <span style={{ fontFamily: TELE, fontSize: 7, color: '#9CA3AF', letterSpacing: '0.35em', textTransform: 'uppercase' }}>
+                  {card.ref}
                 </span>
                 <span
-                  className="text-[7px] text-[#9CA3AF] tracking-[0.3em] uppercase"
-                  style={{ fontFamily: TELE }}
+                  style={{
+                    fontFamily: TELE, fontSize: 7,
+                    color: '#3D7A58',
+                    letterSpacing: '0.25em', textTransform: 'uppercase',
+                    border: '1px solid rgba(61,122,88,0.35)',
+                    padding: '2px 8px',
+                  }}
                 >
-                  {card.ref}
+                  VERIFIED
                 </span>
               </div>
             </div>
