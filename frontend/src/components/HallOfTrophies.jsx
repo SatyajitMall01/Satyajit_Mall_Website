@@ -250,6 +250,7 @@ const HallOfTrophies = () => {
   const startX     = useRef(0);
   const scrollLeftStart = useRef(0);
   const [carouselReady, setCarouselReady] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress: sectionProgress } = useScroll({
     target: sectionRef,
@@ -339,13 +340,149 @@ const HallOfTrophies = () => {
           <div className="w-12 h-[1px] bg-[#dc2626] mt-4" />
         </div>
 
-        {/* ── Carousel — orchestrated "Evidence Drop" stagger ──
+        {/* ── Mobile: 3D Coverflow Carousel ── */}
+        <div className="flex md:hidden flex-col">
+          <div className="relative h-[450px] w-full overflow-hidden">
+            {evidenceCards.map((card, index) => {
+              const offset = index - activeIndex;
+              return (
+                <motion.div
+                  key={card.id}
+                  className="absolute"
+                  style={{
+                    width: 300,
+                    height: 375,
+                    left: '50%',
+                    top: '50%',
+                    marginLeft: -150,
+                    marginTop: -187,
+                  }}
+                  animate={{
+                    x: offset * 60,
+                    scale: 1 - Math.abs(offset) * 0.1,
+                    zIndex: 50 - Math.abs(offset),
+                    opacity: Math.abs(offset) >= 3 ? 0 : 1 - Math.abs(offset) * 0.2,
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  drag={offset === 0 ? 'x' : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.1}
+                  onDragEnd={(e, { offset: dragOffset }) => {
+                    const swipeThreshold = 50;
+                    if (dragOffset.x < -swipeThreshold && activeIndex < evidenceCards.length - 1) {
+                      setActiveIndex(prev => prev + 1);
+                    } else if (dragOffset.x > swipeThreshold && activeIndex > 0) {
+                      setActiveIndex(prev => prev - 1);
+                    }
+                  }}
+                >
+                  <div
+                    className="w-full h-full rounded-2xl border border-white/10 p-6 flex flex-col justify-between shadow-2xl"
+                    style={{ backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(12px)' }}
+                  >
+                    {/* Top: case metadata */}
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
+                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                      >
+                        {card.caseNumber}
+                      </span>
+                      <span
+                        className="text-[8px] text-[#dc2626]/60 tracking-[0.2em] uppercase"
+                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                      >
+                        Closed &mdash; Solved
+                      </span>
+                    </div>
+
+                    {/* Middle: title block */}
+                    <div>
+                      <p
+                        className="text-[9px] text-[#D1D5DB]/50 tracking-[0.15em] uppercase mb-2"
+                        style={{ fontFamily: SWISS }}
+                      >
+                        {card.displayTitle}
+                      </p>
+                      <h2
+                        className="text-[20px] text-white tracking-[0.02em] leading-snug"
+                        style={{ fontFamily: SWISS }}
+                      >
+                        {card.baseTitle}
+                      </h2>
+                    </div>
+
+                    {/* Bottom: key insight */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-1.5 h-1.5 bg-[#dc2626]" />
+                        <span
+                          className="text-[7px] text-[#dc2626] tracking-[0.3em] uppercase"
+                          style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                        >
+                          Key Insight
+                        </span>
+                      </div>
+                      <p
+                        className="text-[10px] text-white/50 leading-[1.8] tracking-[0.01em]"
+                        style={{ fontFamily: SWISS }}
+                      >
+                        &ldquo;{card.forensicInsight?.length > 100
+                          ? card.forensicInsight.slice(0, 97) + '…'
+                          : card.forensicInsight}&rdquo;
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {card.tags.slice(0, 2).map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[7px] text-[#dc2626]/60 border border-[#dc2626]/30 px-2 py-0.5 tracking-[0.2em] uppercase"
+                            style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Link overlay — navigates to case study */}
+                  {card.slug && (
+                    <Link
+                      to={`/cases/${card.slug}`}
+                      className="absolute inset-0 z-20 rounded-2xl"
+                      aria-label={`View ${card.baseTitle} case study`}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Navigation dots */}
+          <div className="flex justify-center gap-2 pt-2 pb-4">
+            {evidenceCards.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === activeIndex ? 20 : 6,
+                  height: 6,
+                  backgroundColor: i === activeIndex ? '#dc2626' : 'rgba(255,255,255,0.2)',
+                }}
+                aria-label={`Go to card ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ── Desktop Carousel — orchestrated "Evidence Drop" stagger ──
             scrollRef is a motion.div so it can own both the RAF ref
             and the whileInView orchestration. No container opacity
             to avoid stacking with sectionOpacity above. */}
         <motion.div
           ref={scrollRef}
-          className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-4 md:gap-10 py-8 px-4 md:px-6 cursor-grab active:cursor-grabbing"
+          className="hidden md:flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-4 md:gap-10 py-8 px-4 md:px-6 cursor-grab active:cursor-grabbing"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
