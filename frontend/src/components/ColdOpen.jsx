@@ -125,25 +125,25 @@ const ColdOpen = () => {
     <section id="cold-open" ref={sectionRef}>
       <div className="relative w-full min-h-[85vh] flex items-center bg-[#141A21] overflow-hidden">
 
-        {/* Layer 0: Hero image — parallax sink */}
+        {/* Layer 0: Hero image — parallax sink, full-width on mobile */}
         <motion.img
           src={profileData.heroImage}
           alt="Satyajit Mall — Product Manager"
-          className="absolute right-0 top-0 h-full w-[80%] md:w-[60%] object-cover object-[center_top] z-0"
+          className="absolute right-0 top-0 h-full w-full md:w-[60%] object-cover object-[center_top] z-0"
           style={{
             filter: 'grayscale(100%) contrast(115%) brightness(0.85)',
             y: imageY,
           }}
         />
 
-        {/* Layer 1a: Left-to-right fade */}
-        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#141A21] via-[#141A21]/90 to-transparent" />
+        {/* Layer 1a: Left-to-right fade (desktop only) */}
+        <div className="hidden md:block absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#141A21] via-[#141A21]/90 to-transparent" />
 
         {/* Layer 1b: Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#141A21] to-transparent" />
 
-        {/* Layer 1c: Mobile spotlight — radial glow behind text */}
-        <div className="absolute inset-0 z-[2] pointer-events-none md:hidden bg-[radial-gradient(circle_at_20%_50%,_var(--tw-gradient-stops))] from-red-900/15 via-[#141A21]/60 to-[#141A21]" />
+        {/* Layer 1c: Mobile dark overlay — keeps text readable over full-bleed image */}
+        <div className="absolute inset-0 z-[2] pointer-events-none md:hidden bg-black/70" />
 
         {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" */}
         <motion.div

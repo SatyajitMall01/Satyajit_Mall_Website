@@ -158,68 +158,102 @@ const Informants = () => {
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#dc2626' }} />
       </motion.div>
 
-      {/* ── Mobile: horizontal swipe deck (< md) ── */}
-      <div
-        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-4 px-4 pb-4 -mx-8"
+      {/* ── Mobile: premium glass snap deck (< md) ── */}
+      <motion.div
+        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-6 px-4 pb-4 -mx-8"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.6 }}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
       >
         {INFORMANTS.map((card) => (
-          <div
+          <motion.div
             key={card.id}
-            className="min-w-[85vw] snap-center flex-shrink-0 flex flex-col rounded-2xl p-6"
-            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.10)' }}
+            className="min-w-[85vw] h-[450px] relative rounded-2xl overflow-hidden snap-center flex-shrink-0"
+            style={{ border: '1px solid rgba(255,255,255,0.10)' }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6 }}
           >
-            {/* Identity row */}
-            <div className="flex items-center gap-4 mb-5">
-              <img
-                src={card.image}
-                alt={card.codename}
-                className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-                style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
-              />
-              <div>
-                <p
-                  className="text-sm font-semibold text-white tracking-wider uppercase leading-snug"
-                  style={{ fontFamily: SWISS }}
-                >
-                  {card.codename}
-                </p>
-                <p className="text-[11px] text-[#D1D5DB] mt-0.5" style={{ fontFamily: SWISS }}>
-                  {card.realName}
-                </p>
-                <p
-                  className="text-[9px] text-[#9CA3AF] tracking-widest uppercase mt-1"
-                  style={{ fontFamily: TELE }}
-                >
-                  {card.role}
-                </p>
-              </div>
-            </div>
-            {/* Quote */}
-            <p
-              className="text-gray-300 text-base leading-relaxed flex-1"
-              style={{ fontFamily: SWISS }}
-            >
-              &ldquo;{card.quote}&rdquo;
-            </p>
-            {/* Footer */}
-            <div className="mt-4 pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            {/* Full-bleed background portrait */}
+            <img
+              src={card.image}
+              alt={card.codename}
+              className="absolute inset-0 w-full h-full object-cover grayscale opacity-60"
+              draggable={false}
+            />
+
+            {/* Gradient overlay — deep bottom fade for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
+
+            {/* Scanline texture */}
+            <div
+              className="absolute inset-0 pointer-events-none z-[1]"
+              style={{
+                backgroundImage:
+                  'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px)',
+              }}
+            />
+
+            {/* Viewfinder corners */}
+            <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 z-[2]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+            <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 z-[2]" style={{ borderColor: 'rgba(220,38,38,0.4)' }} />
+
+            {/* Serial tag — top left */}
+            <div className="absolute top-4 left-10 z-[3]">
               <span
-                className="text-[7px] text-[#9CA3AF] tracking-[0.4em] uppercase"
+                className="text-[7px] tracking-[0.35em] uppercase"
+                style={{ fontFamily: TELE, color: '#dc2626' }}
+              >
+                {card.serial}
+              </span>
+            </div>
+
+            {/* Text content — anchored to bottom */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-[3]">
+              {/* Red rule */}
+              <div style={{ width: 28, height: 1, backgroundColor: '#dc2626', marginBottom: 14 }} />
+
+              {/* Quote — truncated to fit */}
+              <p
+                className="text-base text-gray-200 leading-relaxed mb-5"
+                style={{ fontFamily: SWISS }}
+              >
+                &ldquo;{card.quote.length > 160 ? card.quote.slice(0, 157) + '…' : card.quote}&rdquo;
+              </p>
+
+              {/* Identity */}
+              <p
+                className="text-sm uppercase tracking-[0.2em] text-[#dc2626]"
                 style={{ fontFamily: TELE }}
               >
-                {card.ref}
-              </span>
-              <span
-                className="text-[7px] text-[#3D7A58] tracking-[0.25em] uppercase"
-                style={{ fontFamily: TELE, border: '1px solid rgba(61,122,88,0.35)', padding: '2px 8px' }}
-              >
-                VERIFIED
-              </span>
+                {card.codename}
+              </p>
+              <p className="text-[11px] text-gray-400 mt-0.5" style={{ fontFamily: SWISS }}>
+                {card.realName} &middot; {card.role}
+              </p>
+
+              {/* Verified badge */}
+              <div className="mt-3 flex items-center gap-2">
+                <span
+                  className="text-[7px] text-[#3D7A58] tracking-[0.25em] uppercase"
+                  style={{ fontFamily: TELE, border: '1px solid rgba(61,122,88,0.35)', padding: '2px 8px' }}
+                >
+                  VERIFIED
+                </span>
+                <span
+                  className="text-[7px] text-[#9CA3AF] tracking-[0.3em] uppercase"
+                  style={{ fontFamily: TELE }}
+                >
+                  {card.ref}
+                </span>
+              </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── Accordion: entrance wrapper (desktop only) ── */}
       <motion.div

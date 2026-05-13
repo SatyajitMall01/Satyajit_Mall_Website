@@ -65,10 +65,10 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
       >
         {/* Card body */}
         <div
-          className={`relative overflow-hidden h-[320px] md:h-[360px] ${patternClassMap[card.patternType] || ''}`}
+          className={`relative overflow-hidden aspect-[4/5] md:aspect-auto md:h-[360px] ${patternClassMap[card.patternType] || ''}`}
           style={{
             backgroundColor: '#151515',
-            border: '2px solid #333',
+            border: '1px solid rgba(255,255,255,0.08)',
           }}
         >
           {/* Card-level grain texture */}
