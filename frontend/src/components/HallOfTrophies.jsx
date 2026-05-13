@@ -49,7 +49,7 @@ const EvidenceCard = ({ card, onHoverStart, onHoverEnd }) => {
     /* Outer motion.div: orchestrated entry via cardVariants (rotate -8 → Dutch angle).
        Inner div: CSS hover lift/scale only — no rotation, avoids transform conflict. */
     <motion.div
-      className="flex-shrink-0 w-[360px] md:w-[400px]"
+      className="flex-shrink-0 min-w-[85vw] sm:min-w-[70vw] md:min-w-0 md:w-[400px] snap-center"
       variants={cardVariants}
       custom={card.rotate}
     >
@@ -262,7 +262,7 @@ const HallOfTrophies = () => {
   const duplicatedCards = [...evidenceCards, ...evidenceCards];
 
   return (
-    <section className="relative py-24 bg-[#141A21]" id="evidence" ref={sectionRef}>
+    <section className="relative py-16 md:py-24 bg-[#141A21]" id="evidence" ref={sectionRef}>
       {/* Darkness overlay */}
       <motion.div
         className="absolute inset-0 z-[5] pointer-events-none"
@@ -307,7 +307,7 @@ const HallOfTrophies = () => {
             to avoid stacking with sectionOpacity above. */}
         <motion.div
           ref={scrollRef}
-          className="flex overflow-x-auto scrollbar-hide gap-10 py-8 px-4 cursor-grab active:cursor-grabbing"
+          className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-4 md:gap-10 py-8 px-4 md:px-6 cursor-grab active:cursor-grabbing"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

@@ -114,7 +114,7 @@ const Informants = () => {
   }, [hoveredId]);
 
   return (
-    <section className="py-24 px-8 md:px-12 bg-[#141A21]" id="informants">
+    <section className="py-16 md:py-24 px-8 md:px-12 bg-[#141A21]" id="informants">
 
       {/* ── Section header ── */}
       <motion.div
@@ -158,8 +158,72 @@ const Informants = () => {
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#dc2626' }} />
       </motion.div>
 
-      {/* ── Accordion: entrance wrapper ── */}
+      {/* ── Mobile: horizontal swipe deck (< md) ── */}
+      <div
+        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-4 px-4 pb-4 -mx-8"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+      >
+        {INFORMANTS.map((card) => (
+          <div
+            key={card.id}
+            className="min-w-[85vw] snap-center flex-shrink-0 flex flex-col rounded-2xl p-6"
+            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.10)' }}
+          >
+            {/* Identity row */}
+            <div className="flex items-center gap-4 mb-5">
+              <img
+                src={card.image}
+                alt={card.codename}
+                className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                style={{ filter: 'grayscale(100%) contrast(145%) brightness(0.68)' }}
+              />
+              <div>
+                <p
+                  className="text-sm font-semibold text-white tracking-wider uppercase leading-snug"
+                  style={{ fontFamily: SWISS }}
+                >
+                  {card.codename}
+                </p>
+                <p className="text-[11px] text-[#D1D5DB] mt-0.5" style={{ fontFamily: SWISS }}>
+                  {card.realName}
+                </p>
+                <p
+                  className="text-[9px] text-[#9CA3AF] tracking-widest uppercase mt-1"
+                  style={{ fontFamily: TELE }}
+                >
+                  {card.role}
+                </p>
+              </div>
+            </div>
+            {/* Quote */}
+            <p
+              className="text-gray-300 text-base leading-relaxed flex-1"
+              style={{ fontFamily: SWISS }}
+            >
+              &ldquo;{card.quote}&rdquo;
+            </p>
+            {/* Footer */}
+            <div className="mt-4 pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <span
+                className="text-[7px] text-[#9CA3AF] tracking-[0.4em] uppercase"
+                style={{ fontFamily: TELE }}
+              >
+                {card.ref}
+              </span>
+              <span
+                className="text-[7px] text-[#3D7A58] tracking-[0.25em] uppercase"
+                style={{ fontFamily: TELE, border: '1px solid rgba(61,122,88,0.35)', padding: '2px 8px' }}
+              >
+                VERIFIED
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Accordion: entrance wrapper (desktop only) ── */}
       <motion.div
+        className="hidden md:block"
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
@@ -410,7 +474,7 @@ const Informants = () => {
 
       {/* ── Progress rail ──
           All 10 records shown as dots; window slot highlighted; active slot burnt orange */}
-      <div className="flex items-center gap-2.5 mt-5">
+      <div className="hidden md:flex items-center gap-2.5 mt-5">
         {INFORMANTS.map((inf, i) => {
           const inWindow    = visibleCards.some(c => c.id === inf.id);
           const isHovered   = hoveredId === inf.id;

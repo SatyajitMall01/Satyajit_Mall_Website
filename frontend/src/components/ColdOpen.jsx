@@ -50,7 +50,7 @@ const StyledHeadline = () => {
   return (
     <div className="overflow-hidden">
       <motion.h1
-        className="text-[36px] md:text-[44px] lg:text-[54px] leading-[1.15] tracking-[0.01em]"
+        className="text-4xl leading-tight tracking-tight md:text-[44px] md:leading-[1.15] md:tracking-[0.01em] lg:text-[54px]"
         style={{ fontFamily: SWISS }}
         initial={{ y: '100%' }}
         whileInView={{ y: '0%' }}
@@ -142,6 +142,9 @@ const ColdOpen = () => {
         {/* Layer 1b: Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-32 z-[1] pointer-events-none bg-gradient-to-t from-[#141A21] to-transparent" />
 
+        {/* Layer 1c: Mobile spotlight — radial glow behind text */}
+        <div className="absolute inset-0 z-[2] pointer-events-none md:hidden bg-[radial-gradient(circle_at_20%_50%,_var(--tw-gradient-stops))] from-red-900/15 via-[#141A21]/60 to-[#141A21]" />
+
         {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" */}
         <motion.div
           className="absolute inset-0 z-[15] pointer-events-none"
@@ -187,7 +190,7 @@ const ColdOpen = () => {
 
           {/* CTA Buttons */}
           <motion.div
-            className="flex flex-col sm:flex-row items-start gap-4 mt-10"
+            className="flex flex-col sm:flex-row items-stretch sm:items-start gap-4 mt-10"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -200,7 +203,7 @@ const ColdOpen = () => {
                 document.querySelector('#evidence')?.scrollIntoView({ behavior: 'smooth' });
                 window.dispatchEvent(new CustomEvent('open-action-agent'));
               }}
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#dc2626] text-white text-[11px] tracking-[0.25em] uppercase select-none group"
+              className="inline-flex items-center gap-2.5 px-7 py-4 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start bg-[#dc2626] text-white text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none group active:scale-[0.98] transition-transform"
               style={{
                 fontFamily: SWISS,
                 border: 'none',
@@ -226,7 +229,7 @@ const ColdOpen = () => {
                 e.preventDefault();
                 document.querySelector('#informants')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 text-white text-[11px] tracking-[0.25em] uppercase select-none"
+              className="inline-flex items-center gap-2.5 px-7 py-4 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start text-white text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none active:scale-[0.98] transition-transform"
               style={{
                 fontFamily: SWISS,
                 background: 'transparent',
