@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE = "'Courier New', Courier, monospace";
 
 const LINKEDIN_POSTS = [
-  { id: 'post1', embedId: 'urn:li:share:7456259425004195840', iframeHeight: 200 },
-  { id: 'post2', embedId: 'urn:li:share:7455896880158359552', iframeHeight: 200 },
-  { id: 'post3', embedId: 'urn:li:share:7455534626384564224', iframeHeight: 200 },
-  { id: 'post4', embedId: 'urn:li:share:7455333103973085184', iframeHeight: 200 },
-  { id: 'post5', embedId: 'urn:li:share:7454975642607042562', iframeHeight: 200 },
+  { id: 'post1', embedId: 'urn:li:share:7456259425004195840', iframeHeightMobile: 200, iframeHeightDesktop: 789 },
+  { id: 'post2', embedId: 'urn:li:share:7455896880158359552', iframeHeightMobile: 200, iframeHeightDesktop: 776 },
+  { id: 'post3', embedId: 'urn:li:share:7455534626384564224', iframeHeightMobile: 200, iframeHeightDesktop: 860 },
+  { id: 'post4', embedId: 'urn:li:share:7455333103973085184', iframeHeightMobile: 200, iframeHeightDesktop: 873 },
+  { id: 'post5', embedId: 'urn:li:share:7454975642607042562', iframeHeightMobile: 200, iframeHeightDesktop: 747 },
 ];
 
 const LinkedInBadge = () => (
@@ -26,7 +26,7 @@ const LinkedInBadge = () => (
 /* Wallet-peel transforms.
    N = total+1 segments: first segment is intro (cards static, no animation).
    Card i active during [(i+1)/N, (i+2)/N]. Intro phase [(0, 1/N)] keeps all cards still. */
-const IntelCard = ({ post, index, scrollYProgress, total }) => {
+const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
   const N = total + 1;   // one extra intro segment
   const isLast = index === total - 1;
   const numPts = index + 3; // keypoints: 0, 1/N … (index+2)/N
@@ -54,7 +54,10 @@ const IntelCard = ({ post, index, scrollYProgress, total }) => {
   const scale   = useTransform(scrollYProgress, scaleInputs,   scaleOutputs);
   const opacity = useTransform(scrollYProgress, opacityInputs, opacityOutputs);
 
-  const embedUrl = `https://www.linkedin.com/embed/feed/update/${post.embedId}?collapsed=1`;
+  const embedUrl = isMobile
+    ? `https://www.linkedin.com/embed/feed/update/${post.embedId}?collapsed=1`
+    : `https://www.linkedin.com/embed/feed/update/${post.embedId}`;
+  const iframeH = isMobile ? post.iframeHeightMobile : post.iframeHeightDesktop;
 
   return (
     <motion.div
@@ -110,7 +113,7 @@ const IntelCard = ({ post, index, scrollYProgress, total }) => {
         <div style={{ lineHeight: 0 }}>
           <iframe
             src={embedUrl}
-            height={post.iframeHeight}
+            height={iframeH}
             width="100%"
             frameBorder="0"
             allowFullScreen
@@ -164,11 +167,24 @@ const IntelFeed = () => {
   const sectionRef = useRef(null);
   const total = LINKEDIN_POSTS.length;
 
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
   /* Section IS the scroll track — no dead zone before first card */
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end end'],
   });
+
+  // Desktop cards are tall (~870px iframe + ~95px chrome = ~965px).
+  // Sticky stage is 100vh; keep padding minimal on desktop so card fits.
+  const paddingTop     = isMobile ? '7vh'   : '2vh';
+  const headerGap      = isMobile ? '28px'  : '16px';
+  const stackHeight    = isMobile ? '420px' : '1000px';
 
   return (
     <section
@@ -203,21 +219,21 @@ const IntelFeed = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          paddingTop: '7vh',
+          paddingTop,
           overflow: 'hidden',
-          gap: '28px',
+          gap: headerGap,
         }}
       >
         {/* Header inside sticky */}
         <div style={{ textAlign: 'center', position: 'relative', zIndex: 50, marginBottom: '0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: isMobile ? '14px' : '8px' }}>
             <div style={{ width: '24px', height: '1px', background: '#dc2626' }} />
             <span style={{ fontFamily: TELE, fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(220,38,38,0.8)', textTransform: 'uppercase' }}>
               OPEN-SOURCE INTELLIGENCE
             </span>
             <div style={{ width: '24px', height: '1px', background: '#dc2626' }} />
           </div>
-          <h2 style={{ fontFamily: SWISS, fontSize: 'clamp(20px, 2.5vw, 34px)', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: '6px' }}>
+          <h2 style={{ fontFamily: SWISS, fontSize: 'clamp(20px, 2.5vw, 34px)', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.02em', marginBottom: isMobile ? '6px' : '4px' }}>
             Intel Feed
           </h2>
           <p style={{ fontFamily: TELE, fontSize: '8px', letterSpacing: '0.2em', color: 'rgba(156,163,175,0.35)', textTransform: 'uppercase' }}>
@@ -226,7 +242,7 @@ const IntelFeed = () => {
         </div>
 
         {/* Card stack */}
-        <div style={{ position: 'relative', width: 'min(760px, 92vw)', height: '420px' }}>
+        <div style={{ position: 'relative', width: 'min(760px, 92vw)', height: stackHeight }}>
           {LINKEDIN_POSTS.map((post, i) => (
             <IntelCard
               key={post.id}
@@ -234,6 +250,7 @@ const IntelFeed = () => {
               index={i}
               scrollYProgress={scrollYProgress}
               total={total}
+              isMobile={isMobile}
             />
           ))}
         </div>
