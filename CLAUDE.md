@@ -29,19 +29,32 @@ This file is auto-loaded by Claude Code at the start of every conversation in th
 
 Three live branches kept in sync:
 
-- **`cases2`** — active working branch (all feature work happens here)
+- **`cases2`** — integration branch (merge target, not where feature work happens)
 - **`main`** — GitHub default, deployment target
 - **`master`** — legacy/mirror, kept in sync with main
 
-**Push sequence** when user says "push to main and master":
-```bash
-git push origin cases2
-git checkout main && git merge cases2 && git push origin main
-git checkout master && git merge cases2 && git push origin master
-git checkout cases2
-```
+### ⚠️ MANDATORY RULES — NO EXCEPTIONS
 
-Never push to main/master without going through cases2 first. Never force-push. Never skip hooks.
+1. **Never merge to `main` or `master` without explicit user approval.** Do not push to main/master unless the user has said "push to main", "push to main and master", or equivalent in the same conversation turn.
+
+2. **Every new feature gets its own branch.** When starting new feature work, always create a dedicated branch from `cases2`:
+   ```bash
+   git checkout cases2
+   git checkout -b feature/<short-name>
+   # do all work here
+   ```
+   Do NOT work directly on `cases2` for new features.
+
+3. **Push sequence** when user explicitly approves merge to main/master:
+   ```bash
+   git push origin <feature-branch>
+   git checkout cases2 && git merge <feature-branch> && git push origin cases2
+   git checkout main && git merge cases2 && git push origin main
+   git checkout master && git merge cases2 && git push origin master
+   git checkout cases2
+   ```
+
+Never force-push. Never skip hooks.
 
 ---
 
