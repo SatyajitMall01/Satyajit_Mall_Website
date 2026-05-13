@@ -5,11 +5,11 @@ const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE = "'Courier New', Courier, monospace";
 
 const LINKEDIN_POSTS = [
-  { id: 'post1', embedId: 'urn:li:share:7456259425004195840', iframeHeightMobile: 200, iframeHeightDesktop: 789 },
-  { id: 'post2', embedId: 'urn:li:share:7455896880158359552', iframeHeightMobile: 200, iframeHeightDesktop: 776 },
-  { id: 'post3', embedId: 'urn:li:share:7455534626384564224', iframeHeightMobile: 200, iframeHeightDesktop: 860 },
-  { id: 'post4', embedId: 'urn:li:share:7455333103973085184', iframeHeightMobile: 200, iframeHeightDesktop: 873 },
-  { id: 'post5', embedId: 'urn:li:share:7454975642607042562', iframeHeightMobile: 200, iframeHeightDesktop: 747 },
+  { id: 'post1', embedId: 'urn:li:share:7456259425004195840', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post2', embedId: 'urn:li:share:7455896880158359552', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post3', embedId: 'urn:li:share:7455534626384564224', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post4', embedId: 'urn:li:share:7455333103973085184', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post5', embedId: 'urn:li:share:7454975642607042562', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
 ];
 
 const LinkedInBadge = () => (
@@ -24,25 +24,27 @@ const LinkedInBadge = () => (
 );
 
 /* Wallet-peel transforms.
-   N = total+1 segments: first segment is intro (cards static, no animation).
-   Card i active during [(i+1)/N, (i+2)/N]. Intro phase [(0, 1/N)] keeps all cards still. */
+   N = total+1 segments. Card i active during [(i+1)/N, (i+2)/N].
+   Intro phase [0, 1/N] holds all cards still.
+   Stack depth: 80px per level (capped at 2 levels = 160px peek). */
 const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
-  const N = total + 1;   // one extra intro segment
+  const N = total + 1;
   const isLast = index === total - 1;
-  const numPts = index + 3; // keypoints: 0, 1/N … (index+2)/N
+  const numPts = index + 3;
 
-  // Y: intro phase holds still, then each card-exit shifts depth, then active at 0, exits at -800
+  // Y: stack depth 80px/level; active at 0; exits UP at -900
   const yInputs  = Array.from({ length: numPts }, (_, k) => k === 0 ? 0 : k / N);
   const yOutputs = Array.from({ length: numPts }, (_, k) => {
-    if (k === 0)           return Math.min(index, 2) * 40;          // initial stack depth
-    if (k <= index)        return Math.min(index - k + 1, 2) * 40;  // each card above exits
-    if (k === index + 1)   return 0;                                  // active: front
-    return isLast ? 0 : -800;                                         // exit UP
+    if (k === 0)         return Math.min(index, 2) * 80;
+    if (k <= index)      return Math.min(index - k + 1, 2) * 80;
+    if (k === index + 1) return 0;
+    return isLast ? 0 : -900;
   });
 
-  // Scale: 0.85 in stack → 1 when becoming active
+  // Scale: 0.95 one-deep, 0.90 two-deep → 1 when active
+  const depthScale = Math.max(0.90, 1 - Math.min(index, 2) * 0.05);
   const scaleInputs  = index === 0 ? [0, 1] : [index / N, (index + 1) / N];
-  const scaleOutputs = index === 0 ? [1, 1] : [0.85, 1];
+  const scaleOutputs = index === 0 ? [1, 1] : [depthScale, 1];
 
   // Opacity: fade on exit (last card stays)
   const start = (index + 1) / N;
@@ -66,7 +68,7 @@ const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
         top: 0,
         left: '50%',
         translateX: '-50%',
-        width: 'min(760px, 92vw)',
+        width: 'min(860px, 94vw)',
         y,
         scale,
         opacity,
@@ -79,9 +81,10 @@ const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
         style={{
           background: '#0A0A0A',
           border: '1px solid rgba(255,255,255,0.08)',
+          borderTop: '1px solid rgba(255,255,255,0.12)',
           borderRadius: '12px',
           overflow: 'hidden',
-          boxShadow: '0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03) inset',
+          boxShadow: '0 30px 70px rgba(0,0,0,0.92), 0 8px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset',
           position: 'relative',
         }}
       >
@@ -109,8 +112,8 @@ const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
           <LinkedInBadge />
         </div>
 
-        {/* LinkedIn iframe */}
-        <div style={{ lineHeight: 0 }}>
+        {/* LinkedIn iframe with gradient fade on desktop */}
+        <div style={{ lineHeight: 0, position: 'relative' }}>
           <iframe
             src={embedUrl}
             height={iframeH}
@@ -120,6 +123,20 @@ const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
             title={`LinkedIn post ${index + 1}`}
             style={{ display: 'block', border: 'none' }}
           />
+          {/* Gradient fade — suggests more content below */}
+          {!isMobile && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '72px',
+                background: 'linear-gradient(to bottom, transparent, #0A0A0A)',
+                pointerEvents: 'none',
+              }}
+            />
+          )}
         </div>
 
         {/* Card footer */}
@@ -155,7 +172,7 @@ const IntelCard = ({ post, index, scrollYProgress, total, isMobile }) => {
             onMouseEnter={e => { e.currentTarget.style.color = '#dc2626'; }}
             onMouseLeave={e => { e.currentTarget.style.color = 'rgba(220,38,38,0.6)'; }}
           >
-            OPEN FULL POST →
+            READ FULL POST →
           </a>
         </div>
       </div>
@@ -180,11 +197,12 @@ const IntelFeed = () => {
     offset: ['start start', 'end end'],
   });
 
-  // Desktop cards are tall (~870px iframe + ~95px chrome = ~965px).
-  // Sticky stage is 100vh; keep padding minimal on desktop so card fits.
-  const paddingTop     = isMobile ? '7vh'   : '2vh';
-  const headerGap      = isMobile ? '28px'  : '16px';
-  const stackHeight    = isMobile ? '420px' : '1000px';
+  // Stack container must fit active card + 2 peeking cards at 80px each.
+  // Desktop card: ~380 iframe + ~95 chrome = ~475px. Peek 2×80 = 160px → 635px min.
+  // Mobile card:  ~200 iframe + ~95 chrome = ~295px. Peek 2×80 = 160px → 455px min.
+  const paddingTop  = isMobile ? '7vh'   : '2vh';
+  const headerGap   = isMobile ? '24px'  : '14px';
+  const stackHeight = isMobile ? '480px' : '680px';
 
   return (
     <section
@@ -195,7 +213,7 @@ const IntelFeed = () => {
         height: `${(total + 1) * 80}vh`,
       }}
     >
-      {/* Ambient bridge — blends transition from previous section */}
+      {/* Ambient bridge */}
       <div
         style={{
           position: 'absolute',
@@ -209,7 +227,7 @@ const IntelFeed = () => {
         }}
       />
 
-      {/* Sticky stage — header + cards locked together, zero dead zone */}
+      {/* Sticky stage */}
       <div
         style={{
           position: 'sticky',
@@ -224,8 +242,8 @@ const IntelFeed = () => {
           gap: headerGap,
         }}
       >
-        {/* Header inside sticky */}
-        <div style={{ textAlign: 'center', position: 'relative', zIndex: 50, marginBottom: '0' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 50 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: isMobile ? '14px' : '8px' }}>
             <div style={{ width: '24px', height: '1px', background: '#dc2626' }} />
             <span style={{ fontFamily: TELE, fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(220,38,38,0.8)', textTransform: 'uppercase' }}>
@@ -242,7 +260,7 @@ const IntelFeed = () => {
         </div>
 
         {/* Card stack */}
-        <div style={{ position: 'relative', width: 'min(760px, 92vw)', height: stackHeight }}>
+        <div style={{ position: 'relative', width: 'min(860px, 94vw)', height: stackHeight }}>
           {LINKEDIN_POSTS.map((post, i) => (
             <IntelCard
               key={post.id}
