@@ -6,6 +6,7 @@ import LedgerEdge from "@/components/LedgerEdge";
 import ColdOpen from "@/components/ColdOpen";
 import HallOfTrophies from "@/components/HallOfTrophies";
 import Informants from "@/components/Informants";
+import IntelFeed from "@/components/IntelFeed";
 import Dossier from "@/components/Dossier";
 import InformantsPage from "@/components/InformantsPage";
 import ActionAgent from "@/components/ActionAgent";
@@ -64,6 +65,9 @@ const HomePage = () => {
             <Informants />
           </div>
         </div>
+
+        {/* Intel Feed — LinkedIn posts stacked deck */}
+        <IntelFeed />
 
         {/* Footer */}
         <footer className="py-16 px-8 md:px-12 border-t border-[#1A1A1A]">
