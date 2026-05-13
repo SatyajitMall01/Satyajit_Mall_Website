@@ -158,19 +158,35 @@ const Informants = () => {
         <div className="w-12 h-px mt-4" style={{ backgroundColor: '#dc2626' }} />
       </motion.div>
 
-      {/* ── Mobile: classified dossier snap deck — mirrors desktop active state (< md) ── */}
+      {/* ── Mobile: centered dossier deck — active card centered, adjacent peek from sides (< md) ── */}
+      <div className="relative md:hidden -mx-8">
+
+        {/* Left edge fade — makes peeking card appear to recede/stack */}
+        <div className="absolute left-0 top-0 bottom-4 w-12 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to right, #141A21 0%, transparent 100%)' }} />
+
+        {/* Right edge fade */}
+        <div className="absolute right-0 top-0 bottom-4 w-12 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to left, #141A21 0%, transparent 100%)' }} />
+
       <motion.div
-        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory md:hidden gap-4 px-4 pb-4 -mx-8"
+        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-3 pb-4"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.6 }}
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+        style={{
+          paddingLeft: '12.5vw',
+          paddingRight: '12.5vw',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
       >
         {INFORMANTS.map((card) => (
           <motion.div
             key={card.id}
-            className="min-w-[85vw] h-[480px] relative flex-shrink-0 snap-center overflow-hidden"
+            className="min-w-[75vw] h-[480px] relative flex-shrink-0 snap-center overflow-hidden"
             style={{ backgroundColor: '#0C1018' }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -303,6 +319,7 @@ const Informants = () => {
           </motion.div>
         ))}
       </motion.div>
+      </div>{/* end centered deck wrapper */}
 
       {/* ── Accordion: entrance wrapper (desktop only) ── */}
       <motion.div
