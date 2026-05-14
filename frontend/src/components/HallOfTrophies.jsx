@@ -300,6 +300,14 @@ const HallOfTrophies = () => {
 
   const duplicatedCards = [...evidenceCards, ...evidenceCards];
 
+  const handleDragEnd = (_, { offset }) => {
+    if (offset.x < -50 && activeIndex < evidenceCards.length - 1) {
+      setActiveIndex(prev => prev + 1);
+    } else if (offset.x > 50 && activeIndex > 0) {
+      setActiveIndex(prev => prev - 1);
+    }
+  };
+
   return (
     <section className="relative py-16 md:py-24 bg-[#141A21]" id="evidence" ref={sectionRef}>
       {/* Darkness overlay */}
@@ -345,99 +353,77 @@ const HallOfTrophies = () => {
           <div className="relative h-[450px] w-full flex justify-center items-center overflow-hidden">
             {evidenceCards.map((card, index) => {
               const offset = index - activeIndex;
+              if (Math.abs(offset) > 2) return null;
+
               return (
                 <motion.div
                   key={card.id}
-                  className="absolute w-[80vw] max-w-[320px] h-[390px]"
-                  animate={{
-                    x: offset * 50,
-                    scale: 1 - Math.abs(offset) * 0.1,
-                    zIndex: 50 - Math.abs(offset),
-                    opacity: Math.abs(offset) >= 3 ? 0 : 1 - Math.abs(offset) * 0.3,
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  drag={offset === 0 ? 'x' : false}
+                  drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.1}
-                  onDragEnd={(e, { offset: dragOffset }) => {
-                    const swipeThreshold = 50;
-                    if (dragOffset.x < -swipeThreshold && activeIndex < evidenceCards.length - 1) {
-                      setActiveIndex(prev => prev + 1);
-                    } else if (dragOffset.x > swipeThreshold && activeIndex > 0) {
-                      setActiveIndex(prev => prev - 1);
-                    }
+                  onDragEnd={handleDragEnd}
+                  animate={{
+                    x: offset * 45,
+                    scale: 1 - Math.abs(offset) * 0.15,
+                    zIndex: 50 - Math.abs(offset),
+                    opacity: Math.abs(offset) >= 2 ? 0 : 1 - Math.abs(offset) * 0.4,
                   }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  className="absolute w-[75vw] max-w-[320px] aspect-[4/5] rounded-2xl bg-[#0A0A0A] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-6 cursor-grab active:cursor-grabbing"
                 >
-                  <div
-                    className="w-full h-full rounded-2xl border border-white/10 p-6 flex flex-col justify-between shadow-2xl"
-                    style={{ backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(12px)' }}
-                  >
-                    {/* Top: case metadata */}
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
-                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                      >
-                        {card.caseNumber}
-                      </span>
-                      <span
-                        className="text-[8px] text-[#dc2626]/60 tracking-[0.2em] uppercase"
-                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                      >
-                        Closed &mdash; Solved
-                      </span>
-                    </div>
-
-                    {/* Middle: title block */}
-                    <div>
-                      <p
-                        className="text-[9px] text-[#D1D5DB]/50 tracking-[0.15em] uppercase mb-2"
-                        style={{ fontFamily: SWISS }}
-                      >
-                        {card.displayTitle}
-                      </p>
-                      <h2
-                        className="text-[20px] text-white tracking-[0.02em] leading-snug"
-                        style={{ fontFamily: SWISS }}
-                      >
-                        {card.baseTitle}
-                      </h2>
-                    </div>
-
-                    {/* Bottom: key insight */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-1.5 h-1.5 bg-[#dc2626]" />
-                        <span
-                          className="text-[7px] text-[#dc2626] tracking-[0.3em] uppercase"
-                          style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                        >
-                          Key Insight
-                        </span>
-                      </div>
-                      <p
-                        className="text-[10px] text-white/50 leading-[1.8] tracking-[0.01em]"
-                        style={{ fontFamily: SWISS }}
-                      >
-                        &ldquo;{card.forensicInsight?.length > 100
-                          ? card.forensicInsight.slice(0, 97) + '…'
-                          : card.forensicInsight}&rdquo;
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {card.tags.slice(0, 2).map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[7px] text-[#dc2626]/60 border border-[#dc2626]/30 px-2 py-0.5 tracking-[0.2em] uppercase"
-                            style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                  {/* Case metadata — top */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
+                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                    >
+                      {card.caseNumber}
+                    </span>
+                    <span
+                      className="text-[8px] text-[#dc2626]/60 tracking-[0.2em] uppercase"
+                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                    >
+                      Closed &mdash; Solved
+                    </span>
                   </div>
 
-                  {/* Link overlay — navigates to case study */}
+                  {/* Title block — middle */}
+                  <div className="mb-auto">
+                    <p
+                      className="text-[9px] text-[#D1D5DB]/50 tracking-[0.15em] uppercase mb-2"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      {card.displayTitle}
+                    </p>
+                    <h2
+                      className="text-[22px] text-white tracking-[0.02em] leading-snug"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      {card.baseTitle}
+                    </h2>
+                  </div>
+
+                  {/* Key insight — bottom */}
+                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
+                      <span
+                        className="text-[7px] text-[#dc2626] tracking-[0.3em] uppercase"
+                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                      >
+                        Key Insight
+                      </span>
+                    </div>
+                    <p
+                      className="text-[10px] text-white/50 leading-[1.8]"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      &ldquo;{card.forensicInsight?.length > 100
+                        ? card.forensicInsight.slice(0, 97) + '…'
+                        : card.forensicInsight}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Link overlay */}
                   {card.slug && (
                     <Link
                       to={`/cases/${card.slug}`}
