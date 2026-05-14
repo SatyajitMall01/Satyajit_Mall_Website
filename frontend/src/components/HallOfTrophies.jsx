@@ -342,26 +342,18 @@ const HallOfTrophies = () => {
 
         {/* ── Mobile: 3D Coverflow Carousel ── */}
         <div className="flex md:hidden flex-col">
-          <div className="relative h-[450px] w-full overflow-hidden">
+          <div className="relative h-[450px] w-full flex justify-center items-center overflow-hidden">
             {evidenceCards.map((card, index) => {
               const offset = index - activeIndex;
               return (
                 <motion.div
                   key={card.id}
-                  className="absolute"
-                  style={{
-                    width: 300,
-                    height: 375,
-                    left: '50%',
-                    top: '50%',
-                    marginLeft: -150,
-                    marginTop: -187,
-                  }}
+                  className="absolute w-[80vw] max-w-[320px] h-[390px]"
                   animate={{
-                    x: offset * 60,
+                    x: offset * 50,
                     scale: 1 - Math.abs(offset) * 0.1,
                     zIndex: 50 - Math.abs(offset),
-                    opacity: Math.abs(offset) >= 3 ? 0 : 1 - Math.abs(offset) * 0.2,
+                    opacity: Math.abs(offset) >= 3 ? 0 : 1 - Math.abs(offset) * 0.3,
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   drag={offset === 0 ? 'x' : false}
