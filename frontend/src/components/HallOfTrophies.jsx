@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { evidenceCards } from '../data/mock';
+import TrophyDeck from './TrophyDeck';
 import { Separator } from './ui/separator';
 import { Search } from 'lucide-react';
 
@@ -250,8 +251,6 @@ const HallOfTrophies = () => {
   const startX     = useRef(0);
   const scrollLeftStart = useRef(0);
   const [carouselReady, setCarouselReady] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-
   const { scrollYProgress: sectionProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'start 0.35'],
@@ -300,14 +299,6 @@ const HallOfTrophies = () => {
 
   const duplicatedCards = [...evidenceCards, ...evidenceCards];
 
-  const handleDragEnd = (_, { offset }) => {
-    if (offset.x < -50 && activeIndex < evidenceCards.length - 1) {
-      setActiveIndex(prev => prev + 1);
-    } else if (offset.x > 50 && activeIndex > 0) {
-      setActiveIndex(prev => prev - 1);
-    }
-  };
-
   return (
     <section className="relative py-16 md:py-24 bg-[#141A21]" id="evidence" ref={sectionRef}>
       {/* Darkness overlay */}
@@ -348,110 +339,15 @@ const HallOfTrophies = () => {
           <div className="w-12 h-[1px] bg-[#dc2626] mt-4" />
         </div>
 
-        {/* ── Mobile: 3D Coverflow Carousel ── */}
-        <div className="flex md:hidden flex-col">
-          <div className="relative h-[450px] w-full flex justify-center items-center overflow-hidden">
-            {evidenceCards.map((card, index) => {
-              const offset = index - activeIndex;
-              if (Math.abs(offset) > 2) return null;
-
-              return (
-                <motion.div
-                  key={card.id}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={handleDragEnd}
-                  animate={{
-                    x: offset * 45,
-                    scale: 1 - Math.abs(offset) * 0.15,
-                    zIndex: 50 - Math.abs(offset),
-                    opacity: Math.abs(offset) >= 2 ? 0 : 1 - Math.abs(offset) * 0.4,
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                  className="absolute w-[75vw] max-w-[320px] aspect-[4/5] rounded-2xl bg-[#0A0A0A] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-6 cursor-grab active:cursor-grabbing"
-                >
-                  {/* Case metadata — top */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span
-                      className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
-                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                    >
-                      {card.caseNumber}
-                    </span>
-                    <span
-                      className="text-[8px] text-[#dc2626]/60 tracking-[0.2em] uppercase"
-                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                    >
-                      Closed &mdash; Solved
-                    </span>
-                  </div>
-
-                  {/* Title block — middle */}
-                  <div className="mb-auto">
-                    <p
-                      className="text-[9px] text-[#D1D5DB]/50 tracking-[0.15em] uppercase mb-2"
-                      style={{ fontFamily: SWISS }}
-                    >
-                      {card.displayTitle}
-                    </p>
-                    <h2
-                      className="text-[22px] text-white tracking-[0.02em] leading-snug"
-                      style={{ fontFamily: SWISS }}
-                    >
-                      {card.baseTitle}
-                    </h2>
-                  </div>
-
-                  {/* Key insight — bottom */}
-                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
-                      <span
-                        className="text-[7px] text-[#dc2626] tracking-[0.3em] uppercase"
-                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
-                      >
-                        Key Insight
-                      </span>
-                    </div>
-                    <p
-                      className="text-[10px] text-white/50 leading-[1.8]"
-                      style={{ fontFamily: SWISS }}
-                    >
-                      &ldquo;{card.forensicInsight?.length > 100
-                        ? card.forensicInsight.slice(0, 97) + '…'
-                        : card.forensicInsight}&rdquo;
-                    </p>
-                  </div>
-
-                  {/* Link overlay */}
-                  {card.slug && (
-                    <Link
-                      to={`/cases/${card.slug}`}
-                      className="absolute inset-0 z-20 rounded-2xl"
-                      aria-label={`View ${card.baseTitle} case study`}
-                    />
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Navigation dots */}
-          <div className="flex justify-center gap-2 pt-2 pb-4">
-            {evidenceCards.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveIndex(i)}
-                className="rounded-full transition-all duration-300"
-                style={{
-                  width: i === activeIndex ? 20 : 6,
-                  height: 6,
-                  backgroundColor: i === activeIndex ? '#dc2626' : 'rgba(255,255,255,0.2)',
-                }}
-                aria-label={`Go to card ${i + 1}`}
-              />
-            ))}
-          </div>
+        {/* ── Mobile: TrophyDeck scattered deck animation ── */}
+        <div className="md:hidden">
+          <TrophyDeck cases={evidenceCards.map(c => ({
+            id: c.id,
+            caseNo: c.caseNumber,
+            category: c.displayTitle,
+            title: c.baseTitle,
+            insight: c.forensicInsight,
+          }))} />
         </div>
 
         {/* ── Desktop Carousel — orchestrated "Evidence Drop" stagger ──
