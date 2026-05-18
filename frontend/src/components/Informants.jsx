@@ -162,48 +162,61 @@ const Informants = () => {
       {/* ── Mobile: Center-Focused Poster Carousel — bespoke physics stage ── */}
       <div className="md:hidden -mx-8">
 
-        {/* Stage */}
-        <div className="relative h-[500px] w-full overflow-hidden">
+        {/* Stage — 3D perspective + infinite loop. Always 3 cards: left/center/right. */}
+        <div className="relative h-[500px] w-full overflow-hidden flex justify-center items-center [perspective:1000px]">
           {INFORMANTS.map((inf, index) => {
-            const offset = index - activeIndex;
+            const total = INFORMANTS.length;
+            let offset = index - activeIndex;
+            // Circular shortest-path wrap
+            const half = Math.floor(total / 2);
+            if (offset > half) offset -= total;
+            if (offset < -half) offset += total;
+
+            if (Math.abs(offset) > 1) return null;
+            const isCenter = offset === 0;
             return (
               <motion.div
                 key={inf.id}
-                className="absolute w-[75vw] max-w-[340px] h-[450px] rounded-3xl overflow-hidden border border-white/10 cursor-grab active:cursor-grabbing"
-                style={{
-                  left: '50%',
-                  marginLeft: 'calc(-37.5vw)',
-                  top: 25,
-                }}
+                className="absolute w-[75vw] max-w-[340px] h-[450px] rounded-3xl overflow-hidden border border-white/10 cursor-grab active:cursor-grabbing shadow-[0_0_40px_rgba(0,0,0,0.8)]"
+                style={{ transformStyle: 'preserve-3d' }}
                 animate={{
-                  x: `${offset * 85}vw`,
-                  scale: offset !== 0 ? 0.8 : 1,
-                  opacity: offset !== 0 ? 0.3 : 1,
-                  zIndex: offset === 0 ? 50 : 50 - Math.abs(offset),
+                  x: `calc(${offset * 40}vw)`,
+                  scale: isCenter ? 1 : 0.75,
+                  rotateY: isCenter ? 0 : offset > 0 ? -15 : 15,
+                  opacity: isCenter ? 1 : 0.4,
+                  zIndex: isCenter ? 50 : 40,
                 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                drag={offset === 0 ? 'x' : false}
+                drag={isCenter ? 'x' : false}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
                 onDragEnd={(_, { offset: dragOffset }) => {
                   const swipeThreshold = 50;
-                  if (dragOffset.x < -swipeThreshold && activeIndex < INFORMANTS.length - 1) {
-                    setActiveIndex(prev => prev + 1);
-                  } else if (dragOffset.x > swipeThreshold && activeIndex > 0) {
-                    setActiveIndex(prev => prev - 1);
+                  if (dragOffset.x < -swipeThreshold) {
+                    setActiveIndex((prev) => (prev + 1) % INFORMANTS.length);
+                  } else if (dragOffset.x > swipeThreshold) {
+                    setActiveIndex((prev) => (prev - 1 + INFORMANTS.length) % INFORMANTS.length);
                   }
                 }}
               >
-                {/* Background portrait */}
+                {/* Background portrait — center bright, sides muted */}
                 <img
                   src={inf.image}
                   alt={inf.codename}
-                  className="absolute inset-0 w-full h-full object-cover object-[25%] grayscale opacity-60 mix-blend-luminosity pointer-events-none select-none"
+                  className={`absolute inset-0 w-full h-full object-cover object-[25%] pointer-events-none select-none ${
+                    isCenter
+                      ? 'opacity-95'
+                      : 'grayscale opacity-60 mix-blend-luminosity'
+                  }`}
                   draggable={false}
                 />
 
-                {/* Heavy bottom gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent" />
+                {/* Bottom gradient — lighter on center to let portrait breathe */}
+                <div className={`absolute inset-0 ${
+                  isCenter
+                    ? 'bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent'
+                    : 'bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent'
+                }`} />
 
                 {/* Content — pinned to bottom */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 z-10">

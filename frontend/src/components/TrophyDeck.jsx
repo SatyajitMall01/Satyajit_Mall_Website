@@ -5,15 +5,15 @@ const EASE  = [0.32, 0.72, 0, 1];
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
 
-/* Exact slot geometry from spec — index 0 = front, 5 = back.
-   Diagonal scatter (alternating x/y signs) makes it feel dealt, not stacked. */
+/* Fan geometry: index 0 = front (bottom-right), 5 = back (top-left).
+   Consistent diagonal direction creates the dealt-hand fan look. */
 const SLOTS = [
-  { x:   0, y:   0, rotate:  -2, scale: 1.00, opacity: 1.00 },
-  { x: -30, y: -25, rotate:   4, scale: 0.97, opacity: 0.85 },
-  { x:  35, y:  30, rotate:  -5, scale: 0.95, opacity: 0.70 },
-  { x: -45, y:  40, rotate:   7, scale: 0.93, opacity: 0.55 },
-  { x:  50, y: -35, rotate:  -8, scale: 0.91, opacity: 0.40 },
-  { x: -55, y: -50, rotate:  10, scale: 0.89, opacity: 0.25 },
+  { x:  55, y:  65, rotate:  12, scale: 1.00, opacity: 1.00 },
+  { x:  22, y:  35, rotate:   7, scale: 0.96, opacity: 0.88 },
+  { x:  -8, y:   8, rotate:   2, scale: 0.92, opacity: 0.76 },
+  { x: -36, y: -18, rotate:  -3, scale: 0.88, opacity: 0.62 },
+  { x: -58, y: -42, rotate:  -8, scale: 0.84, opacity: 0.48 },
+  { x: -74, y: -62, rotate: -12, scale: 0.80, opacity: 0.34 },
 ];
 
 const SAMPLE_CASES = [
@@ -98,7 +98,7 @@ const TrophyDeck = ({ cases = SAMPLE_CASES }) => {
     /* flex justify/align-center: absolute children inherit this as their
        CSS static position, so they naturally stack at dead center (x=0,y=0)
        before Framer Motion applies the slot offsets. */
-    <div className="relative flex justify-center items-center" style={{ height: 520 }}>
+    <div className="relative flex justify-center items-center overflow-hidden" style={{ height: 560 }}>
       <AnimatePresence>
         {deck.map((card, i) => {
           const s = SLOTS[i];
@@ -116,11 +116,11 @@ const TrophyDeck = ({ cases = SAMPLE_CASES }) => {
                 zIndex: 6 - i, // front card = zIndex 6, back = 1
               }}
 
-              /* Front card exit: flicks to lower-right, rotates, fades.
+              /* Front card exit: shoots upward from bottom-right position, fades.
                  zIndex 10 keeps it painting above the shifting stack during exit. */
               exit={{
-                x: 180, y: 220, rotate: -17, opacity: 0, scale: 0.94, zIndex: 10,
-                transition: { duration: 0.7, ease: EASE },
+                x: 30, y: -350, rotate: 8, opacity: 0, scale: 0.88, zIndex: 10,
+                transition: { duration: 0.65, ease: EASE },
               }}
 
               transition={{

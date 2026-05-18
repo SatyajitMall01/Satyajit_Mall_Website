@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { evidenceCards } from '../data/mock';
-import TrophyDeck from './TrophyDeck';
 import { Separator } from './ui/separator';
 import { Search } from 'lucide-react';
 
@@ -251,6 +250,18 @@ const HallOfTrophies = () => {
   const startX     = useRef(0);
   const scrollLeftStart = useRef(0);
   const [carouselReady, setCarouselReady] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  // Auto-flip forward every 1.5s. Pauses on drag, resumes 2s after release.
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % evidenceCards.length);
+    }, 1500);
+    return () => clearInterval(id);
+  }, [paused]);
+
   const { scrollYProgress: sectionProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'start 0.35'],
@@ -339,15 +350,130 @@ const HallOfTrophies = () => {
           <div className="w-12 h-[1px] bg-[#dc2626] mt-4" />
         </div>
 
-        {/* ── Mobile: TrophyDeck scattered deck animation ── */}
-        <div className="md:hidden">
-          <TrophyDeck cases={evidenceCards.map(c => ({
-            id: c.id,
-            caseNo: c.caseNumber,
-            category: c.displayTitle,
-            title: c.baseTitle,
-            insight: c.forensicInsight,
-          }))} />
+        {/* ── Mobile: Infinite Loop Coverflow ──
+            5 cards visible: 2 top-left, 1 active, 2 bottom-right.
+            Circular shortest-path math wraps offset to [-2..+2].
+            Swipe left = next, swipe right = previous. Infinite. */}
+        <div className="md:hidden flex flex-col">
+          <div className="relative h-[500px] w-full flex justify-center items-center overflow-hidden">
+            {evidenceCards.map((card, index) => {
+              const total = evidenceCards.length;
+              let offset = index - activeIndex;
+
+              // Circular shortest-path: wrap to keep offset in [-half..+half]
+              const half = Math.floor(total / 2);
+              if (offset > half) offset -= total;
+              if (offset < -half) offset += total;
+
+              if (Math.abs(offset) > 2) return null;
+              const isActive = offset === 0;
+
+              return (
+                <motion.div
+                  key={card.id}
+                  drag={isActive ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.4}
+                  onDragStart={() => setPaused(true)}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x < -50) {
+                      setActiveIndex((prev) => (prev + 1) % total);
+                    } else if (info.offset.x > 50) {
+                      setActiveIndex((prev) => (prev - 1 + total) % total);
+                    }
+                    setTimeout(() => setPaused(false), 2000);
+                  }}
+                  animate={{
+                    x: offset * 35,
+                    y: offset * 35,
+                    scale: 1 - Math.abs(offset) * 0.05,
+                    zIndex: 50 - Math.abs(offset),
+                    opacity: Math.abs(offset) === 2 ? 0.4 : Math.abs(offset) === 1 ? 0.8 : 1,
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="absolute w-[75vw] max-w-[320px] aspect-[4/5] rounded-2xl bg-[#0A0A0A] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-6 cursor-grab active:cursor-grabbing"
+                >
+                  {/* Case metadata — top */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className="text-[9px] text-[#dc2626] tracking-[0.35em] uppercase"
+                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                    >
+                      {card.caseNumber}
+                    </span>
+                    <span
+                      className="text-[8px] text-[#dc2626]/60 tracking-[0.2em] uppercase"
+                      style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                    >
+                      Closed &mdash; Solved
+                    </span>
+                  </div>
+
+                  {/* Title block */}
+                  <div className="mb-auto">
+                    <p
+                      className="text-[9px] text-[#D1D5DB]/50 tracking-[0.15em] uppercase mb-2"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      {card.displayTitle}
+                    </p>
+                    <h2
+                      className="text-[22px] text-white tracking-[0.02em] leading-snug"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      {card.baseTitle}
+                    </h2>
+                  </div>
+
+                  {/* Key insight */}
+                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#dc2626]" />
+                      <span
+                        className="text-[7px] text-[#dc2626] tracking-[0.3em] uppercase"
+                        style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                      >
+                        Key Insight
+                      </span>
+                    </div>
+                    <p
+                      className="text-[10px] text-white/50 leading-[1.8]"
+                      style={{ fontFamily: SWISS }}
+                    >
+                      &ldquo;{card.forensicInsight?.length > 100
+                        ? card.forensicInsight.slice(0, 97) + '…'
+                        : card.forensicInsight}&rdquo;
+                    </p>
+                  </div>
+
+                  {card.slug && (
+                    <Link
+                      to={`/cases/${card.slug}`}
+                      className="absolute inset-0 z-20 rounded-2xl"
+                      aria-label={`View ${card.baseTitle} case study`}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Progress dots — tap to jump */}
+          <div className="flex justify-center gap-2 pt-2 pb-4">
+            {evidenceCards.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === activeIndex ? 20 : 6,
+                  height: 6,
+                  backgroundColor: i === activeIndex ? '#dc2626' : 'rgba(255,255,255,0.2)',
+                }}
+                aria-label={`Go to card ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* ── Desktop Carousel — orchestrated "Evidence Drop" stagger ──

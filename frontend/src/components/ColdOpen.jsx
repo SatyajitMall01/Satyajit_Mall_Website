@@ -50,7 +50,7 @@ const StyledHeadline = () => {
   return (
     <div className="overflow-hidden">
       <motion.h1
-        className="text-4xl leading-tight tracking-tight md:text-[44px] md:leading-[1.15] md:tracking-[0.01em] lg:text-[54px]"
+        className="text-4xl leading-[1.1] tracking-tight md:text-[44px] md:leading-[1.15] md:tracking-[0.01em] lg:text-[54px]"
         style={{ fontFamily: SWISS }}
         initial={{ y: '100%' }}
         whileInView={{ y: '0%' }}
@@ -145,6 +145,9 @@ const ColdOpen = () => {
         {/* Layer 1c: Mobile dark overlay — keeps text readable over full-bleed image */}
         <div className="absolute inset-0 z-[2] pointer-events-none md:hidden bg-black/70" />
 
+        {/* Layer 1d: Cinematic melt — mobile image fades into #050505 background */}
+        <div className="absolute inset-0 z-[3] pointer-events-none md:hidden bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent" />
+
         {/* Layer 2: Chiaroscuro shadow — "Into the Shadows" */}
         <motion.div
           className="absolute inset-0 z-[15] pointer-events-none"
@@ -153,24 +156,22 @@ const ColdOpen = () => {
 
         {/* Layer 3: Foreground content — sinks on scroll */}
         <motion.div
-          className="relative z-10 w-full md:w-[60%] pl-8 md:pl-16 py-16"
+          className="relative z-10 w-full md:w-[60%] pl-8 md:pl-16 pt-2 pb-16 md:py-16"
           style={{ y: textSinkY }}
         >
-          {/* Case file tag */}
+          {/* Case file tag — tactical HUD pill with blinking dot */}
           <motion.div
-            className="flex items-center gap-2.5 mb-8"
+            className="mb-2 md:mb-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, ease: 'linear', delay: 0.1 }}
           >
-            <FileSearch size={13} strokeWidth={1.5} className="text-[#dc2626]" />
-            <span
-              className="text-[9px] text-[#FFFFFF]/50 tracking-[0.4em] uppercase"
-              style={{ fontFamily: SWISS }}
-            >
+            <div className="inline-flex items-center gap-2 text-red-500 font-mono text-[10px] tracking-widest uppercase bg-red-500/10 border border-red-500/20 px-2.5 py-1 rounded-sm">
+              <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+              <FileSearch size={11} strokeWidth={1.75} />
               Active File #001
-            </span>
+            </div>
           </motion.div>
 
           {/* Headline — mask reveal */}
@@ -178,8 +179,8 @@ const ColdOpen = () => {
 
           {/* Sub-headline — blur fade */}
           <motion.p
-            className="mt-7 text-[13px] leading-[2.1] tracking-[0.02em] max-w-lg"
-            style={{ fontFamily: SWISS, color: '#A0A0A0' }}
+            className="mt-44 md:mt-7 text-[13px] leading-[1.9] tracking-[0.02em] max-w-lg pr-6 md:pr-0 text-gray-400"
+            style={{ fontFamily: SWISS }}
             initial={{ opacity: 0, filter: 'blur(4px)' }}
             whileInView={{ opacity: 1, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-100px' }}
@@ -190,7 +191,7 @@ const ColdOpen = () => {
 
           {/* CTA Buttons */}
           <motion.div
-            className="flex flex-col sm:flex-row items-stretch sm:items-start gap-4 mt-10"
+            className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 mt-6 md:mt-10"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -203,24 +204,11 @@ const ColdOpen = () => {
                 document.querySelector('#evidence')?.scrollIntoView({ behavior: 'smooth' });
                 window.dispatchEvent(new CustomEvent('open-action-agent'));
               }}
-              className="inline-flex items-center gap-2.5 px-7 py-4 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start bg-[#dc2626] text-white text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none group active:scale-[0.98] transition-transform"
-              style={{
-                fontFamily: SWISS,
-                border: 'none',
-                borderRadius: '0',
-                transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#8B1A1A';
-                e.currentTarget.style.boxShadow = '4px 4px 0px #111';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#dc2626';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              className="inline-flex items-center gap-2.5 px-6 py-2.5 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start text-white text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none group bg-red-600/80 border border-red-500 backdrop-blur-md shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:bg-red-600 hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] active:scale-[0.98] transition-all duration-300"
+              style={{ fontFamily: SWISS }}
             >
               Initiate Investigation
-              <ChevronRight size={14} strokeWidth={2} className="group-hover:translate-x-0.5" style={{ transition: 'transform 0.2s ease' }} />
+              <ChevronRight size={14} strokeWidth={2} className="group-hover:translate-x-0.5 transition-transform" />
             </a>
 
             <a
@@ -229,22 +217,8 @@ const ColdOpen = () => {
                 e.preventDefault();
                 document.querySelector('#informants')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2.5 px-7 py-4 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start text-white text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none active:scale-[0.98] transition-transform"
-              style={{
-                fontFamily: SWISS,
-                background: 'transparent',
-                border: '2px solid #FFFFFF',
-                borderRadius: '0',
-                transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = '4px 4px 0px #333';
-                e.currentTarget.style.borderColor = '#E5E7EB';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-                e.currentTarget.style.borderColor = '#FFFFFF';
-              }}
+              className="inline-flex items-center gap-2.5 px-6 py-2.5 sm:py-3.5 w-full sm:w-auto justify-center sm:justify-start text-gray-300 text-sm sm:text-[11px] tracking-[0.25em] uppercase select-none bg-white/[0.03] border border-white/10 backdrop-blur-md hover:bg-white/[0.05] hover:border-white/20 active:scale-[0.98] transition-all duration-300"
+              style={{ fontFamily: SWISS }}
             >
               Review Evidence
             </a>
