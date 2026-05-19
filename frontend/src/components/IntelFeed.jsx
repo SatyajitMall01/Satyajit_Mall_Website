@@ -5,11 +5,13 @@ const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE = "'Courier New', Courier, monospace";
 
 const LINKEDIN_POSTS = [
-  { id: 'post1', embedId: 'urn:li:share:7456259425004195840', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
-  { id: 'post2', embedId: 'urn:li:share:7455896880158359552', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
-  { id: 'post3', embedId: 'urn:li:share:7455534626384564224', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
-  { id: 'post4', embedId: 'urn:li:share:7455333103973085184', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
-  { id: 'post5', embedId: 'urn:li:share:7454975642607042562', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post1', embedId: 'urn:li:share:7462345213164888064', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post2', embedId: 'urn:li:share:7461865098903494657', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post3', embedId: 'urn:li:share:7456259425004195840', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post4', embedId: 'urn:li:share:7455896880158359552', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post5', embedId: 'urn:li:share:7455534626384564224', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post6', embedId: 'urn:li:share:7455333103973085184', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
+  { id: 'post7', embedId: 'urn:li:share:7454975642607042562', iframeHeightMobile: 200, iframeHeightDesktop: 380 },
 ];
 
 const LinkedInBadge = () => (
