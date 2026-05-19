@@ -7,8 +7,8 @@ const SWISS       = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE        = "'Courier New', Courier, monospace";
 const WINDOW_SIZE = 5;
 
-/* ── Verified informant database (6 records) ── */
-const INFORMANTS = [
+/* ── Verified informant database. Filter out soft-deleted (active: false) entries. ── */
+const INFORMANTS_ALL = [
   {
     id: 'inf-01', serial: 'S/N 001', ref: 'REF-0091A',
     codename: 'THE ARCHITECT', realName: 'Shivam Chopra',
@@ -22,6 +22,7 @@ const INFORMANTS = [
     role: 'AVP Digital Marketing', division: 'MILES EDUCATION',
     image: '/informants/sharanya.png',
     quote: "He is that rare PM who actually understands Go-To-Market. Satyajit built the underlying CDP and MarTech infrastructure that allowed my team to scale our webinar deployments and drive a massive +20% lift in ROAS. He directly connects product to revenue.",
+    active: false,
   },
   {
     id: 'inf-03', serial: 'S/N 003', ref: 'REF-0267C',
@@ -52,6 +53,7 @@ const INFORMANTS = [
     quote: "Having scaled some of the largest ed-tech funnels in the country, I know the difference between a vanity feature and a core growth engine. Satyajit builds the latter. He understands that real product-led growth requires airtight data pipelines, AI automation, and deterministic technical architecture.",
   },
 ];
+const INFORMANTS = INFORMANTS_ALL.filter(i => i.active !== false);
 
 /* ── Teletype character-reveal ── */
 const TypewriterText = ({ text, active }) => {

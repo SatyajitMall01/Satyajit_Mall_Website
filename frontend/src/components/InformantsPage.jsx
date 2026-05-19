@@ -5,8 +5,8 @@ const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
 const EXPO_OUT = [0.16, 1, 0.3, 1];
 
-/* ── Verified informant database ── */
-const INFORMANTS_DATA = [
+/* ── Verified informant database. Filter out soft-deleted (active: false) entries. ── */
+const INFORMANTS_DATA_ALL = [
   {
     id: '01', codename: 'THE ARCHITECT', realName: 'Shivam Chopra',
     role: 'Chief Technology Officer', division: 'MILES EDUCATION',
@@ -18,6 +18,7 @@ const INFORMANTS_DATA = [
     role: 'AVP Digital Marketing', division: 'MILES EDUCATION',
     image: '/informants/sharanya.png', tags: ['ALL', 'MILES EDU', 'MARTECH'],
     quote: "He is that rare PM who actually understands Go-To-Market. Satyajit built the underlying CDP and MarTech infrastructure that allowed my team to scale our webinar deployments and drive a massive +20% lift in ROAS. He directly connects product to revenue.",
+    active: false,
   },
   {
     id: '03', codename: 'THE VETERAN', realName: 'Karan Mandalam',
@@ -44,6 +45,7 @@ const INFORMANTS_DATA = [
     quote: "Having scaled some of the largest ed-tech funnels in the country, I know the difference between a vanity feature and a core growth engine. Satyajit builds the latter. He understands that real product-led growth requires airtight data pipelines, AI automation, and deterministic technical architecture.",
   },
 ];
+const INFORMANTS_DATA = INFORMANTS_DATA_ALL.filter(i => i.active !== false);
 
 /* ── Dual-tier filter categories ── */
 const JURISDICTIONS = ['MILES EDU', 'ALMABETTER', 'UPGRAD', 'SCALER', 'IMARTICUS'];
