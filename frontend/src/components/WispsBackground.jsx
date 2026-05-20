@@ -51,18 +51,19 @@ const WispsBackground = () => {
     window.addEventListener('mouseleave', onMouseLeave, { passive: true });
 
     // Cursor interaction tuning
-    const ATTRACT_RADIUS = 350;        // particles pulled toward cursor within this range
-    const ATTRACT_STRENGTH = 0.018;    // per-frame velocity nudge toward cursor
-    const REPEL_INNER = 22;            // hard core — no pile-up
-    const TINT_RADIUS = 260;           // red-tint + brightness halo
-    const TINT_BOOST = 3.4;            // alpha multiplier at cursor center
-    const PARTICLE_SIZE = 0.9;         // every dot identical
+    const ATTRACT_RADIUS = 450;        // particles pulled toward cursor within this range
+    const ATTRACT_STRENGTH = 0.08;     // strong pull — dominates curl drift
+    const REPEL_INNER = 38;            // dead-zone for clean orbital/ring gather
+    const TINT_RADIUS = 320;           // red-tint + brightness halo
+    const TINT_BOOST = 3.6;            // alpha multiplier at cursor center
+    const LINGER_DAMP = 0.94;          // velocity scale inside tint radius — particles slow + accumulate
+    const PARTICLE_SIZE = 1.6;         // every dot identical
 
     // Site red accent
     const RED_R = 220, RED_G = 38, RED_B = 38;
     const BASE_R = 225, BASE_G = 232, BASE_B = 245;
 
-    const COUNT = W < 768 ? 1400 : 2800;
+    const COUNT = W < 768 ? 2200 : 4200;
     const particles = [];
 
     // Low-freq density field for clustered initial spawn
@@ -141,8 +142,16 @@ const WispsBackground = () => {
           }
         }
 
-        p.vx *= 0.991;
-        p.vy *= 0.991;
+        // Inside tint radius: heavy damping → particles slow and visibly accumulate
+        // Outside: normal light damping so curl drift carries them through the page
+        if (nearCursor > 0) {
+          const lerp = LINGER_DAMP + (0.991 - LINGER_DAMP) * (1 - nearCursor);
+          p.vx *= lerp;
+          p.vy *= lerp;
+        } else {
+          p.vx *= 0.991;
+          p.vy *= 0.991;
+        }
         p.x += p.vx;
         p.y += p.vy;
         p.age++;
