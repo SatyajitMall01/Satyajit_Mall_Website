@@ -1,14 +1,17 @@
 import React, { useRef, useEffect } from 'react';
 
 /**
- * WispsBackground — ambient dust-mote field rendered behind all content.
+ * WispsBackground — dense dust-mote field rendered behind all content.
  *
- * Pattern: dense small particles (not bright halos) drifting on a flow field,
- * matching the organic dust/smoke reference. Cursor brightens nearby particles
- * within a soft falloff radius.
+ * High particle density (~1800 desktop) on a strong curl-noise flow field
+ * produces the organic tendril/cluster aesthetic from the reference. Initial
+ * positions use density-weighted rejection sampling so wisps form natural
+ * clouds with empty gaps rather than uniform speckle.
  *
- * Honors prefers-reduced-motion: paints one static frame, no RAF loop.
- * Pauses when tab hidden to save battery.
+ * Cursor brightens nearby particles within a soft falloff. Pointer-events:none
+ * on canvas so cursor still hits content beneath.
+ *
+ * Honors prefers-reduced-motion. Pauses when tab is hidden.
  */
 const WispsBackground = () => {
   const canvasRef = useRef(null);
@@ -38,37 +41,54 @@ const WispsBackground = () => {
     };
     setSize();
 
-    // Mouse tracking — off-screen until first move so initial render has no hotspot
+    // Mouse tracking — off-screen until first move
     const mouse = { x: -9999, y: -9999, active: false };
     const onMouseMove = (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.active = true;
     };
-    const onMouseLeave = () => {
-      mouse.x = -9999;
-      mouse.y = -9999;
-      mouse.active = false;
-    };
+    const onMouseLeave = () => { mouse.x = -9999; mouse.y = -9999; mouse.active = false; };
     window.addEventListener('mousemove', onMouseMove, { passive: true });
     window.addEventListener('mouseleave', onMouseLeave, { passive: true });
 
-    // Cursor-reactive halo
-    const CURSOR_RADIUS = 220;
-    const CURSOR_BOOST = 2.2; // up to ~3x base alpha at cursor center
+    const CURSOR_RADIUS = 240;
+    const CURSOR_BOOST = 3.2;
 
-    const COUNT = W < 768 ? 180 : 350;
+    const COUNT = W < 768 ? 900 : 1800;
     const particles = [];
 
+    // Low-freq density field — creates organic cloud regions
+    const densityAt = (x, y) => {
+      const fx = x * 0.0045;
+      const fy = y * 0.0045;
+      const a = Math.sin(fx + 0.7) * Math.cos(fy - 0.3);
+      const b = Math.sin(fx * 2.1 + 1.2) * Math.cos(fy * 1.9 + 0.4) * 0.5;
+      return Math.max(0, (a + b) * 0.5 + 0.5);
+    };
+
     const spawn = (p, initialAge = false) => {
-      p.x = Math.random() * W;
-      p.y = Math.random() * H;
-      p.vx = (Math.random() - 0.5) * 0.18;
-      p.vy = (Math.random() - 0.5) * 0.18 - 0.04;
-      p.r = 0.4 + Math.random() * 1.2; // 0.4–1.6 px — minute dust motes
-      p.maxAge = 360 + Math.random() * 640;
+      // Density-weighted rejection sampling for clustered positions
+      let placed = false;
+      for (let attempts = 0; attempts < 8 && !placed; attempts++) {
+        const x = Math.random() * W;
+        const y = Math.random() * H;
+        if (Math.random() < densityAt(x, y) * 0.85 + 0.15) {
+          p.x = x;
+          p.y = y;
+          placed = true;
+        }
+      }
+      if (!placed) {
+        p.x = Math.random() * W;
+        p.y = Math.random() * H;
+      }
+      p.vx = (Math.random() - 0.5) * 0.16;
+      p.vy = (Math.random() - 0.5) * 0.16;
+      p.r = 0.3 + Math.random() * 0.9;
+      p.maxAge = 400 + Math.random() * 720;
       p.age = initialAge ? Math.random() * p.maxAge : 0;
-      p.maxAlpha = 0.04 + Math.random() * 0.10; // very subtle baseline
+      p.maxAlpha = 0.06 + Math.random() * 0.13;
     };
 
     for (let i = 0; i < COUNT; i++) {
@@ -83,27 +103,29 @@ const WispsBackground = () => {
     const frame = () => {
       if (!running) return;
       ctx.clearRect(0, 0, W, H);
-      t += 0.0022;
+      t += 0.0024;
+
+      const mx = mouse.x;
+      const my = mouse.y;
+      const cr2 = CURSOR_RADIUS * CURSOR_RADIUS;
 
       for (const p of particles) {
-        // Flow field — cheap sin/cos drives coherent organic drift
+        // Curl-noise drift — larger flow features for tendril coherence
         const angle =
-          Math.sin(p.x * 0.0026 + t) * Math.cos(p.y * 0.0026 - t) * Math.PI;
-        p.vx += Math.cos(angle) * 0.003;
-        p.vy += Math.sin(angle) * 0.003;
-        p.vx *= 0.985;
-        p.vy *= 0.985;
+          Math.sin(p.x * 0.0018 + t * 1.1) * Math.cos(p.y * 0.0018 - t * 0.8) * Math.PI;
+        p.vx += Math.cos(angle) * 0.006;
+        p.vy += Math.sin(angle) * 0.006;
+        p.vx *= 0.992; // less damping → longer coherent streams
+        p.vy *= 0.992;
         p.x += p.vx;
         p.y += p.vy;
         p.age++;
 
-        // Wrap edges
         if (p.x < -4) p.x = W + 4;
         if (p.x > W + 4) p.x = -4;
         if (p.y < -4) p.y = H + 4;
         if (p.y > H + 4) p.y = -4;
 
-        // Lifecycle fade in/out
         const life = p.age / p.maxAge;
         let alpha;
         if (life < 0.18) alpha = (life / 0.18) * p.maxAlpha;
@@ -111,20 +133,16 @@ const WispsBackground = () => {
         else alpha = p.maxAlpha;
         if (alpha < 0) alpha = 0;
 
-        // Cursor reactivity — radial falloff boost
         if (mouse.active) {
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
+          const dx = p.x - mx;
+          const dy = p.y - my;
           const distSq = dx * dx + dy * dy;
-          const cr2 = CURSOR_RADIUS * CURSOR_RADIUS;
           if (distSq < cr2) {
-            const dist = Math.sqrt(distSq);
-            const t01 = 1 - dist / CURSOR_RADIUS; // 1 at center, 0 at edge
+            const t01 = 1 - Math.sqrt(distSq) / CURSOR_RADIUS;
             alpha = Math.min(0.85, alpha * (1 + CURSOR_BOOST * t01 * t01));
           }
         }
 
-        // Cool off-white dust mote — small filled arc, no expensive halo
         ctx.fillStyle = `rgba(225, 232, 245, ${alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, TWO_PI);
