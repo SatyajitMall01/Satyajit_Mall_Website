@@ -210,20 +210,20 @@ const IntelFeed = () => {
     <section
       ref={sectionRef}
       style={{
-        background: '#141A21',
+        background: 'transparent',
         position: 'relative',
         height: `${(total + 1) * 80}vh`,
       }}
     >
-      {/* Ambient bridge */}
+      {/* Soft seam-dissolver — fades into the section above for continuous ombre */}
       <div
         style={{
           position: 'absolute',
-          top: 0,
+          top: '-180px',
           left: 0,
           right: 0,
-          height: '256px',
-          background: 'linear-gradient(to bottom, rgba(127,29,29,0.10), transparent)',
+          height: '360px',
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)',
           pointerEvents: 'none',
           zIndex: 0,
         }}

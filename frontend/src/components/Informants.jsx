@@ -117,7 +117,7 @@ const Informants = () => {
   }, [hoveredId]);
 
   return (
-    <section className="py-16 md:py-24 px-8 md:px-12 bg-[#141A21]" id="informants">
+    <section className="py-16 md:py-24 px-8 md:px-12" id="informants">
 
       {/* ── Section header ── */}
       <motion.div

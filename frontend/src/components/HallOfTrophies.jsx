@@ -311,7 +311,7 @@ const HallOfTrophies = () => {
   const duplicatedCards = [...evidenceCards, ...evidenceCards];
 
   return (
-    <section className="relative py-16 md:py-24 bg-[#141A21]" id="evidence" ref={sectionRef}>
+    <section className="relative py-16 md:py-24" id="evidence" ref={sectionRef}>
       {/* Darkness overlay */}
       <motion.div
         className="absolute inset-0 z-[5] pointer-events-none"

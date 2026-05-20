@@ -33,8 +33,13 @@ const HomePage = () => {
       {/* Sidebar navigation */}
       <LedgerEdge />
 
-      {/* Main content area */}
-      <main className="min-h-screen bg-[#141A21] relative">
+      {/* Main content area — vertical ombre gradient for continuous tonal flow */}
+      <main
+        className="min-h-screen relative"
+        style={{
+          background: 'linear-gradient(to bottom, #141A21 0%, #161B22 35%, #131820 70%, #10141B 100%)',
+        }}
+      >
         {/* Hero - The Cold Open */}
         <ColdOpen />
 
