@@ -21,6 +21,7 @@ import CaseAnalytics from "@/components/cases/CaseAnalytics";
 import CaseMasterclassAnalytics from "@/components/cases/CaseMasterclassAnalytics";
 import CaseResolution from "@/components/cases/CaseResolution";
 import { CrosshairCursor, GlobalCursorStyles } from "@/components/GlobalCursor";
+import WispsBackground from "@/components/WispsBackground";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
 
@@ -33,13 +34,8 @@ const HomePage = () => {
       {/* Sidebar navigation */}
       <LedgerEdge />
 
-      {/* Main content area — vertical ombre gradient for continuous tonal flow */}
-      <main
-        className="min-h-screen relative"
-        style={{
-          background: 'linear-gradient(to bottom, #141A21 0%, #161B22 35%, #131820 70%, #10141B 100%)',
-        }}
-      >
+      {/* Main content area — transparent; body owns the ombre gradient. */}
+      <main className="min-h-screen relative" style={{ background: 'transparent' }}>
         {/* Hero - The Cold Open */}
         <ColdOpen />
 
@@ -116,7 +112,7 @@ const DossierPage = () => (
   <div className="forensic-ledger global-cursor">
     <div className="noise-overlay" />
     <LedgerEdge />
-    <main className="min-h-screen bg-[#141A21] relative">
+    <main className="min-h-screen relative">
       <Dossier />
     </main>
   </div>
@@ -126,7 +122,7 @@ const ComingSoon = ({ title, codename }) => (
   <div className="forensic-ledger global-cursor">
     <div className="noise-overlay" />
     <LedgerEdge />
-    <main className="min-h-screen bg-[#111318] relative flex items-center justify-center">
+    <main className="min-h-screen relative flex items-center justify-center">
       <div className="text-center px-6">
         <div className="flex items-center justify-center gap-3 mb-6">
           <div style={{ width: 32, height: 1, background: 'rgba(220,38,38,0.5)' }} />
@@ -167,7 +163,7 @@ const InformantsRoute = () => (
   <div className="forensic-ledger global-cursor">
     <div className="noise-overlay" />
     <LedgerEdge />
-    <main className="min-h-screen bg-[#111318] relative">
+    <main className="min-h-screen relative">
       <InformantsPage />
     </main>
   </div>
@@ -231,6 +227,8 @@ function App() {
           <Route path="/labs" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
           <Route path="/lab" element={<ComingSoon title="The Labs" codename="R&D Division" />} />
         </Routes>
+        {/* Ambient drifting wisps — fixed canvas behind all routes */}
+        <WispsBackground />
         {/* Global crosshair cursor — rendered outside Routes so it persists on all pages */}
         <GlobalCursorStyles />
         <CrosshairCursor />

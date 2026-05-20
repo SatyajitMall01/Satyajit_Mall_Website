@@ -140,8 +140,11 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Global body */
+/* Global body — ombre gradient base. Wisps canvas overlays at z-index:-1 above this. */
 body {
-  background-color: #141A21;
+  background-color: #10141B;
+  background-image: linear-gradient(to bottom, #141A21 0%, #161B22 35%, #131820 70%, #10141B 100%);
+  background-attachment: fixed;
   overflow-x: hidden;
+  min-height: 100vh;
 }

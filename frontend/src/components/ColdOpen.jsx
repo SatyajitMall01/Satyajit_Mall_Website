@@ -123,7 +123,7 @@ const ColdOpen = () => {
 
   return (
     <section id="cold-open" ref={sectionRef}>
-      <div className="relative w-full min-h-[85vh] flex items-center bg-[#141A21] overflow-hidden">
+      <div className="relative w-full min-h-[85vh] flex items-center overflow-hidden">
 
         {/* Layer 0: Hero image — parallax sink, full-width on mobile */}
         <motion.img
