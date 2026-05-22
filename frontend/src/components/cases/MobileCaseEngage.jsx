@@ -44,7 +44,7 @@ const TERMINAL_LINES = [
   { prefix: '$', text: 'API INGEST: fetching daily spend from Google, Meta, LinkedIn...', color: '#f59e0b' },
   { prefix: '→', text: 'TAGGING: cost data → ME Campaign_ID — ROAS calc ready', color: '#E5E7EB' },
   { prefix: '✓', text: 'ROCS ENGINE: Netcore CDP connected — WhatsApp + Email spend mapped', color: A },
-  { prefix: '$', text: 'BigQuery: U-Shaped Attribution Model applied — 4 touchpoints scored', color: '#f59e0b' },
+  { prefix: '$', text: 'BigQuery: U-Shaped Attribution Model applied — 3 phases scored', color: '#f59e0b' },
   { prefix: '✓', text: 'DISCOVERY: ₹5 WhatsApp blast (20% assist) closing ₹500 Google leads (40% Genesis)', color: A },
   { prefix: '✓', text: 'CSV PURGATORY ELIMINATED — real-time financial dashboard live', color: A },
 ];
@@ -116,14 +116,14 @@ const ScrollTerminal = () => {
 /* ══════════════════════════════════════════
    MOBILE ATTRIBUTION VIZ — bar chart rows
    ══════════════════════════════════════════ */
+// 3-phase U-shape per docx: Genesis (40%) → Assisted Touches (20%) → Commitment (40%)
 const TOUCHPOINTS = [
-  { label: 'Google Search', role: 'Genesis', weight: 0.40, note: '₹500 / click' },
-  { label: 'Retarget Click', role: 'Closer',  weight: 0.25, note: 'High intent' },
-  { label: 'WhatsApp Blast', role: 'Assist',  weight: 0.20, note: '₹5 / blast' },
-  { label: 'Email Nudge',   role: 'Nurture', weight: 0.15, note: 'Low cost' },
+  { label: 'Genesis',          role: 'First Touch',  weight: 0.40, note: 'First tk captured' },
+  { label: 'Assisted Touches', role: 'Mid-Funnel',   weight: 0.20, note: 'Netcore WA / Email' },
+  { label: 'Commitment',       role: 'Closer',       weight: 0.40, note: 'Booking / Subscribe' },
 ];
 
-const ROLE_COLOR = { Genesis: '#10b981', Closer: '#6366f1', Assist: '#f59e0b', Nurture: '#9CA3AF' };
+const ROLE_COLOR = { 'First Touch': '#10b981', 'Mid-Funnel': '#f59e0b', Closer: '#6366f1' };
 
 const MobileAttributionViz = () => {
   const ref = useRef(null);
@@ -336,7 +336,7 @@ const MobileCaseEngage = () => {
           <MetricPill value="20" suffix="%" label="ROAS Lift"           delay={0} />
           <MetricPill value="30" suffix="%" label="Ops Workload Cut"    delay={0.08} />
           <MetricPill value="15" suffix="%" label="Comms Waste Slashed" delay={0.14} />
-          <MetricPill value="100" suffix="%" label="Attribution Accuracy" delay={0.2} />
+          <MetricPill value="Ghost" suffix="" label="Lead Recovery" delay={0.2} />
         </div>
       </section>
 

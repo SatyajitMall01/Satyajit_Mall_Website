@@ -116,8 +116,8 @@ const IntentScoreFormula = () => {
 
   const factors = [
     { label: 'Completion', weight: 0.4, color: '#22c55e', desc: 'Percentage of module content consumed' },
-    { label: 'Consistency', weight: 0.3, color: '#3b82f6', desc: 'Streak of consecutive daily sessions' },
-    { label: 'Interaction', weight: 0.3, color: A, desc: 'Quiz attempts, notes, bookmarks, shares' },
+    { label: 'Consistency', weight: 0.3, color: '#3b82f6', desc: '(Days active / Total days since signup)' },
+    { label: 'Interaction', weight: 0.3, color: A, desc: '(AI queries asked / Minutes watched)' },
   ];
 
   return (
@@ -456,7 +456,7 @@ const CaseMasterclassAnalytics = () => {
             <OutcomeCard
               icon={BarChart3}
               title="Heatmap Query Architecture"
-              body="10-second heartbeat pings streamed into BigQuery, partitioned by user and session. Velocity tracking reveals playback speed anomalies (2x = skimming). Re-watch analysis detects high-value 'anchor moments' where users replay segments."
+              body="10-second heartbeat pings streamed into BigQuery, partitioned by user and session. Velocity tracks time elapsed between Chapter 1 Start and Chapter 5 End — completing a 5-hour course in 2 days flags high intent. Re-watch analysis detects high-value 'anchor moments' where users replay segments."
               accent={A}
               delay={0}
             />

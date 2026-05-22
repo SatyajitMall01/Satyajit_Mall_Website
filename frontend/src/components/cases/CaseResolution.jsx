@@ -175,7 +175,7 @@ const FRICTION_ITEMS = [
     icon: CreditCard,
     codename: 'Payment Ghost',
     title: 'Razorpay Success, is_paid=false',
-    body: 'Razorpay webhook confirmed payment success, but the local database flag is_paid remained false due to a race condition in the callback handler. Students paid but couldn\'t access content — generating 40% of all support tickets.',
+    body: 'Razorpay webhook confirmed payment success, but the local database flag is_paid remained false due to a webhook failure or timeout. Students paid but couldn\'t access content — this and two sibling sync failures together accounted for roughly 75% of all incoming tickets.',
     color: '#ef4444',
   },
   {
@@ -191,7 +191,7 @@ const FRICTION_ITEMS = [
     icon: Clock,
     codename: 'Cert-Lock',
     title: '1-Second Rounding Error',
-    body: 'Course completion calculated time_spent using FLOOR() instead of ROUND(). Students who spent 59.5 seconds on the final module were marked incomplete — locked out of their completion certificate despite finishing all content.',
+    body: 'A 1-second rounding error in "Time Spent" calculations on the frontend video player meant course-completion logic never fired. Students who finished every module were marked incomplete — locked out of their certificate despite watching every minute.',
     color: '#8b5cf6',
   },
 ];
@@ -717,18 +717,18 @@ const CaseResolution = () => {
               sublabel="Customer satisfaction surged from 3.2 to 4.7 out of 5.0 — driven by instant resolution and proactive frustration recovery."
             />
             <MetricBar
-              value="-60%"
-              label="Ticket Volume"
+              value="60%"
+              label="Volume Automated"
               percent={82}
               delay={0.3}
-              sublabel="Automated resolution agents eliminated the majority of repetitive tickets. The remaining 40% are genuine edge cases requiring human judgment."
+              sublabel="Sixty percent of incoming support volume is now auto-resolved by Resolution Agents. The remaining 40% are genuine edge cases routed to the human team for high-empathy work."
             />
             <MetricBar
               value="-70%"
               label="Cost per Ticket"
               percent={90}
               delay={0.45}
-              sublabel="With 60% fewer tickets and instant resolution for the automated ones, the average cost per support interaction dropped by 70%."
+              sublabel="With 60% of volume auto-resolved at zero variable cost and instant turnaround, the average cost per support interaction dropped by 70%."
             />
           </div>
         </div>

@@ -299,7 +299,7 @@ const GoalTree = () => {
     { x: 380, y: 100, label: 'Context Injection', sub: 'Vertex AI prompt' },
     { x: 120, y: 170, label: 'RAG Knowledge', sub: 'Vectorized base' },
     { x: 380, y: 170, label: 'Intent Scoring', sub: 'Redis state lock' },
-    { x: 250, y: 240, label: 'Sales Handoff', sub: 'Pre-qualified transfer' },
+    { x: 250, y: 240, label: 'Pre-Qualified Lead Handoff', sub: 'Vetted intent → human counselor' },
   ];
 
   const edges = [
@@ -659,10 +659,10 @@ const CaseSuperbot = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              Miles Education's outbound qualification relied on a third-party Agentic Voice partner, creating a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"Black Box" dependency</strong> — limited data visibility, high latency, and no deep integration with the Universal Identity Registry (UIR). The bot couldn't "see" the user's Miles One progress, destroying the Trust Architecture.
+              The outbound qualification funnel was launched on a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>third-party Agentic Voice partner</strong> — fine for an MVP, but it hardened into a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>"Black Box" dependency</strong>. No data visibility, high latency, and no path to integrate with the Universal Identity Registry (UIR). The bot couldn't "see" a user's Miles One progress, so it asked redundant questions and corroded the Trust Architecture built in Case 01.
             </p>
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85, marginTop: 20 }}>
-              The strategic decision: internalize the "Brain" and the "Voice." <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Cerebro</strong> moved infrastructure from a service-level agreement to a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Technical Sovereignty model</strong> hosted entirely on GCP — transforming a simple automated dialer into a sophisticated, self-healing qualification engine.
+              The mandate: migrate <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>from the third-party stack to an in-house system on GCP</strong>. We internalized the "Brain" and the "Voice," birthing <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Cerebro</strong> — moving the infrastructure from a service-level agreement to a <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Technical Sovereignty model</strong> and transforming a rented dialer into a sophisticated, self-healing qualification engine we owned end-to-end.
             </p>
           </motion.div>
         </div>

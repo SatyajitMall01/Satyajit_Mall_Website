@@ -77,7 +77,7 @@ const TERMINAL_LINES = [
   { prefix: '$', text: 'API INGEST: fetching daily spend from Google, Meta, LinkedIn...', color: '#f59e0b' },
   { prefix: '→', text: 'TAGGING: cost data → ME Campaign_ID — ROAS calc ready', color: '#E5E7EB' },
   { prefix: '✓', text: 'ROCS ENGINE: Netcore CDP connected — WhatsApp + Email spend mapped', color: A },
-  { prefix: '$', text: 'BigQuery: U-Shaped Attribution Model applied — 4 touchpoints scored', color: '#f59e0b' },
+  { prefix: '$', text: 'BigQuery: U-Shaped Attribution Model applied — 3 phases scored', color: '#f59e0b' },
   { prefix: '✓', text: 'DISCOVERY: ₹5 WhatsApp blast (20% assist) closing ₹500 Google leads (40% Genesis)', color: A },
   { prefix: '✓', text: 'CSV PURGATORY ELIMINATED — real-time financial dashboard live', color: A },
 ];
@@ -157,11 +157,11 @@ const AttributionViz = () => {
   const inView = useInView(ref, { once: true, margin: '-10%' });
   const [hoveredNode, setHoveredNode] = useState(null);
 
+  // 3-phase U-shape per docx: Genesis (40%) → Assisted Touches (20%) → Commitment (40%)
   const touchpoints = [
-    { x: 60, y: 140, label: 'Google Search (Genesis)', weight: 0.40 },
-    { x: 160, y: 80, label: 'Email Nudge', weight: 0.15 },
-    { x: 260, y: 120, label: 'WhatsApp Blast', weight: 0.20 },
-    { x: 360, y: 60, label: 'Retarget Click', weight: 0.25 },
+    { x: 80,  y: 60,  label: 'Genesis',          weight: 0.40 },
+    { x: 220, y: 120, label: 'Assisted Touches', weight: 0.20 },
+    { x: 360, y: 60,  label: 'Commitment',       weight: 0.40 },
   ];
 
   const purchaseX = 440;
@@ -611,7 +611,7 @@ const DesktopCaseEngage = () => {
           <MetricPill value="20" suffix="%" label="ROAS Lift" delay={0} />
           <MetricPill value="30" suffix="%" label="Ops Workload Cut" delay={0.1} />
           <MetricPill value="15" suffix="%" label="Comms Waste Slashed" delay={0.2} />
-          <MetricPill value="100" suffix="%" label="Attribution Accuracy" delay={0.3} />
+          <MetricPill value="Recovered" suffix="" label="Ghost Lead Attribution" delay={0.3} />
         </div>
       </section>
 

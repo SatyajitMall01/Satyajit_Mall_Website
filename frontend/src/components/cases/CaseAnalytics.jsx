@@ -523,7 +523,7 @@ const CaseAnalytics = () => {
             transition={{ duration: 0.7, ease: EXPO }}
           >
             <p style={{ fontFamily: SWISS, fontSize: 17, fontWeight: 300, color: '#E5E7EB', lineHeight: 1.85 }}>
-              User journeys fragmented across web (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>GA4</strong>), mobile (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Firebase</strong>), and paid (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Appsflyer</strong>). Teams couldn't track a single user from desktop ad click to mobile module completion. The <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>miles_uuid</strong> was injected into every event payload, enabling a simple SQL JOIN to see the full path: Ad Click &rarr; Install &rarr; Login &rarr; Engagement.
+              User journeys fragmented across web (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>GA4</strong>), mobile (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Firebase</strong>), and paid (<strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Appsflyer</strong>). Teams couldn't track a single user from desktop ad click to mobile module completion. The <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>miles_uuid</strong> was injected into every event payload, enabling a simple SQL JOIN to see the full path: Ad Click &rarr; Install &rarr; Login &rarr; Engagement. The same join produced deterministic <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Product-Qualified Lead (PQL)</strong> signals that streamed into the <strong style={{ color: '#FFFFFF', fontWeight: 600 }}>Miles Force CRM</strong>, ending blind sales calls.
             </p>
           </motion.div>
         </div>
@@ -648,7 +648,7 @@ const CaseAnalytics = () => {
               label="CPA Conversion"
               percent={78}
               delay={0.15}
-              sublabel="Deep-linking and identity persistence eliminated the install-to-login chasm, converting previously lost leads into active app users."
+              sublabel="Unifying web, app, and attribution streams under a single miles_uuid let the team confirm which leads were the same human across platforms — surfacing CPA-program candidates the silos used to discard."
             />
             <MetricBar
               value="-25%"

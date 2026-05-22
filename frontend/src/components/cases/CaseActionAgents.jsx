@@ -75,11 +75,11 @@ const CircuitBoardBg = () => {
    CIRCUIT FLOW DIAGRAM — Horizontal Pipeline
    ══════════════════════════════════════════ */
 const PIPELINE_NODES = [
-  { id: 'LLM',    label: 'LLM',          sub: 'GPT-4 Function Call', x: 80 },
+  { id: 'LLM',    label: 'LLM',          sub: 'LLM Function Call',  x: 80 },
   { id: 'PARSER', label: 'JSON Parser',   sub: 'Structured Output',  x: 240 },
   { id: 'N8N',    label: 'n8n',           sub: 'Webhook Executor',   x: 400 },
   { id: 'REDIS',  label: 'Redis',         sub: 'Circuit Breaker',    x: 560 },
-  { id: 'CRM',    label: 'CRM',           sub: 'HubSpot / Sheets',  x: 720 },
+  { id: 'CRM',    label: 'CRM',           sub: 'Miles Force CRM',   x: 720 },
 ];
 
 const DataPacket = ({ x1, y, x2, delay = 0 }) => (
@@ -547,11 +547,11 @@ const CaseActionAgents = () => {
               sublabel="The agent handles transactional requests around the clock — nights, weekends, holidays — without staffing constraints."
             />
             <MetricBar
-              value="-15%"
-              label="Admin Scheduling Load"
+              value="15%"
+              label="Sales Time Reclaimed"
               percent={72}
               delay={0.45}
-              sublabel="With routine scheduling automated, the operations team reallocated 15% of admin bandwidth to high-touch student engagement."
+              sublabel="The sales team had been losing ~15% of every day to manual webinar and calendar coordination. Action Agents absorbed that work end-to-end, returning that bandwidth to high-intent conversations."
             />
           </div>
         </div>
