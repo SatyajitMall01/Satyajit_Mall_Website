@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link as LinkIcon, PieChart } from 'lucide-react';
+import { Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity, TrendingUp, Link as LinkIcon, PieChart, Bot, Headphones, Radar, Cpu } from 'lucide-react';
 
 const SWISS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TELE  = "'Courier New', Courier, monospace";
@@ -13,6 +13,8 @@ const CASES_DATA = [
     id: '01', slug: 'the-universal-gtm-identity-registry',
     codename: 'OPERATION: MILES ONE',
     title: 'Identity Genesis & Trust Architecture',
+    tagline: 'Deterministic UUID minting at first touch',
+    icon: 'Fingerprint',
     metrics: ['₹40 Cr+ Ecosystem', '25% Product-Led Sales'],
     description: 'Disrupted the Trust-Gap through Product-Led Growth. Miles One app mints deterministic UUIDs at first touch, transitioning anonymous prospects into Pre-heated leads via a Dummy LMS sandbox and Multi-Stage Lifecycle Engine.',
     accent: '#6366f1',
@@ -28,6 +30,8 @@ const CASES_DATA = [
     id: '02', slug: 'behavioral-ott-architecture',
     codename: 'OPERATION: MILES MASTERCLASS',
     title: 'Behavioral Qualification Engine',
+    tagline: 'Netflix-of-Education OTT platform',
+    icon: 'BrainCircuit',
     metrics: ['30K+ Users', '2K+ Paid Subs', '40% Renewal'],
     description: 'Netflix-of-Education OTT platform solving the Commitment Gap. Subscription-based Commitment Filter with dark-mode bingeable UX, UUID Passport identity bridge, and precision behavioral telemetry driving a 40% renewal rate.',
     accent: '#3b82f6',
@@ -43,10 +47,13 @@ const CASES_DATA = [
     id: '03', slug: 'the-attribution-recovery-engine',
     codename: 'OPERATION: MILES ENGAGE',
     title: 'The Attribution & Recovery Engine',
+    tagline: 'Tokenized attribution + ROAS recovery',
+    icon: 'TrendingUp',
     metrics: ['+20% ROAS', '-30% Ops Workload'],
     description: 'Eliminated the "Marketing Mirage" through a Deterministic Tokenized Architecture (tk=) and n8n-driven ROAS/ROCS financial loop. Killed "CSV Purgatory" with U-Shaped Attribution and real-time intent routing.',
     accent: '#10b981',
     gradient: 'linear-gradient(135deg, #0a1a14 0%, #0f2a1f 30%, #0a2018 60%, #080f0d 100%)',
+    baseImage: '/Satyajit Website Assets/Miles LMS/Miles LMS.png',
     floaters: [
       { id: 'f1', icon: 'TrendingUp', text: '+20% ROAS',      top: '8%',  right: '-6%', z: 80,  delay: 0.4,  anim: 'float' },
       { id: 'f2', icon: 'Link',       text: 'tk= Token',      top: '44%', left: '-8%',  z: 110, delay: 0.55, anim: 'spin'  },
@@ -57,6 +64,8 @@ const CASES_DATA = [
     id: '04', slug: 'agentic-voice-qualification',
     codename: 'OPERATION: CEREBRO',
     title: 'The Sovereignty of Intelligence',
+    tagline: 'On-prem voice AI on GCP / Vertex',
+    icon: 'Cpu',
     metrics: ['-45% Middleware Costs', '100% Data Sovereignty'],
     description: 'Internalized the "Brain" and "Voice" onto GCP for Technical Sovereignty. Forensic Identity Handshake with UIR in 800ms, Vertex AI reasoning, vectorized RAG, and ElevenLabs token streaming.',
     accent: '#8b5cf6',
@@ -66,6 +75,8 @@ const CASES_DATA = [
     id: '05', slug: 'transactional-llm-orchestration',
     codename: 'OPERATION: ACTION AGENTS',
     title: 'Transactional LLM Orchestration',
+    tagline: 'Goal-oriented agents with circuit breakers',
+    icon: 'Bot',
     metrics: ['+25% Self-Service', 'Zero Duplicates'],
     description: 'Goal-oriented agents using Function-Calling patterns and a Redis Circuit Breaker to perform real-world transactions — bookings, CRM updates, reporting.',
     accent: '#ec4899',
@@ -75,6 +86,8 @@ const CASES_DATA = [
     id: '06', slug: 'product-data-unification',
     codename: 'OPERATION: MILES ONE ANALYTICS',
     title: 'Product Data Unification',
+    tagline: 'GA4 + Firebase + Appsflyer → BigQuery',
+    icon: 'PieChart',
     metrics: ['100% Cross-Platform', '+15% CPA Conversion'],
     description: 'Unified GA4, Firebase, and Appsflyer into BigQuery using the miles_uuid as the identity glue — solving cross-platform attribution blindness.',
     accent: '#06b6d4',
@@ -84,6 +97,8 @@ const CASES_DATA = [
     id: '07', slug: 'ott-product-forensics',
     codename: 'OPERATION: MASTERCLASS ANALYTICS',
     title: 'OTT Product Forensics',
+    tagline: 'Heartbeat telemetry + intent scoring',
+    icon: 'Radar',
     metrics: ['+22% Module Completion', '2K+ Paid Enrollments'],
     description: 'Behavioral stream analysis on 10-second heartbeat pings. Built an Intent Score model and contextual nudges that converted viewers into customers.',
     accent: '#f97316',
@@ -93,6 +108,8 @@ const CASES_DATA = [
     id: '08', slug: 'csat-engineering',
     codename: 'OPERATION: ALMABETTER RESOLUTION',
     title: 'CSAT Engineering',
+    tagline: 'SQL forensics \u2192 auto-resolution agents',
+    icon: 'Headphones',
     metrics: ['48hrs \u2192 <5min', '3.2 \u2192 4.7 CSAT'],
     description: 'SQL Forensics on 10,000+ tickets found 75% tied to 3 database inconsistencies. Built automated Resolution Agents that fix issues before students even complain.',
     accent: '#14b8a6',
@@ -109,351 +126,314 @@ const XHair = ({ size = 14, color = 'currentColor' }) => (
 );
 
 /* ═══════════════════════════════════════════
-   MOBILE CASES VIEW — Sticky top-image + stacked cards
+   MOBILE CASES VIEW — Omnidirectional Spatial Canvas
+   Massive randomized tile-field. Cases repeat across canvas.
    ═══════════════════════════════════════════ */
-const MobileCasesView = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const cardRefs = useRef([]);
 
-  // Tuning controls (default + URL/localStorage persisted)
-  const isTuneMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('tune') === '1';
-  const readTune = (key, fallback) => {
-    if (typeof window === 'undefined') return fallback;
-    const v = localStorage.getItem(`cases_tune_${key}`);
-    return v ? Number(v) : fallback;
-  };
-  const [tune, setTune] = useState({
-    imageHeightVh: readTune('imageHeightVh', 40),
-    paddingX: readTune('paddingX', 20),
-    titleScale: readTune('titleScale', 100),
-    overlap: readTune('overlap', 32),
-    cardGap: readTune('cardGap', 20),
-  });
-  const updateTune = (key, value) => {
-    setTune(prev => ({ ...prev, [key]: value }));
-    if (typeof window !== 'undefined') localStorage.setItem(`cases_tune_${key}`, String(value));
-  };
+const TILE_COUNT = 200;
 
-  // IntersectionObserver → update active card for sticky image crossfade
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            const idx = Number(e.target.dataset.idx);
-            if (!Number.isNaN(idx)) setActiveIndex(idx);
-          }
-        });
-      },
-      { rootMargin: '-50% 0px -40% 0px', threshold: 0 }
-    );
-    cardRefs.current.forEach(el => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
+// Aspect ratio pool — mix of square, landscape, portrait (TikTok-grid feel)
+const RATIO_POOL = [
+  'aspect-square',
+  'aspect-square',
+  'aspect-square',
+  'aspect-[9/16]',
+  'aspect-[9/16]',
+  'aspect-video',
+  'aspect-[4/5]',
+  'aspect-[3/4]',
+];
 
-  const active = CASES_DATA[activeIndex];
-
-  return (
-    <div style={{ background: '#050505', position: 'relative', minHeight: '100vh' }}>
-      {/* ═══ STICKY HERO — crossfades between active cases ═══ */}
-      <div
-        style={{
-          position: 'sticky', top: 0, left: 0, right: 0,
-          height: `${tune.imageHeightVh}vh`,
-          zIndex: 1,
-          overflow: 'hidden',
-          background: '#050505',
-        }}
-      >
-        {CASES_DATA.map((c, i) => (
-          <motion.div
-            key={c.id}
-            animate={{ opacity: i === activeIndex ? 1 : 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            style={{
-              position: 'absolute', inset: 0,
-              background: c.gradient,
-            }}
-          >
-            {c.baseImage && (
-              <img
-                src={c.baseImage}
-                alt={c.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            )}
-            {/* Bottom scrim → blends into cards below */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: `linear-gradient(to bottom, transparent 30%, rgba(5,5,5,0.4) 70%, #050505 100%)`,
-            }} />
-            {/* Top-left: codename badge */}
-            <div style={{
-              position: 'absolute', top: 20, left: tune.paddingX,
-              display: 'flex', alignItems: 'center', gap: 8,
-            }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.accent, boxShadow: `0 0 8px ${c.accent}` }} />
-              <span style={{
-                fontFamily: TELE, fontSize: 10, fontWeight: 600,
-                color: c.accent, letterSpacing: '0.3em', textTransform: 'uppercase',
-              }}>
-                {c.codename.replace('OPERATION: ', 'OP · ')}
-              </span>
-            </div>
-            {/* Top-right: case number */}
-            <span style={{
-              position: 'absolute', top: 20, right: tune.paddingX,
-              fontFamily: TELE, fontSize: 10, fontWeight: 700,
-              color: 'rgba(255,255,255,0.6)', letterSpacing: '0.2em',
-            }}>
-              {c.id} / 08
-            </span>
-            {/* Top accent line */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0,
-              height: 2, background: c.accent,
-            }} />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* ═══ PAGE HEADER — pinned above cards ═══ */}
-      <div style={{
-        position: 'relative', zIndex: 2,
-        padding: `32px ${tune.paddingX}px 16px`,
-        marginTop: -tune.overlap,
-        background: 'linear-gradient(to bottom, transparent, #050505 60%)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 20, height: 1, background: 'rgba(220,38,38,0.5)' }} />
-          <span style={{
-            fontFamily: TELE, fontSize: 9, fontWeight: 600,
-            color: 'rgba(220,38,38,0.8)', letterSpacing: '0.35em', textTransform: 'uppercase',
-          }}>
-            Case Archives
-          </span>
-        </div>
-        <h1 style={{
-          fontFamily: SWISS, fontSize: `${28 * tune.titleScale / 100}px`, fontWeight: 700,
-          color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.05, margin: 0,
-        }}>
-          The Cases
-        </h1>
-        <p style={{
-          fontFamily: TELE, fontSize: 10,
-          color: '#9CA3AF', letterSpacing: '0.2em',
-          textTransform: 'uppercase', marginTop: 8,
-        }}>
-          {String(activeIndex + 1).padStart(2, '0')} of {String(CASES_DATA.length).padStart(2, '0')} &middot; {active.metrics[0]}
-        </p>
-      </div>
-
-      {/* ═══ SCROLLING CARD STACK ═══ */}
-      <div style={{
-        position: 'relative', zIndex: 2,
-        display: 'flex', flexDirection: 'column', gap: tune.cardGap,
-        padding: `8px ${tune.paddingX}px 40px`,
-      }}>
-        {CASES_DATA.map((c, i) => (
-          <motion.div
-            key={c.id}
-            ref={el => (cardRefs.current[i] = el)}
-            data-idx={i}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, margin: '-20% 0px -20% 0px' }}
-            transition={{ duration: 0.6, ease: EXPO_OUT }}
-          >
-            <Link
-              to={`/cases/${c.slug}`}
-              style={{ textDecoration: 'none', display: 'block' }}
-            >
-              <div
-                className="case-card-tap"
-                style={{
-                  background: 'rgba(10,10,14,0.92)',
-                  border: `1px solid ${i === activeIndex ? c.accent + '50' : 'rgba(55,65,81,0.35)'}`,
-                  borderRadius: 14,
-                  padding: '20px 18px',
-                  transition: 'border-color 0.4s ease, transform 0.15s ease',
-                  boxShadow: i === activeIndex ? `0 8px 32px ${c.accent}15, 0 1px 0 ${c.accent}20 inset` : '0 4px 16px rgba(0,0,0,0.3)',
-                }}
-              >
-                {/* Codename strip */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <XHair size={8} color={c.accent} />
-                  <span style={{
-                    fontFamily: TELE, fontSize: 9, fontWeight: 600,
-                    color: c.accent, letterSpacing: '0.3em', textTransform: 'uppercase',
-                  }}>
-                    {c.codename.replace('OPERATION: ', '')}
-                  </span>
-                </div>
-                {/* Title */}
-                <h2 style={{
-                  fontFamily: SWISS, fontSize: `${20 * tune.titleScale / 100}px`, fontWeight: 700,
-                  color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.2,
-                  margin: '0 0 14px',
-                }}>
-                  {c.title}
-                </h2>
-                {/* Metrics — horizontally swipeable row */}
-                <div
-                  style={{
-                    display: 'flex', gap: 8,
-                    overflowX: 'auto', paddingBottom: 4,
-                    scrollbarWidth: 'none', msOverflowStyle: 'none',
-                    marginBottom: 14,
-                  }}
-                  className="hide-scrollbar"
-                >
-                  {c.metrics.map(m => (
-                    <span key={m} style={{
-                      flexShrink: 0,
-                      fontFamily: TELE, fontSize: 10, fontWeight: 500,
-                      color: '#F3F4F6', letterSpacing: '0.05em',
-                      border: `1px solid ${c.accent}40`,
-                      background: `${c.accent}10`,
-                      padding: '6px 12px', borderRadius: 9999,
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {m}
-                    </span>
-                  ))}
-                </div>
-                {/* Description — truncated */}
-                <p style={{
-                  fontFamily: SWISS, fontSize: 14, fontWeight: 300,
-                  color: '#D1D5DB', lineHeight: 1.6,
-                  margin: '0 0 16px',
-                }}>
-                  {c.description}
-                </p>
-                {/* CTA row */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  paddingTop: 12, borderTop: 'rgba(255,255,255,0.06) 1px solid',
-                }}>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    fontFamily: TELE, fontSize: 10, fontWeight: 600,
-                    color: c.accent, letterSpacing: '0.18em', textTransform: 'uppercase',
-                    height: 44, /* 44px touch target */
-                  }}>
-                    View Full Case &rarr;
-                  </span>
-                  <span style={{
-                    fontFamily: TELE, fontSize: 9,
-                    color: '#6B7280', letterSpacing: '0.2em',
-                  }}>
-                    {String(i + 1).padStart(2, '0')} / {String(CASES_DATA.length).padStart(2, '0')}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* ═══ BOTTOM CTA ═══ */}
-      <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: `40px ${tune.paddingX}px 80px` }}>
-        <p style={{
-          fontFamily: TELE, fontSize: 9, fontWeight: 600,
-          color: '#9CA3AF', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 16,
-        }}>
-          More cases in progress
-        </p>
-        <a href="/dossier" style={{
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-          fontFamily: TELE, fontSize: 11, fontWeight: 600,
-          color: '#dc2626', letterSpacing: '0.18em', textTransform: 'uppercase',
-          height: 48, padding: '0 24px',
-          border: '1px solid rgba(220,38,38,0.4)', borderRadius: 6,
-          background: 'rgba(220,38,38,0.08)', textDecoration: 'none',
-          width: '100%', maxWidth: 320, margin: '0 auto',
-        }}>
-          <XHair size={10} color="#dc2626" />
-          View Full Dossier
-        </a>
-      </div>
-
-      {/* ═══ TUNING PANEL — ?tune=1 only ═══ */}
-      {isTuneMode && <TuningPanel tune={tune} onChange={updateTune} />}
-    </div>
-  );
+// Icon map for tile rendering (string → component)
+const ICON_MAP = {
+  Database, GitBranch, Fingerprint, BrainCircuit, Timer, Activity,
+  TrendingUp, LinkIcon, PieChart, Bot, Headphones, Radar, Cpu,
 };
 
-/* ═══════════════════════════════════════════
-   TUNING PANEL — live sliders for mobile layout
-   ═══════════════════════════════════════════ */
-const TuningPanel = ({ tune, onChange }) => {
-  const [collapsed, setCollapsed] = useState(false);
-  const sliders = [
-    { key: 'imageHeightVh', label: 'Hero Image (vh)', min: 25, max: 65, step: 1, unit: 'vh' },
-    { key: 'overlap', label: 'Image/Card Overlap', min: 0, max: 80, step: 2, unit: 'px' },
-    { key: 'paddingX', label: 'Horizontal Padding', min: 8, max: 40, step: 2, unit: 'px' },
-    { key: 'titleScale', label: 'Text Scale', min: 80, max: 140, step: 2, unit: '%' },
-    { key: 'cardGap', label: 'Card Gap', min: 8, max: 48, step: 2, unit: 'px' },
-  ];
+// Per-icon composite animation — icon layer + optional ring/halo layer.
+// Animations are context-specific: scan rings on Fingerprint, sweep on Radar,
+// neural flicker on Brain, audio pulse on Headphones, etc.
+const ICON_FX = {
+  // Identity Genesis — biometric scan rings expand outward
+  Fingerprint: {
+    icon: { animate: { scale: [1, 1.04, 1], opacity: [0.85, 1, 0.85] }, transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } },
+    ring: { animate: { scale: [0.5, 1.7], opacity: [0.55, 0] },         transition: { duration: 2.4, repeat: Infinity, ease: 'easeOut' } },
+  },
+  // Behavioral Qualification — synaptic firing, irregular flicker
+  BrainCircuit: {
+    icon: { animate: { opacity: [0.65, 1, 0.5, 1, 0.85, 1], scale: [1, 1.02, 1, 1.03, 1] }, transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } },
+    ring: null,
+  },
+  // Attribution Recovery — upward bounce, rising trend
+  TrendingUp: {
+    icon: { animate: { y: [3, -5, 3], scale: [0.96, 1.04, 0.96] }, transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } },
+    ring: null,
+  },
+  // Voice AI Sovereignty — CPU throb + data pulse halo
+  Cpu: {
+    icon: { animate: { scale: [1, 1.07, 1] }, transition: { duration: 1.3, repeat: Infinity, ease: 'easeInOut' } },
+    ring: { animate: { scale: [0.7, 1.4], opacity: [0.65, 0] }, transition: { duration: 1.3, repeat: Infinity, ease: 'easeOut' } },
+  },
+  // Action Agents — robot wobble + nod
+  Bot: {
+    icon: { animate: { rotate: [-5, 5, -5, 0, 0], y: [0, 0, 0, 2, 0] }, transition: { duration: 2.4, repeat: Infinity, times: [0, 0.2, 0.4, 0.65, 1], ease: 'easeInOut' } },
+    ring: null,
+  },
+  // Data Unification — segments rotating slowly
+  PieChart: {
+    icon: { animate: { rotate: [0, 360] }, transition: { duration: 14, repeat: Infinity, ease: 'linear' } },
+    ring: null,
+  },
+  // Forensics — radar sweep with expanding ping
+  Radar: {
+    icon: { animate: { rotate: [0, 360] }, transition: { duration: 2.8, repeat: Infinity, ease: 'linear' } },
+    ring: { animate: { scale: [0.4, 1.5], opacity: [0.7, 0] }, transition: { duration: 2.8, repeat: Infinity, ease: 'easeOut' } },
+  },
+  // CSAT — audio pulse beat + outward wave
+  Headphones: {
+    icon: { animate: { scale: [1, 1.06, 1, 1.04, 1] }, transition: { duration: 1.1, repeat: Infinity, ease: 'easeInOut' } },
+    ring: { animate: { scale: [0.65, 1.35], opacity: [0.6, 0] }, transition: { duration: 1.1, repeat: Infinity, ease: 'easeOut' } },
+  },
+};
+
+// Forensic site palette — red-blood + cool-dark backdrop (matches Informants/Dossier)
+const RED        = '#dc2626';
+const RED_BRIGHT = '#ef4444';
+const RED_DIM    = 'rgba(220,38,38,0.55)';
+const CARD_BG    = 'rgba(11,18,34,0.85)';
+const CARD_BORDER = 'rgba(55,65,81,0.45)';
+
+const MobileCasesView = () => {
+  const viewportRef = useRef(null);
+
+  // Build tile field via bag-shuffle + sliding-window guard.
+  // Algorithm: pull from shuffled bag, but skip any case that appeared in
+  // the last RECENT_K tiles. Guarantees no repeat within window of K+1.
+  // With K = N-2 = 6, every 7 consecutive tiles have 7 distinct cases.
+  const tiles = React.useMemo(() => {
+    const arr = [];
+    const N = CASES_DATA.length;
+    const RECENT_K = Math.max(1, N - 2); // = 6 for N=8
+    let bag = [];
+    const recent = [];
+
+    const refillBag = () => {
+      bag = Array.from({ length: N }, (_, k) => k);
+      for (let k = bag.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [bag[k], bag[j]] = [bag[j], bag[k]];
+      }
+    };
+
+    for (let i = 0; i < TILE_COUNT; i++) {
+      if (bag.length === 0) refillBag();
+
+      // Pick first bag item not in recent[] (search from top)
+      let pickIdx = -1;
+      for (let b = bag.length - 1; b >= 0; b--) {
+        if (!recent.includes(bag[b])) {
+          pickIdx = b;
+          break;
+        }
+      }
+      // Fallback (impossible when bag.length > RECENT_K, but guard anyway)
+      if (pickIdx === -1) pickIdx = bag.length - 1;
+
+      const idx = bag[pickIdx];
+      bag.splice(pickIdx, 1);
+      recent.push(idx);
+      if (recent.length > RECENT_K) recent.shift();
+
+      arr.push({
+        key: i,
+        caseData: CASES_DATA[idx],
+        ratio: RATIO_POOL[Math.floor(Math.random() * RATIO_POOL.length)],
+      });
+    }
+    return arr;
+  }, []);
+
+  // Center-drop on mount → user spawns at canvas center, can scroll any direction
+  useEffect(() => {
+    if (viewportRef.current) {
+      const { scrollWidth, scrollHeight, clientWidth, clientHeight } = viewportRef.current;
+      viewportRef.current.scrollTo({
+        left: (scrollWidth - clientWidth) / 2,
+        top: (scrollHeight - clientHeight) / 2,
+        behavior: 'instant',
+      });
+    }
+  }, []);
+
   return (
-    <div style={{
-      position: 'fixed', bottom: 16, left: 16, right: 16,
-      zIndex: 9999,
-      background: 'rgba(5,5,10,0.96)',
-      border: '1px solid rgba(220,38,38,0.45)',
-      borderRadius: 12,
-      padding: collapsed ? '10px 14px' : '14px 16px 18px',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 12px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(220,38,38,0.15)',
-      maxWidth: 460, margin: '0 auto',
-      fontFamily: TELE, fontSize: 10,
-      color: '#E5E7EB',
-    }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        marginBottom: collapsed ? 0 : 12,
-      }}>
-        <span style={{
-          fontFamily: TELE, fontSize: 9, fontWeight: 700,
-          color: '#dc2626', letterSpacing: '0.35em', textTransform: 'uppercase',
-        }}>
-          ▸ Mobile Tuning
-        </span>
-        <button
-          onClick={() => setCollapsed(c => !c)}
-          style={{
-            background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
-            color: '#D1D5DB', fontFamily: TELE, fontSize: 9,
-            padding: '4px 10px', borderRadius: 4, cursor: 'pointer',
-            letterSpacing: '0.15em',
-          }}
-        >
-          {collapsed ? 'EXPAND' : 'HIDE'}
-        </button>
-      </div>
-      {!collapsed && sliders.map(s => (
-        <div key={s.key} style={{ marginBottom: 10 }}>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            marginBottom: 4,
-          }}>
-            <label style={{ color: '#9CA3AF', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 9 }}>
-              {s.label}
-            </label>
-            <span style={{ color: '#dc2626', fontWeight: 600 }}>
-              {tune[s.key]}{s.unit}
+    <>
+      {/* ═══ FIXED HEADER OVERLAY — pinned above spatial canvas ═══ */}
+      <div
+        className="md:hidden fixed top-0 left-0 right-0 z-30 pointer-events-none px-4 pt-3 pb-6"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.7) 50%, rgba(5,5,5,0) 100%)',
+        }}
+      >
+        <div className="flex flex-col items-center text-center">
+          <div className="flex items-center gap-2 mb-1">
+            <div style={{ width: 16, height: 1, background: 'rgba(220,38,38,0.55)' }} />
+            <span
+              style={{
+                fontFamily: TELE, fontSize: 8, fontWeight: 600,
+                color: 'rgba(220,38,38,0.85)', letterSpacing: '0.35em', textTransform: 'uppercase',
+              }}
+            >
+              Case Archives
             </span>
+            <div style={{ width: 16, height: 1, background: 'rgba(220,38,38,0.55)' }} />
           </div>
-          <input
-            type="range"
-            min={s.min} max={s.max} step={s.step}
-            value={tune[s.key]}
-            onChange={e => onChange(s.key, Number(e.target.value))}
-            style={{ width: '100%', accentColor: '#dc2626' }}
-          />
+          <h1
+            style={{
+              fontFamily: SWISS, fontSize: 22, fontWeight: 700,
+              color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1, margin: 0,
+            }}
+          >
+            The Cases
+          </h1>
         </div>
-      ))}
+      </div>
+
+    <div
+      ref={viewportRef}
+      id="spatial-viewport"
+      className="fixed inset-0 w-screen h-[100dvh] bg-[#050505] overflow-auto touch-pan-x touch-pan-y block md:hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+    >
+      <div className="w-[400vw] sm:w-[350vw] p-3">
+        <div className="columns-8 sm:columns-6 gap-2 w-full">
+          {tiles.map(({ key, caseData: c, ratio }) => {
+            const Icon = ICON_MAP[c.icon] || Database;
+            const fx = ICON_FX[c.icon] || ICON_FX.Fingerprint;
+            return (
+              <Link
+                key={key}
+                to={`/cases/${c.slug}`}
+                className={`${ratio} block mb-2 break-inside-avoid relative overflow-hidden rounded-md active:scale-[0.96] transition-transform`}
+                style={{
+                  background: CARD_BG,
+                  border: `1px solid ${CARD_BORDER}`,
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.5)',
+                  containerType: 'inline-size',
+                }}
+              >
+                {/* Neo-retro scanline overlay — subtle horizontal lines */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-[0.06]"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(0deg, transparent 0px, transparent 2px, #ffffff 2px, #ffffff 3px)',
+                  }}
+                />
+
+                {/* Top accent strip (red, thin) */}
+                <div
+                  className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+                  style={{ background: RED_DIM }}
+                />
+
+                {/* Crosshair brackets — corners */}
+                <div className="absolute top-1.5 left-1.5 w-2 h-2 border-t border-l pointer-events-none" style={{ borderColor: RED_DIM }} />
+                <div className="absolute top-1.5 right-1.5 w-2 h-2 border-t border-r pointer-events-none" style={{ borderColor: RED_DIM }} />
+                <div className="absolute bottom-1.5 left-1.5 w-2 h-2 border-b border-l pointer-events-none" style={{ borderColor: RED_DIM }} />
+                <div className="absolute bottom-1.5 right-1.5 w-2 h-2 border-b border-r pointer-events-none" style={{ borderColor: RED_DIM }} />
+
+                {/* Case number — TELE mono, top-center small */}
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 pointer-events-none">
+                  <span
+                    style={{
+                      fontFamily: TELE, fontSize: 7, fontWeight: 700,
+                      color: 'rgba(220,38,38,0.85)', letterSpacing: '0.35em', textTransform: 'uppercase',
+                    }}
+                  >
+                    CASE · {c.id}
+                  </span>
+                </div>
+
+                {/* HERO ICON — composite stack (ring + icon), context-animated */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ paddingBottom: '30%' }}>
+                  <div
+                    style={{
+                      position: 'relative',
+                      width: 'clamp(26px, 22cqmin, 56px)',
+                      height: 'clamp(26px, 22cqmin, 56px)',
+                    }}
+                  >
+                    {/* Outer ring layer — pulse/sweep/scan */}
+                    {fx.ring && (
+                      <motion.div
+                        animate={fx.ring.animate}
+                        transition={fx.ring.transition}
+                        style={{
+                          position: 'absolute',
+                          inset: '-20%',
+                          borderRadius: '50%',
+                          border: `1px solid ${RED}`,
+                          boxShadow: `0 0 8px ${RED}60`,
+                        }}
+                      />
+                    )}
+                    {/* Icon layer */}
+                    <motion.div
+                      animate={fx.icon.animate}
+                      transition={fx.icon.transition}
+                      style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: RED_BRIGHT,
+                        filter: 'drop-shadow(0 0 10px rgba(220,38,38,0.5))',
+                      }}
+                    >
+                      <Icon size="100%" strokeWidth={1.4} />
+                    </motion.div>
+                  </div>
+                </div>
+
+                {/* Bottom content block: title + tagline */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 p-2.5 pt-6 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(to top, rgba(6,8,12,0.98) 0%, rgba(11,18,34,0.6) 75%, transparent 100%)',
+                  }}
+                >
+                  <div className="h-px mb-1.5 w-6" style={{ background: RED }} />
+                  <p
+                    style={{
+                      fontFamily: SWISS, fontSize: 11, fontWeight: 700,
+                      color: '#F3F4F6', letterSpacing: '-0.01em', lineHeight: 1.15,
+                      margin: 0,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {c.title}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: TELE, fontSize: 8, fontWeight: 400,
+                      color: 'rgba(209, 213, 219, 0.7)',
+                      letterSpacing: '0.04em', lineHeight: 1.3,
+                      marginTop: 4, marginBottom: 0,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {c.tagline}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </div>
+    </>
   );
 };
 
